@@ -153,6 +153,39 @@ h1, h2, h3, h4 {
     align-items: center;
 }
 
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* PWA Install Button */
+.btn-pwa-install {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 50px;
+    background: var(--gradient-accent);
+    color: var(--color-ocean-blue);
+    font-weight: 700;
+    font-size: 13px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(104, 207, 235, 0.35);
+    transition: var(--transition-normal);
+    font-family: inherit;
+}
+
+.btn-pwa-install:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(104, 207, 235, 0.5);
+}
+
+.btn-pwa-install i {
+    font-size: 14px;
+}
+
 .logo {
     font-size: 1.8rem;
     font-weight: 800;

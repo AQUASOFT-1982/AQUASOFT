@@ -104,3 +104,46 @@ if ('serviceWorker' in navigator) {
             .catch(err => console.log('[AQUASoft PWA] SW registration failed:', err));
     });
 }
+
+// ===== PWA App Installation Prompt =====
+(function () {
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('pwa-install-btn');
+
+    if (!installBtn) return;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.style.display = 'inline-flex';
+    });
+
+    installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`[AQUASoft PWA] User response: ${outcome}`);
+            deferredPrompt = null;
+            installBtn.style.display = 'none';
+        } else {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isArabic = document.documentElement.lang === 'ar';
+            if (isIOS) {
+                alert(isArabic 
+                    ? 'لتثبيت التطبيق على جهاز iOS: اضغط على أيقونة المشاركة (Share) في المتصفح ثم اختر "إضافة إلى الشاشة الرئيسية" (Add to Home Screen).'
+                    : 'To install on iOS: Tap the Share button in Safari and select "Add to Home Screen".');
+            } else {
+                alert(isArabic
+                    ? 'لتثبيت التطبيق: افتح قائمة خيارات المتصفح (⋮) ثم اختر "تثبيت التطبيق" أو "إضافة إلى الشاشة الرئيسية".'
+                    : 'To install the app: Open your browser menu (⋮) and select "Install App" or "Add to Home Screen".');
+            }
+        }
+    });
+
+    window.addEventListener('appinstalled', () => {
+        console.log('[AQUASoft PWA] App was installed successfully');
+        installBtn.style.display = 'none';
+        deferredPrompt = null;
+    });
+})();
+
