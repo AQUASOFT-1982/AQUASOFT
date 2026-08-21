@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#1F4B5D">
+  <link rel="apple-touch-icon" href="../icons/icon-192x192.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQUASoft | سجل البيانات اليومي</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- SheetJS for Excel export -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+
+  <!-- jsPDF with autotable -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    /* ===== Design Tokens (matching AQUASoft theme) ===== */
+    :root {
+      --color-ocean-blue: #1F4B5D;
+      --color-aqua: #68CFEB;
+      --color-soft-white: #FAFAFA;
+      --color-charcoal: #1F1E19;
+      --gradient-primary: linear-gradient(135deg, #1F4B5D 0%, #153644 100%);
+      --gradient-accent: linear-gradient(135deg, #68CFEB 0%, #4cb8d6 100%);
+      --shadow-sm: 0 4px 6px rgba(31, 75, 93, 0.05);
+      --shadow-md: 0 10px 20px rgba(31, 75, 93, 0.08);
+      --shadow-lg: 0 20px 40px rgba(31, 75, 93, 0.12);
+      --shadow-glow: 0 0 20px rgba(104, 207, 235, 0.4);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --color-danger: #e53e3e;
+      --color-warning: #d97706;
+      --color-safe: #059669;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--color-soft-white);
+      color: var(--color-charcoal);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body.ltr {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    a { text-decoration: none; color: inherit; transition: var(--transition); }
+    ul { list-style: none; }
+
+    /* ===== Navbar ===== */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1rem 0;
+      transition: var(--transition);
+      background: transparent;
+    }
+
+    .navbar.scrolled {
+      background: rgba(250, 250, 250, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+      padding: 0.7rem 0;
+    }
+
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--color-ocean-blue);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .back-btn:hover { opacity: 0.75; }
+
+    #lang-toggle {
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1.5px solid var(--color-ocean-blue);
+      background: transparent;
+      color: var(--color-ocean-blue);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      letter-spacing: 0.3px;
+    }
+
+    #lang-toggle:hover {
+      background: var(--color-ocean-blue);
+      color: #fff;
+    }
+
+    /* ===== Page Hero ===== */
+    .page-hero {
+      background: var(--gradient-primary);
+      padding: 8rem 5% 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -20%;
+      width: 60%;
+      height: 200%;
+      background: radial-gradient(ellipse, rgba(104,207,235,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%; right: -10%;
+      width: 50%;
+      height: 150%;
+      background: radial-gradient(ellipse, rgba(104,207,235,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(104, 207, 235, 0.15);
+      border: 1px solid rgba(104, 207, 235, 0.3);
+      color: var(--color-aqua);
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.2rem;
+    }
+
+    .page-hero h1 {
+      color: #fff;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .page-hero h1 span {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-hero p {
+      color: rgba(255,255,255,0.75);
+      font-size: 1.1rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    /* ===== Main Layout ===== */
+    .main-content {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2.5rem 5% 5rem;
+    }
+
+    /* ===== Stats Grid ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 1.5rem 1.4rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(31, 75, 93, 0.06);
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; left: 0;
+      height: 3px;
+      background: var(--gradient-accent);
+    }
+
+    .stat-info h3 {
+      font-size: 0.85rem;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-info .stat-number {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--color-ocean-blue);
+      line-height: 1.1;
+    }
+
+    .stat-info small {
+      color: #94a3b8;
+      font-weight: 500;
+      font-size: 0.75rem;
+    }
+
+    .stat-icon-bg {
+      width: 52px;
+      height: 52px;
+      background: rgba(104, 207, 235, 0.12);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-ocean-blue);
+      font-size: 1.4rem;
+    }
+
+    /* ===== Tab Switcher ===== */
+    .tabs-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .custom-tabs {
+      background: #fff;
+      padding: 6px;
+      border-radius: 50px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(31, 75, 93, 0.08);
+      display: inline-flex;
+      gap: 6px;
+    }
+
+    .tab-btn {
+      padding: 0.7rem 1.8rem;
+      border: none;
+      background: transparent;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #64748b;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: inherit;
+    }
+
+    .tab-btn.active {
+      background: var(--gradient-primary);
+      color: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tab-btn:hover:not(.active) {
+      color: var(--color-ocean-blue);
+      background: rgba(104, 207, 235, 0.08);
+    }
+
+    /* ===== Card Container ===== */
+    .content-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(31, 75, 93, 0.06);
+    }
+
+    .card-header-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid rgba(31, 75, 93, 0.08);
+    }
+
+    .card-header-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--gradient-accent);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: var(--color-ocean-blue);
+      flex-shrink: 0;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .card-header-bar h2 {
+      font-size: 1.3rem;
+      color: var(--color-ocean-blue);
+      font-weight: 700;
+    }
+
+    .card-header-bar p {
+      color: #64748b;
+      font-size: 0.85rem;
+    }
+
+    /* ===== Form Layout ===== */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: var(--color-ocean-blue);
+      font-size: 0.85rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .form-group label i {
+      color: var(--color-aqua);
+      margin-left: 0.3rem;
+    }
+
+    html[dir="ltr"] .form-group label i {
+      margin-left: 0;
+      margin-right: 0.3rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--color-charcoal);
+      background: var(--color-soft-white);
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--color-aqua);
+      box-shadow: 0 0 0 3px rgba(104, 207, 235, 0.2);
+      background: #fff;
+    }
+
+    /* ===== Live Quality Assessment Badge Area ===== */
+    .quality-assessment-box {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 1.2rem;
+      border: 1px solid #e2e8f0;
+      margin-top: 1rem;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+
+    .quality-assessment-header {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--color-ocean-blue);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .quality-badges-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .quality-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .quality-excellent {
+      background: rgba(5, 150, 105, 0.1);
+      color: var(--color-safe);
+      border: 1px solid rgba(5, 150, 105, 0.25);
+    }
+
+    .quality-good {
+      background: rgba(217, 119, 6, 0.1);
+      color: var(--color-warning);
+      border: 1px solid rgba(217, 119, 6, 0.25);
+    }
+
+    .quality-bad {
+      background: rgba(229, 62, 62, 0.1);
+      color: var(--color-danger);
+      border: 1px solid rgba(229, 62, 62, 0.25);
+    }
+
+    /* ===== Form Actions ===== */
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn-submit {
+      padding: 0.85rem 2rem;
+      background: var(--gradient-primary);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(31, 75, 93, 0.2);
+    }
+
+    .btn-clear {
+      padding: 0.85rem 1.5rem;
+      background: #f1f5f9;
+      color: #475569;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-clear:hover {
+      background: #e2e8f0;
+      color: var(--color-ocean-blue);
+    }
+
+    /* ===== Table View Tools ===== */
+    .table-controls {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .table-controls {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 0.88rem;
+    }
+
+    .styled-table thead {
+      background: var(--gradient-primary);
+      color: #fff;
+    }
+
+    .styled-table th {
+      padding: 12px 10px;
+      font-weight: 700;
+      white-space: nowrap;
+      font-size: 0.85rem;
+    }
+
+    .styled-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+      white-space: nowrap;
+    }
+
+    .styled-table tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    .table-actions-btns {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .action-btn-sm {
+      padding: 5px 9px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-edit {
+      background: rgba(217, 119, 6, 0.12);
+      color: var(--color-warning);
+    }
+
+    .btn-edit:hover {
+      background: var(--color-warning);
+      color: #fff;
+    }
+
+    .btn-delete {
+      background: rgba(229, 62, 62, 0.12);
+      color: var(--color-danger);
+    }
+
+    .btn-delete:hover {
+      background: var(--color-danger);
+      color: #fff;
+    }
+
+    /* ===== Export Buttons ===== */
+    .export-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-export-pdf {
+      padding: 0.7rem 1.4rem;
+      background: #dc2626;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-export-pdf:hover {
+      background: #b91c1c;
+      transform: translateY(-2px);
+    }
+
+    .btn-export-excel {
+      padding: 0.7rem 1.4rem;
+      background: #059669;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-export-excel:hover {
+      background: #047857;
+      transform: translateY(-2px);
+    }
+
+    /* ===== Footer ===== */
+    .page-footer {
+      background: var(--gradient-primary);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .page-footer a { color: var(--color-aqua); }
+
+    @media (max-width: 768px) {
+      .content-card { padding: 1.5rem; }
+      .page-hero { padding: 7rem 5% 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo">
+        <img src="../images/in ob.png" alt="AQUASoft Logo">
+      </a>
+      <div class="nav-right">
+        <a href="../index.html" class="back-btn" id="back-link">
+          <i class="fa-solid fa-arrow-right" id="back-icon"></i>
+          <span data-i18n="back">الصفحة الرئيسية</span>
+        </a>
+        <button id="lang-toggle">English</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="hero-badge">
+      <i class="fa-solid fa-clipboard-list"></i>
+      <span data-i18n="hero_badge">نظام السجلات الرقمي</span>
+    </div>
+    <h1 data-i18n="page_title">سجل <span>البيانات والمتابعة</span></h1>
+    <p data-i18n="page_subtitle">سجل يومي متكامل لتوثيق قياسات جودة المياه، كميات التغذية، وحالات النفوق مع تقييم بيولوجي فوري.</p>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Key Statistics Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-info">
+          <h3 data-i18n="stat_records">إجمالي السجلات</h3>
+          <div class="stat-number" id="totalRecords">0</div>
+          <small data-i18n="unit_entries">عملية تسجيل</small>
+        </div>
+        <div class="stat-icon-bg">
+          <i class="fa-solid fa-database"></i>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-info">
+          <h3 data-i18n="stat_feed">إجمالي العلف</h3>
+          <div class="stat-number" id="totalFeed">0</div>
+          <small data-i18n="unit_kg">كجم</small>
+        </div>
+        <div class="stat-icon-bg">
+          <i class="fa-solid fa-scale-balanced"></i>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-info">
+          <h3 data-i18n="stat_mort">إجمالي النفوق</h3>
+          <div class="stat-number" id="totalMort">0</div>
+          <small data-i18n="unit_fish">سمكة</small>
+        </div>
+        <div class="stat-icon-bg">
+          <i class="fa-solid fa-fish"></i>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-info">
+          <h3 data-i18n="stat_avg_do">متوسط الأكسجين</h3>
+          <div class="stat-number" id="avgDO">0</div>
+          <small>mg/L</small>
+        </div>
+        <div class="stat-icon-bg">
+          <i class="fa-solid fa-wind"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Selector -->
+    <div class="tabs-wrapper">
+      <div class="custom-tabs">
+        <button class="tab-btn active" id="tabAddBtn" onclick="showTab('add')">
+          <i class="fa-solid fa-pen-to-square"></i>
+          <span data-i18n="tab_add">إضافة بيانات جديدة</span>
+        </button>
+        <button class="tab-btn" id="tabViewBtn" onclick="showTab('view')">
+          <i class="fa-solid fa-table-list"></i>
+          <span data-i18n="tab_view">عرض السجلات والتقارير</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab 1: Form Card -->
+    <div id="addTab" class="content-card">
+      <div class="card-header-bar">
+        <div class="card-header-icon">
+          <i class="fa-solid fa-notes-medical"></i>
+        </div>
+        <div>
+          <h2 id="formTitle" data-i18n="form_title_add">تسجيل قراءة حوض يومية</h2>
+          <p data-i18n="form_subtitle">أدخل بيانات القياسات الكيميائية والتشغيلية</p>
+        </div>
+      </div>
+
+      <form id="dataForm" onsubmit="return false;">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="pondInput"><i class="fa-solid fa-tag"></i><span data-i18n="lbl_pond">رقم / اسم الحوض *</span></label>
+            <input type="text" id="pondInput" placeholder="مثال: حوض 1" data-placeholder-ar="مثال: حوض 1" data-placeholder-en="e.g. Pond 1" required>
+          </div>
+
+          <div class="form-group">
+            <label for="dateInput"><i class="fa-solid fa-calendar-day"></i><span data-i18n="lbl_date">التاريخ *</span></label>
+            <input type="date" id="dateInput" required>
+          </div>
+
+          <div class="form-group">
+            <label for="tempInput"><i class="fa-solid fa-temperature-half"></i><span data-i18n="lbl_temp">درجة الحرارة (°C)</span></label>
+            <input type="number" step="0.1" id="tempInput" placeholder="مثال: 26.5" data-placeholder-ar="مثال: 26.5" data-placeholder-en="e.g. 26.5" oninput="checkWaterQuality()">
+          </div>
+
+          <div class="form-group">
+            <label for="doInput"><i class="fa-solid fa-wind"></i><span data-i18n="lbl_do">الأكسجين DO (mg/L)</span></label>
+            <input type="number" step="0.1" id="doInput" placeholder="مثال: 5.8" data-placeholder-ar="مثال: 5.8" data-placeholder-en="e.g. 5.8" oninput="checkWaterQuality()">
+          </div>
+
+          <div class="form-group">
+            <label for="phInput"><i class="fa-solid fa-vial"></i><span data-i18n="lbl_ph">درجة الحموضة (pH)</span></label>
+            <input type="number" step="0.1" id="phInput" placeholder="مثال: 7.5" data-placeholder-ar="مثال: 7.5" data-placeholder-en="e.g. 7.5" oninput="checkWaterQuality()">
+          </div>
+
+          <div class="form-group">
+            <label for="nh3Input"><i class="fa-solid fa-skull"></i><span data-i18n="lbl_nh3">الأمونيا NH3 (mg/L)</span></label>
+            <input type="number" step="0.01" id="nh3Input" placeholder="مثال: 0.05" data-placeholder-ar="مثال: 0.05" data-placeholder-en="e.g. 0.05" oninput="checkWaterQuality()">
+          </div>
+
+          <div class="form-group">
+            <label for="no2Input"><i class="fa-solid fa-flask"></i><span data-i18n="lbl_no2">النتريت NO2 (mg/L)</span></label>
+            <input type="number" step="0.01" id="no2Input" placeholder="مثال: 0.02" data-placeholder-ar="مثال: 0.02" data-placeholder-en="e.g. 0.02" oninput="checkWaterQuality()">
+          </div>
+
+          <div class="form-group">
+            <label for="no3Input"><i class="fa-solid fa-flask-vial"></i><span data-i18n="lbl_no3">النترات NO3 (mg/L)</span></label>
+            <input type="number" step="0.01" id="no3Input" placeholder="مثال: 15" data-placeholder-ar="مثال: 15" data-placeholder-en="e.g. 15" oninput="checkWaterQuality()">
+          </div>
+
+          <div class="form-group">
+            <label for="feedInput"><i class="fa-solid fa-bowl-food"></i><span data-i18n="lbl_feed">كمية العلف (كجم)</span></label>
+            <input type="number" step="0.1" id="feedInput" placeholder="مثال: 12.5" data-placeholder-ar="مثال: 12.5" data-placeholder-en="e.g. 12.5">
+          </div>
+
+          <div class="form-group">
+            <label for="mortInput"><i class="fa-solid fa-fish-fins"></i><span data-i18n="lbl_mort">النفوق (عدد)</span></label>
+            <input type="number" step="1" id="mortInput" placeholder="0" data-placeholder-ar="0" data-placeholder-en="0">
+          </div>
+
+          <div class="form-group full-width">
+            <label for="notesInput"><i class="fa-solid fa-comment-dots"></i><span data-i18n="lbl_notes">ملاحظات إضافية</span></label>
+            <textarea id="notesInput" rows="2" placeholder="أي ملاحظات حول سلوك الأسماك، تبديل المياه، إلخ..." data-placeholder-ar="أي ملاحظات حول سلوك الأسماك، تبديل المياه، إلخ..." data-placeholder-en="Notes about fish behavior, water exchange, etc..."></textarea>
+          </div>
+        </div>
+
+        <!-- Real-time assessment alerts -->
+        <div id="qualityAssessment" class="quality-assessment-box">
+          <div class="quality-assessment-header">
+            <i class="fa-solid fa-chart-pie" style="color: var(--color-aqua);"></i>
+            <span data-i18n="quality_eval_header">تقييم جودة المياه اللحظي:</span>
+          </div>
+          <div id="qualityMessages" class="quality-badges-list"></div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-submit" id="submitBtn" onclick="saveRecord()">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span id="submitBtnText" data-i18n="btn_save">حفظ السجل</span>
+          </button>
+          <button type="button" class="btn-clear" onclick="clearForm()">
+            <i class="fa-solid fa-eraser"></i>
+            <span data-i18n="btn_clear">مسح الحقول</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tab 2: Table Card -->
+    <div id="viewTab" class="content-card" style="display: none;">
+      <div class="card-header-bar">
+        <div class="card-header-icon">
+          <i class="fa-solid fa-table"></i>
+        </div>
+        <div>
+          <h2 data-i18n="table_title">جدول السجلات والبيانات المسجلة</h2>
+          <p data-i18n="table_subtitle">استعرض، ابحث، وقوم بتصدير التقارير بصيغ PDF و Excel</p>
+        </div>
+      </div>
+
+      <div class="table-controls">
+        <div class="form-group">
+          <input type="text" id="searchInput" placeholder="بحث باسم الحوض، التاريخ، أو الملاحظات..." data-placeholder-ar="بحث باسم الحوض، التاريخ، أو الملاحظات..." data-placeholder-en="Search by pond, date, notes...">
+        </div>
+        <div class="form-group">
+          <select id="filterPond">
+            <option value="" data-i18n="filter_all_ponds">كل الأحواض</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="styled-table" id="dataTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th data-i18n="th_pond">الحوض</th>
+              <th data-i18n="th_date">التاريخ</th>
+              <th>DO</th>
+              <th>pH</th>
+              <th>Temp</th>
+              <th>NH3</th>
+              <th>NO2</th>
+              <th>NO3</th>
+              <th data-i18n="th_feed">العلف</th>
+              <th data-i18n="th_mort">النفوق</th>
+              <th data-i18n="th_quality">التقييم</th>
+              <th data-i18n="th_actions">الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="logBody"></tbody>
+        </table>
+      </div>
+
+      <div class="export-row">
+        <button class="btn-export-pdf" onclick="exportToPDF()">
+          <i class="fa-solid fa-file-pdf"></i>
+          <span data-i18n="btn_export_pdf">تصدير تقرير PDF</span>
+        </button>
+        <button class="btn-export-excel" onclick="exportToExcel()">
+          <i class="fa-solid fa-file-excel"></i>
+          <span data-i18n="btn_export_excel">تصدير ملف Excel</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <p>&copy; 2024 AQUASoft &mdash; <a href="../index.html" data-i18n="footer_home">الصفحة الرئيسية</a> | Integrated Aquaculture Platform</p>
+  </footer>
+
+  <script>
+    // ============================================================
+    // TRANSLATIONS DICTIONARY
+    // ============================================================
+    const t = {
+      ar: {
+        back: 'الصفحة الرئيسية',
+        hero_badge: 'نظام السجلات الرقمي',
+        page_title: 'سجل <span>البيانات والمتابعة</span>',
+        page_subtitle: 'سجل يومي متكامل لتوثيق قياسات جودة المياه، كميات التغذية، وحالات النفوق مع تقييم بيولوجي فوري.',
+        stat_records: 'إجمالي السجلات',
+        unit_entries: 'عملية تسجيل',
+        stat_feed: 'إجمالي العلف',
+        unit_kg: 'كجم',
+        stat_mort: 'إجمالي النفوق',
+        unit_fish: 'سمكة',
+        stat_avg_do: 'متوسط الأكسجين',
+        tab_add: 'إضافة بيانات جديدة',
+        tab_view: 'عرض السجلات والتقارير',
+        form_title_add: 'تسجيل قراءة حوض يومية',
+        form_title_edit: 'تعديل قراءة الحوض',
+        form_subtitle: 'أدخل بيانات القياسات الكيميائية والتشغيلية',
+        lbl_pond: 'رقم / اسم الحوض *',
+        lbl_date: 'التاريخ *',
+        lbl_temp: 'درجة الحرارة (°C)',
+        lbl_do: 'الأكسجين DO (mg/L)',
+        lbl_ph: 'درجة الحموضة (pH)',
+        lbl_nh3: 'الأمونيا NH3 (mg/L)',
+        lbl_no2: 'النتريت NO2 (mg/L)',
+        lbl_no3: 'النترات NO3 (mg/L)',
+        lbl_feed: 'كمية العلف (كجم)',
+        lbl_mort: 'النفوق (عدد)',
+        lbl_notes: 'ملاحظات إضافية',
+        quality_eval_header: 'تقييم جودة المياه اللحظي:',
+        btn_save: 'حفظ السجل',
+        btn_update: 'تحديث السجل',
+        btn_clear: 'مسح الحقول',
+        table_title: 'جدول السجلات والبيانات المسجلة',
+        table_subtitle: 'استعرض، ابحث، وقوم بتصدير التقارير بصيغ PDF و Excel',
+        filter_all_ponds: 'كل الأحواض',
+        th_pond: 'الحوض',
+        th_date: 'التاريخ',
+        th_feed: 'العلف',
+        th_mort: 'النفوق',
+        th_quality: 'التقييم',
+        th_actions: 'الإجراءات',
+        btn_export_pdf: 'تصدير تقرير PDF',
+        btn_export_excel: 'تصدير ملف Excel',
+        footer_home: 'الصفحة الرئيسية',
+        q_excellent: 'ممتاز',
+        q_good: 'مقبول',
+        q_bad: 'غير مناسب',
+        no_data: 'لا توجد بيانات مسجلة',
+        swal_err_title: 'خطأ',
+        swal_err_date: 'الرجاء إدخال التاريخ',
+        swal_err_pond: 'الرجاء إدخال رقم أو اسم الحوض',
+        swal_saved_title: 'تم الحفظ',
+        swal_saved_msg: 'تم إضافة السجل بنجاح',
+        swal_updated_title: 'تم التعديل',
+        swal_updated_msg: 'تم تعديل السجل بنجاح',
+        swal_delete_confirm_title: 'تأكيد الحذف',
+        swal_delete_confirm_msg: 'هل أنت متأكد من حذف سجل الحوض {pond}؟',
+        swal_confirm_btn: 'نعم، احذف',
+        swal_cancel_btn: 'إلغاء',
+        swal_deleted_title: 'تم الحذف',
+        swal_deleted_msg: 'تم حذف السجل بنجاح',
+        swal_no_export_title: 'تنبيه',
+        swal_no_export_msg: 'لا توجد بيانات لتصديرها',
+        swal_export_success: 'تم التصدير بنجاح'
+      },
+      en: {
+        back: 'Home',
+        hero_badge: 'Digital Farm Logbook',
+        page_title: 'Daily <span>Log Book</span>',
+        page_subtitle: 'A fully integrated daily record for logging water quality metrics, feed amounts, and mortality with instant biological scoring.',
+        stat_records: 'Total Records',
+        unit_entries: 'entries',
+        stat_feed: 'Total Feed',
+        unit_kg: 'kg',
+        stat_mort: 'Total Mortality',
+        unit_fish: 'fish',
+        stat_avg_do: 'Average DO',
+        tab_add: 'Add New Record',
+        tab_view: 'View Logs & Reports',
+        form_title_add: 'Log Daily Pond Parameters',
+        form_title_edit: 'Edit Pond Record',
+        form_subtitle: 'Enter water chemistry and daily farm operations data',
+        lbl_pond: 'Pond ID / Name *',
+        lbl_date: 'Date *',
+        lbl_temp: 'Temperature (°C)',
+        lbl_do: 'Dissolved Oxygen DO (mg/L)',
+        lbl_ph: 'pH Level',
+        lbl_nh3: 'Ammonia NH3 (mg/L)',
+        lbl_no2: 'Nitrite NO2 (mg/L)',
+        lbl_no3: 'Nitrate NO3 (mg/L)',
+        lbl_feed: 'Feed Amount (kg)',
+        lbl_mort: 'Mortality (count)',
+        lbl_notes: 'Additional Notes',
+        quality_eval_header: 'Instant Water Quality Assessment:',
+        btn_save: 'Save Record',
+        btn_update: 'Update Record',
+        btn_clear: 'Clear Fields',
+        table_title: 'Logged Data & Records Table',
+        table_subtitle: 'Browse, search, and export data in PDF and Excel formats',
+        filter_all_ponds: 'All Ponds',
+        th_pond: 'Pond',
+        th_date: 'Date',
+        th_feed: 'Feed',
+        th_mort: 'Mort',
+        th_quality: 'Quality',
+        th_actions: 'Actions',
+        btn_export_pdf: 'Export PDF Report',
+        btn_export_excel: 'Export Excel File',
+        footer_home: 'Home',
+        q_excellent: 'Excellent',
+        q_good: 'Acceptable',
+        q_bad: 'Unsuitable',
+        no_data: 'No records found',
+        swal_err_title: 'Error',
+        swal_err_date: 'Please enter a valid date',
+        swal_err_pond: 'Please enter the pond name or ID',
+        swal_saved_title: 'Saved',
+        swal_saved_msg: 'Record added successfully',
+        swal_updated_title: 'Updated',
+        swal_updated_msg: 'Record updated successfully',
+        swal_delete_confirm_title: 'Confirm Deletion',
+        swal_delete_confirm_msg: 'Are you sure you want to delete the record for {pond}?',
+        swal_confirm_btn: 'Yes, Delete',
+        swal_cancel_btn: 'Cancel',
+        swal_deleted_title: 'Deleted',
+        swal_deleted_msg: 'Record deleted successfully',
+        swal_no_export_title: 'Notice',
+        swal_no_export_msg: 'No records available to export',
+        swal_export_success: 'Exported successfully'
+      }
+    };
+
+    // ============================================================
+    // STATE & INITIALIZATION
+    // ============================================================
+    let currentLang = localStorage.getItem('aqasoft_lang') || 'ar';
+    let log = JSON.parse(localStorage.getItem('logbook') || '[]');
+    let editIndex = -1;
+
+    const $ = id => document.getElementById(id);
+
+    // ============================================================
+    // LANGUAGE SWITCHER
+    // ============================================================
+    function applyLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('aqasoft_lang', lang);
+
+      const isAr = lang === 'ar';
+      document.documentElement.lang = lang;
+      document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+      document.body.classList.toggle('ltr', !isAr);
+
+      document.getElementById('lang-toggle').textContent = isAr ? 'English' : 'عربي';
+
+      const backIcon = document.getElementById('back-icon');
+      if (backIcon) {
+        backIcon.className = isAr ? 'fa-solid fa-arrow-right' : 'fa-solid fa-arrow-left';
+      }
+
+      // Translate all tagged elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[lang] && t[lang][key] !== undefined) {
+          el.innerHTML = t[lang][key];
+        }
+      });
+
+      // Translate placeholders
+      document.querySelectorAll('[data-placeholder-' + lang + ']').forEach(el => {
+        el.placeholder = el.getAttribute('data-placeholder-' + lang);
+      });
+
+      // Update button text state
+      if (editIndex >= 0) {
+        $('submitBtnText').textContent = t[lang].btn_update;
+        $('formTitle').textContent = t[lang].form_title_edit;
+      } else {
+        $('submitBtnText').textContent = t[lang].btn_save;
+        $('formTitle').textContent = t[lang].form_title_add;
+      }
+
+      checkWaterQuality();
+      renderStats();
+      renderTable();
+      updatePondFilter();
+    }
+
+    document.getElementById('lang-toggle').addEventListener('click', () => {
+      applyLang(currentLang === 'ar' ? 'en' : 'ar');
+    });
+
+    // ============================================================
+    // TAB NAVIGATION
+    // ============================================================
+    window.showTab = function(tab) {
+      const addTab = $('addTab');
+      const viewTab = $('viewTab');
+      const tabAddBtn = $('tabAddBtn');
+      const tabViewBtn = $('tabViewBtn');
+
+      if (tab === 'add') {
+        addTab.style.display = 'block';
+        viewTab.style.display = 'none';
+        tabAddBtn.classList.add('active');
+        tabViewBtn.classList.remove('active');
+      } else {
+        addTab.style.display = 'none';
+        viewTab.style.display = 'block';
+        tabAddBtn.classList.remove('active');
+        tabViewBtn.classList.add('active');
+        renderTable();
+        updatePondFilter();
+      }
+    };
+
+    // ============================================================
+    // WATER QUALITY SCORING
+    // ============================================================
+    window.checkWaterQuality = function() {
+      const doVal = parseFloat($('doInput').value);
+      const phVal = parseFloat($('phInput').value);
+      const tempVal = parseFloat($('tempInput').value);
+      const nh3Val = parseFloat($('nh3Input').value);
+      const no2Val = parseFloat($('no2Input').value);
+      const no3Val = parseFloat($('no3Input').value);
+      const lang = currentLang;
+
+      const messages = [];
+      let hasValues = false;
+
+      if (!isNaN(doVal) && doVal > 0) {
+        hasValues = true;
+        if (doVal >= 5 && doVal <= 7) {
+          messages.push(`<span class="quality-badge quality-excellent"><i class="fa-solid fa-circle-check"></i> DO: ${lang === 'ar' ? 'ممتاز' : 'Excellent'} (${doVal.toFixed(1)} mg/L)</span>`);
+        } else if (doVal >= 4 && doVal <= 8) {
+          messages.push(`<span class="quality-badge quality-good"><i class="fa-solid fa-circle-exclamation"></i> DO: ${lang === 'ar' ? 'مقبول' : 'Acceptable'} (${doVal.toFixed(1)} mg/L)</span>`);
+        } else {
+          messages.push(`<span class="quality-badge quality-bad"><i class="fa-solid fa-triangle-exclamation"></i> DO: ${lang === 'ar' ? 'غير مناسب (4-8)' : 'Unsuitable (4-8)'}</span>`);
+        }
+      }
+
+      if (!isNaN(phVal) && phVal > 0) {
+        hasValues = true;
+        if (phVal >= 7 && phVal <= 8) {
+          messages.push(`<span class="quality-badge quality-excellent"><i class="fa-solid fa-circle-check"></i> pH: ${lang === 'ar' ? 'ممتاز' : 'Excellent'} (${phVal.toFixed(1)})</span>`);
+        } else if (phVal >= 6.5 && phVal <= 8.5) {
+          messages.push(`<span class="quality-badge quality-good"><i class="fa-solid fa-circle-exclamation"></i> pH: ${lang === 'ar' ? 'مقبول' : 'Acceptable'} (${phVal.toFixed(1)})</span>`);
+        } else {
+          messages.push(`<span class="quality-badge quality-bad"><i class="fa-solid fa-triangle-exclamation"></i> pH: ${lang === 'ar' ? 'غير مناسب (6.5-8.5)' : 'Unsuitable (6.5-8.5)'}</span>`);
+        }
+      }
+
+      if (!isNaN(tempVal) && tempVal > 0) {
+        hasValues = true;
+        if (tempVal >= 24 && tempVal <= 28) {
+          messages.push(`<span class="quality-badge quality-excellent"><i class="fa-solid fa-circle-check"></i> Temp: ${lang === 'ar' ? 'ممتازة' : 'Excellent'} (${tempVal.toFixed(1)}°C)</span>`);
+        } else if (tempVal >= 22 && tempVal <= 30) {
+          messages.push(`<span class="quality-badge quality-good"><i class="fa-solid fa-circle-exclamation"></i> Temp: ${lang === 'ar' ? 'مقبولة' : 'Acceptable'} (${tempVal.toFixed(1)}°C)</span>`);
+        } else {
+          messages.push(`<span class="quality-badge quality-bad"><i class="fa-solid fa-triangle-exclamation"></i> Temp: ${lang === 'ar' ? 'غير مناسبة (22-30)' : 'Unsuitable (22-30)'}</span>`);
+        }
+      }
+
+      if (!isNaN(nh3Val) && nh3Val >= 0) {
+        hasValues = true;
+        if (nh3Val <= 0.1) {
+          messages.push(`<span class="quality-badge quality-excellent"><i class="fa-solid fa-circle-check"></i> NH3: ${lang === 'ar' ? 'ممتاز' : 'Excellent'} (${nh3Val.toFixed(2)} mg/L)</span>`);
+        } else if (nh3Val <= 0.5) {
+          messages.push(`<span class="quality-badge quality-good"><i class="fa-solid fa-circle-exclamation"></i> NH3: ${lang === 'ar' ? 'مقبول' : 'Acceptable'} (${nh3Val.toFixed(2)} mg/L)</span>`);
+        } else {
+          messages.push(`<span class="quality-badge quality-bad"><i class="fa-solid fa-triangle-exclamation"></i> NH3: ${lang === 'ar' ? 'مرتفع (< 0.5)' : 'High (< 0.5)'}</span>`);
+        }
+      }
+
+      if (!isNaN(no2Val) && no2Val >= 0) {
+        hasValues = true;
+        if (no2Val <= 0.1) {
+          messages.push(`<span class="quality-badge quality-excellent"><i class="fa-solid fa-circle-check"></i> NO2: ${lang === 'ar' ? 'ممتاز' : 'Excellent'} (${no2Val.toFixed(2)} mg/L)</span>`);
+        } else if (no2Val <= 0.5) {
+          messages.push(`<span class="quality-badge quality-good"><i class="fa-solid fa-circle-exclamation"></i> NO2: ${lang === 'ar' ? 'مقبول' : 'Acceptable'} (${no2Val.toFixed(2)} mg/L)</span>`);
+        } else {
+          messages.push(`<span class="quality-badge quality-bad"><i class="fa-solid fa-triangle-exclamation"></i> NO2: ${lang === 'ar' ? 'مرتفع (< 0.5)' : 'High (< 0.5)'}</span>`);
+        }
+      }
+
+      if (!isNaN(no3Val) && no3Val >= 0) {
+        hasValues = true;
+        if (no3Val <= 20) {
+          messages.push(`<span class="quality-badge quality-excellent"><i class="fa-solid fa-circle-check"></i> NO3: ${lang === 'ar' ? 'ممتاز' : 'Excellent'} (${no3Val.toFixed(2)} mg/L)</span>`);
+        } else if (no3Val <= 50) {
+          messages.push(`<span class="quality-badge quality-good"><i class="fa-solid fa-circle-exclamation"></i> NO3: ${lang === 'ar' ? 'مقبول' : 'Acceptable'} (${no3Val.toFixed(2)} mg/L)</span>`);
+        } else {
+          messages.push(`<span class="quality-badge quality-bad"><i class="fa-solid fa-triangle-exclamation"></i> NO3: ${lang === 'ar' ? 'مرتفع (< 50)' : 'High (< 50)'}</span>`);
+        }
+      }
+
+      const qualityDiv = $('qualityAssessment');
+      const messagesDiv = $('qualityMessages');
+
+      if (hasValues) {
+        qualityDiv.style.display = 'block';
+        messagesDiv.innerHTML = messages.join(' ');
+      } else {
+        qualityDiv.style.display = 'none';
+      }
+    };
+
+    function getOverallQualityScore(record) {
+      let score = 0;
+      let total = 0;
+
+      const doVal = parseFloat(record.do);
+      if (!isNaN(doVal) && doVal > 0) {
+        total++;
+        if (doVal >= 5 && doVal <= 7) score += 1;
+        else if (doVal >= 4 && doVal <= 8) score += 0.5;
+      }
+
+      const phVal = parseFloat(record.ph);
+      if (!isNaN(phVal) && phVal > 0) {
+        total++;
+        if (phVal >= 7 && phVal <= 8) score += 1;
+        else if (phVal >= 6.5 && phVal <= 8.5) score += 0.5;
+      }
+
+      const tempVal = parseFloat(record.temp);
+      if (!isNaN(tempVal) && tempVal > 0) {
+        total++;
+        if (tempVal >= 24 && tempVal <= 28) score += 1;
+        else if (tempVal >= 22 && tempVal <= 30) score += 0.5;
+      }
+
+      if (total === 0) return 'neutral';
+      const percentage = (score / total) * 100;
+      if (percentage >= 80) return 'excellent';
+      if (percentage >= 50) return 'good';
+      return 'bad';
+    }
+
+    // ============================================================
+    // DATA ACTIONS
+    // ============================================================
+    function gatherForm() {
+      const lang = currentLang;
+      const date = $('dateInput').value;
+      if (!date) {
+        Swal.fire(t[lang].swal_err_title, t[lang].swal_err_date, 'error');
+        return null;
+      }
+
+      const pond = $('pondInput').value.trim();
+      if (!pond) {
+        Swal.fire(t[lang].swal_err_title, t[lang].swal_err_pond, 'error');
+        return null;
+      }
+
+      const record = {
+        pond: pond,
+        date: date,
+        rawDate: date,
+        do: $('doInput').value === '' ? '0' : parseFloat($('doInput').value).toString(),
+        ph: $('phInput').value === '' ? '0' : parseFloat($('phInput').value).toString(),
+        temp: $('tempInput').value === '' ? '0' : parseFloat($('tempInput').value).toString(),
+        nh3: $('nh3Input').value === '' ? '0' : parseFloat($('nh3Input').value).toString(),
+        no2: $('no2Input').value === '' ? '0' : parseFloat($('no2Input').value).toString(),
+        no3: $('no3Input').value === '' ? '0' : parseFloat($('no3Input').value).toString(),
+        feed: $('feedInput').value === '' ? '0' : parseFloat($('feedInput').value).toString(),
+        mort: $('mortInput').value === '' ? '0' : parseInt($('mortInput').value).toString(),
+        notes: $('notesInput').value || ''
+      };
+
+      record.qualityScore = getOverallQualityScore(record);
+      return record;
+    }
+
+    window.saveRecord = function() {
+      const lang = currentLang;
+      const newRecord = gatherForm();
+      if (!newRecord) return;
+
+      if (editIndex >= 0) {
+        log[editIndex] = newRecord;
+        Swal.fire(t[lang].swal_updated_title, t[lang].swal_updated_msg, 'success');
+        editIndex = -1;
+        $('submitBtnText').textContent = t[lang].btn_save;
+        $('formTitle').textContent = t[lang].form_title_add;
+      } else {
+        log.push(newRecord);
+        Swal.fire(t[lang].swal_saved_title, t[lang].swal_saved_msg, 'success');
+      }
+
+      saveToStorage();
+      clearForm();
+    };
+
+    window.clearForm = function() {
+      document.querySelectorAll('#dataForm input, #dataForm textarea').forEach(e => {
+        if (e.type !== 'date') e.value = '';
+      });
+      $('dateInput').value = new Date().toISOString().split('T')[0];
+      editIndex = -1;
+      $('submitBtnText').textContent = t[currentLang].btn_save;
+      $('formTitle').textContent = t[currentLang].form_title_add;
+      $('qualityAssessment').style.display = 'none';
+    };
+
+    function saveToStorage() {
+      localStorage.setItem('logbook', JSON.stringify(log));
+      renderStats();
+      renderTable();
+      updatePondFilter();
+    }
+
+    function renderStats() {
+      const totalRecords = log.length;
+      const totalFeed = log.reduce((sum, r) => sum + (parseFloat(r.feed) || 0), 0);
+      const totalMort = log.reduce((sum, r) => sum + (parseInt(r.mort) || 0), 0);
+      const avgDO = log.length ? (log.reduce((sum, r) => sum + (parseFloat(r.do) || 0), 0) / log.length).toFixed(1) : '0';
+
+      $('totalRecords').textContent = totalRecords;
+      $('totalFeed').textContent = totalFeed.toFixed(1);
+      $('totalMort').textContent = totalMort;
+      $('avgDO').textContent = avgDO;
+    }
+
+    window.renderTable = function() {
+      const lang = currentLang;
+      const searchTerm = $('searchInput')?.value.toLowerCase() || '';
+      const filterPond = $('filterPond')?.value || '';
+
+      const filteredLog = log.filter(record => {
+        const matchesSearch = searchTerm === '' ||
+          Object.values(record).some(val =>
+            String(val).toLowerCase().includes(searchTerm)
+          );
+        const matchesPond = filterPond === '' || record.pond === filterPond;
+        return matchesSearch && matchesPond;
+      });
+
+      const tbody = $('logBody');
+      if (!tbody) return;
+
+      if (filteredLog.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="13" style="padding: 2rem; color: #94a3b8;">${t[lang].no_data}</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filteredLog.map((record, idx) => {
+        const qScore = record.qualityScore || getOverallQualityScore(record);
+        let qualityBadge = '';
+
+        if (qScore === 'excellent') {
+          qualityBadge = `<span class="quality-badge quality-excellent">${t[lang].q_excellent}</span>`;
+        } else if (qScore === 'good') {
+          qualityBadge = `<span class="quality-badge quality-good">${t[lang].q_good}</span>`;
+        } else if (qScore === 'bad') {
+          qualityBadge = `<span class="quality-badge quality-bad">${t[lang].q_bad}</span>`;
+        } else {
+          qualityBadge = `<span class="quality-badge" style="background:#f1f5f9;color:#64748b;">—</span>`;
+        }
+
+        const realIndex = log.indexOf(record);
+
+        return `
+          <tr>
+            <td><strong>${idx + 1}</strong></td>
+            <td><strong>${record.pond}</strong></td>
+            <td>${record.date}</td>
+            <td>${parseFloat(record.do).toFixed(1)}</td>
+            <td>${parseFloat(record.ph).toFixed(1)}</td>
+            <td>${parseFloat(record.temp).toFixed(1)}</td>
+            <td>${parseFloat(record.nh3).toFixed(2)}</td>
+            <td>${parseFloat(record.no2).toFixed(2)}</td>
+            <td>${parseFloat(record.no3).toFixed(2)}</td>
+            <td>${parseFloat(record.feed).toFixed(1)}</td>
+            <td>${parseInt(record.mort)}</td>
+            <td>${qualityBadge}</td>
+            <td>
+              <div class="table-actions-btns">
+                <button class="action-btn-sm btn-edit" title="Edit" onclick="editRecord(${realIndex})">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="action-btn-sm btn-delete" title="Delete" onclick="deleteRecord(${realIndex})">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    };
+
+    function updatePondFilter() {
+      const ponds = [...new Set(log.map(r => r.pond))];
+      const filterSelect = $('filterPond');
+      if (filterSelect) {
+        const currentVal = filterSelect.value;
+        filterSelect.innerHTML = `<option value="">${t[currentLang].filter_all_ponds}</option>` +
+          ponds.map(p => `<option value="${p}" ${p === currentVal ? 'selected' : ''}>${p}</option>`).join('');
+      }
+    }
+
+    window.editRecord = function(index) {
+      const record = log[index];
+      $('pondInput').value = record.pond;
+      $('dateInput').value = record.rawDate || record.date;
+      $('doInput').value = parseFloat(record.do) || '';
+      $('phInput').value = parseFloat(record.ph) || '';
+      $('tempInput').value = parseFloat(record.temp) || '';
+      $('nh3Input').value = parseFloat(record.nh3) || '';
+      $('no2Input').value = parseFloat(record.no2) || '';
+      $('no3Input').value = parseFloat(record.no3) || '';
+      $('feedInput').value = parseFloat(record.feed) || '';
+      $('mortInput').value = parseInt(record.mort) || '';
+      $('notesInput').value = record.notes || '';
+
+      editIndex = index;
+      $('submitBtnText').textContent = t[currentLang].btn_update;
+      $('formTitle').textContent = t[currentLang].form_title_edit;
+
+      showTab('add');
+      checkWaterQuality();
+      $('addTab').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    window.deleteRecord = async function(index) {
+      const lang = currentLang;
+      const result = await Swal.fire({
+        title: t[lang].swal_delete_confirm_title,
+        text: t[lang].swal_delete_confirm_msg.replace('{pond}', log[index].pond),
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: t[lang].swal_confirm_btn,
+        cancelButtonText: t[lang].swal_cancel_btn
+      });
+
+      if (result.isConfirmed) {
+        log.splice(index, 1);
+        saveToStorage();
+        Swal.fire(t[lang].swal_deleted_title, t[lang].swal_deleted_msg, 'success');
+      }
+    };
+
+    // ============================================================
+    // EXPORT PDF & EXCEL
+    // ============================================================
+    window.exportToPDF = function() {
+      const lang = currentLang;
+      if (log.length === 0) {
+        Swal.fire(t[lang].swal_no_export_title, t[lang].swal_no_export_msg, 'warning');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+      pdf.setFontSize(18);
+      pdf.text("AQUASoft - Farm Water Quality Log Report", pdf.internal.pageSize.width / 2, 15, { align: "center" });
+
+      pdf.setFontSize(11);
+      pdf.text(`Generated on: ${new Date().toLocaleDateString()}`, pdf.internal.pageSize.width / 2, 22, { align: "center" });
+
+      const totalFeed = log.reduce((sum, r) => sum + (parseFloat(r.feed) || 0), 0);
+      const totalMort = log.reduce((sum, r) => sum + (parseInt(r.mort) || 0), 0);
+      const avgDO = (log.reduce((sum, r) => sum + (parseFloat(r.do) || 0), 0) / log.length).toFixed(1);
+
+      pdf.setFontSize(9);
+      pdf.text(`Total Records: ${log.length} | Total Feed: ${totalFeed.toFixed(1)} kg | Total Mortality: ${totalMort} | Avg DO: ${avgDO} mg/L`,
+        pdf.internal.pageSize.width / 2, 28, { align: "center" });
+
+      const tableData = log.map(record => [
+        record.pond,
+        record.date,
+        parseFloat(record.do).toFixed(1),
+        parseFloat(record.ph).toFixed(1),
+        parseFloat(record.temp).toFixed(1),
+        parseFloat(record.nh3).toFixed(2),
+        parseFloat(record.no2).toFixed(2),
+        parseFloat(record.no3).toFixed(2),
+        parseFloat(record.feed).toFixed(1),
+        parseInt(record.mort),
+        record.qualityScore ? (record.qualityScore === 'excellent' ? 'Excellent' : (record.qualityScore === 'good' ? 'Acceptable' : 'Unsuitable')) : '-',
+        record.notes || '-'
+      ]);
+
+      pdf.autoTable({
+        head: [['Pond', 'Date', 'DO', 'pH', 'Temp', 'NH3', 'NO2', 'NO3', 'Feed', 'Mort', 'Quality', 'Notes']],
+        body: tableData,
+        startY: 34,
+        styles: { fontSize: 8, cellPadding: 2.5, halign: 'center' },
+        headStyles: { fillColor: [31, 75, 93], textColor: 255, fontSize: 9, fontStyle: 'bold' },
+        alternateRowStyles: { fillColor: [248, 250, 252] },
+        margin: { top: 10, left: 8, right: 8 }
+      });
+
+      pdf.save(`AQUASoft_Water_Quality_${new Date().toISOString().split('T')[0]}.pdf`);
+      Swal.fire(t[lang].swal_export_success, '', 'success');
+    };
+
+    window.exportToExcel = function() {
+      const lang = currentLang;
+      if (log.length === 0) {
+        Swal.fire(t[lang].swal_no_export_title, t[lang].swal_no_export_msg, 'warning');
+        return;
+      }
+
+      const excelData = log.map(record => {
+        if (lang === 'ar') {
+          return {
+            'الحوض': record.pond,
+            'التاريخ': record.date,
+            'الأكسجين DO (mg/L)': parseFloat(record.do).toFixed(1),
+            'درجة الحموضة pH': parseFloat(record.ph).toFixed(1),
+            'درجة الحرارة (°C)': parseFloat(record.temp).toFixed(1),
+            'الأمونيا NH3 (mg/L)': parseFloat(record.nh3).toFixed(2),
+            'النتريت NO2 (mg/L)': parseFloat(record.no2).toFixed(2),
+            'النترات NO3 (mg/L)': parseFloat(record.no3).toFixed(2),
+            'العلف (كجم)': parseFloat(record.feed).toFixed(1),
+            'النفوق (عدد)': parseInt(record.mort),
+            'التقييم': record.qualityScore === 'excellent' ? 'ممتاز' : (record.qualityScore === 'good' ? 'مقبول' : 'غير مناسب'),
+            'الملاحظات': record.notes || ''
+          };
+        } else {
+          return {
+            'Pond': record.pond,
+            'Date': record.date,
+            'DO (mg/L)': parseFloat(record.do).toFixed(1),
+            'pH': parseFloat(record.ph).toFixed(1),
+            'Temp (°C)': parseFloat(record.temp).toFixed(1),
+            'NH3 (mg/L)': parseFloat(record.nh3).toFixed(2),
+            'NO2 (mg/L)': parseFloat(record.no2).toFixed(2),
+            'NO3 (mg/L)': parseFloat(record.no3).toFixed(2),
+            'Feed (kg)': parseFloat(record.feed).toFixed(1),
+            'Mortality': parseInt(record.mort),
+            'Quality': record.qualityScore === 'excellent' ? 'Excellent' : (record.qualityScore === 'good' ? 'Acceptable' : 'Unsuitable'),
+            'Notes': record.notes || ''
+          };
+        }
+      });
+
+      const ws = XLSX.utils.json_to_sheet(excelData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'AQUASoft Logs');
+
+      const colWidths = Object.keys(excelData[0] || {}).map(() => ({ wch: 16 }));
+      ws['!cols'] = colWidths;
+
+      XLSX.writeFile(wb, `AQUASoft_Logs_${new Date().toISOString().split('T')[0]}.xlsx`);
+      Swal.fire(t[lang].swal_export_success, '', 'success');
+    };
+
+    // Event listeners
+    if ($('searchInput')) {
+      $('searchInput').addEventListener('input', () => renderTable());
+    }
+    if ($('filterPond')) {
+      $('filterPond').addEventListener('change', () => renderTable());
+    }
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Initialize
+    function init() {
+      if (!$('dateInput').value) {
+        $('dateInput').value = new Date().toISOString().split('T')[0];
+      }
+      applyLang(currentLang);
+    }
+
+    init();
+  </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "AQUASoft | منصة الاستزراع المائي المتكاملة",
+  "short_name": "AQUASoft",
+  "description": "The region's first fully integrated aquaculture platform for fish farmers and specialists.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FAFAFA",
+  "theme_color": "#1F4B5D",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

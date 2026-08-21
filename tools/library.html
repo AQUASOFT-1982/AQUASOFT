@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#1F4B5D">
+  <link rel="apple-touch-icon" href="../icons/icon-192x192.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQUASoft | المكتبة الرقمية للاستزراع المائي</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ===== Design Tokens (matching AQUASoft theme) ===== */
+    :root {
+      --color-ocean-blue: #1F4B5D;
+      --color-aqua: #68CFEB;
+      --color-soft-white: #FAFAFA;
+      --color-charcoal: #1F1E19;
+      --gradient-primary: linear-gradient(135deg, #1F4B5D 0%, #153644 100%);
+      --gradient-accent: linear-gradient(135deg, #68CFEB 0%, #4cb8d6 100%);
+      --shadow-sm: 0 4px 6px rgba(31, 75, 93, 0.05);
+      --shadow-md: 0 10px 20px rgba(31, 75, 93, 0.08);
+      --shadow-lg: 0 20px 40px rgba(31, 75, 93, 0.12);
+      --shadow-glow: 0 0 20px rgba(104, 207, 235, 0.4);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--color-soft-white);
+      color: var(--color-charcoal);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body.ltr {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    a { text-decoration: none; color: inherit; transition: var(--transition); }
+    ul { list-style: none; }
+
+    /* ===== Navbar ===== */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1rem 0;
+      transition: var(--transition);
+      background: transparent;
+    }
+
+    .navbar.scrolled {
+      background: rgba(250, 250, 250, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+      padding: 0.7rem 0;
+    }
+
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--color-ocean-blue);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .back-btn:hover { opacity: 0.75; }
+
+    #lang-toggle {
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1.5px solid var(--color-ocean-blue);
+      background: transparent;
+      color: var(--color-ocean-blue);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      letter-spacing: 0.3px;
+    }
+
+    #lang-toggle:hover {
+      background: var(--color-ocean-blue);
+      color: #fff;
+    }
+
+    /* ===== Page Hero ===== */
+    .page-hero {
+      background: var(--gradient-primary);
+      padding: 8rem 5% 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -20%;
+      width: 60%;
+      height: 200%;
+      background: radial-gradient(ellipse, rgba(104,207,235,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%; right: -10%;
+      width: 50%;
+      height: 150%;
+      background: radial-gradient(ellipse, rgba(104,207,235,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(104, 207, 235, 0.15);
+      border: 1px solid rgba(104, 207, 235, 0.3);
+      color: var(--color-aqua);
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.2rem;
+    }
+
+    .page-hero h1 {
+      color: #fff;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .page-hero h1 span {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-hero p {
+      color: rgba(255,255,255,0.75);
+      font-size: 1.1rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    /* ===== Main Content Layout ===== */
+    .main-content {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2.5rem 5% 5rem;
+    }
+
+    /* ===== Search & Filter Controls Card ===== */
+    .controls-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 1.5rem 2rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(31, 75, 93, 0.06);
+      margin-bottom: 2.5rem;
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search-box {
+      flex: 2;
+      min-width: 260px;
+      position: relative;
+    }
+
+    .search-box i {
+      position: absolute;
+      top: 50%;
+      right: 1.2rem;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 1rem;
+    }
+
+    html[dir="ltr"] .search-box i {
+      right: auto;
+      left: 1.2rem;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.85rem 3rem 0.85rem 1.2rem;
+      border-radius: 50px;
+      border: 1.5px solid #e2e8f0;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--color-charcoal);
+      background: var(--color-soft-white);
+      transition: var(--transition);
+      outline: none;
+    }
+
+    html[dir="ltr"] .search-box input {
+      padding: 0.85rem 1.2rem 0.85rem 3rem;
+    }
+
+    .search-box input:focus {
+      border-color: var(--color-aqua);
+      box-shadow: 0 0 0 3px rgba(104, 207, 235, 0.2);
+      background: #fff;
+    }
+
+    .filter-box {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .filter-box select {
+      width: 100%;
+      padding: 0.85rem 1.4rem;
+      border-radius: 50px;
+      border: 1.5px solid #e2e8f0;
+      font-size: 0.92rem;
+      font-family: inherit;
+      color: var(--color-charcoal);
+      background: var(--color-soft-white);
+      transition: var(--transition);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .filter-box select:focus {
+      border-color: var(--color-aqua);
+      box-shadow: 0 0 0 3px rgba(104, 207, 235, 0.2);
+    }
+
+    /* ===== Books Grid ===== */
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.8rem;
+    }
+
+    .book-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(31, 75, 93, 0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: var(--transition);
+    }
+
+    .book-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(104, 207, 235, 0.4);
+    }
+
+    .book-header {
+      padding: 1.6rem 1.6rem 0.6rem;
+    }
+
+    .category-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(31, 75, 93, 0.08);
+      color: var(--color-ocean-blue);
+      margin-bottom: 0.8rem;
+    }
+
+    .book-title {
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: var(--color-ocean-blue);
+      line-height: 1.45;
+      margin-bottom: 0.5rem;
+    }
+
+    .book-meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: #64748b;
+      margin-top: 0.8rem;
+      padding-top: 0.8rem;
+      border-top: 1px dashed #e2e8f0;
+    }
+
+    .download-count {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #059669;
+      font-weight: 600;
+    }
+
+    .book-footer {
+      padding: 1.2rem 1.6rem 1.6rem;
+    }
+
+    .btn-read-download {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      width: 100%;
+      padding: 0.8rem 1.2rem;
+      background: var(--gradient-primary);
+      color: #fff;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-read-download:hover {
+      background: var(--gradient-accent);
+      color: var(--color-ocean-blue);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 1rem;
+      color: #64748b;
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      color: #cbd5e1;
+      margin-bottom: 1rem;
+    }
+
+    /* ===== Footer ===== */
+    .page-footer {
+      background: var(--gradient-primary);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .page-footer a { color: var(--color-aqua); }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo">
+        <img src="../images/in ob.png" alt="AQUASoft Logo">
+      </a>
+      <div class="nav-right">
+        <a href="../index.html" class="back-btn" id="back-link">
+          <i class="fa-solid fa-arrow-right" id="back-icon"></i>
+          <span data-i18n="back">الصفحة الرئيسية</span>
+        </a>
+        <button id="lang-toggle">English</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="hero-badge">
+      <i class="fa-solid fa-book-bookmark"></i>
+      <span data-i18n="hero_badge">المكتبة الرقمية والمراجع العلمية</span>
+    </div>
+    <h1 data-i18n="page_title">مكتبة <span>المراجع والكتب العلمية</span></h1>
+    <p data-i18n="page_subtitle">مكتبة إلكترونية متخصصة تضم أحدث الكتب، الأدلة الإرشادية، والأبحاث في علوم الاستزراع السمكي، الهندسة، والتغذية.</p>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Search & Filter Controls -->
+    <div class="controls-card">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="ابحث باسم الكتاب أو الدليل الإرشادي..." data-placeholder-ar="ابحث باسم الكتاب أو الدليل الإرشادي..." data-placeholder-en="Search by book title or reference guide...">
+      </div>
+
+      <div class="filter-box">
+        <select id="categoryFilter">
+          <option value="all" data-i18n="cat_all">جميع التخصصات والمجالات</option>
+          <option value="systems" data-i18n="cat_systems">أنظمة الاستزراع (RAS & Biofloc & Cages)</option>
+          <option value="production" data-i18n="cat_production">إنتاج وإدارة المزارع المائية</option>
+          <option value="disease" data-i18n="cat_disease">أمراض الأسماك والأمان الحيوي</option>
+          <option value="nutrition" data-i18n="cat_nutrition">تغذية وأعلاف الكائنات المائية</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Books Grid -->
+    <div class="books-grid" id="bookList">
+      <!-- Dynamically rendered -->
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <p>&copy; 2024 AQUASoft &mdash; <a href="../index.html" data-i18n="footer_home">الصفحة الرئيسية</a> | Integrated Aquaculture Platform</p>
+  </footer>
+
+  <script>
+    // ============================================================
+    // TRANSLATIONS DICTIONARY
+    // ============================================================
+    const t = {
+      ar: {
+        back: 'الصفحة الرئيسية',
+        hero_badge: 'المكتبة الرقمية والمراجع العلمية',
+        page_title: 'مكتبة <span>المراجع والكتب العلمية</span>',
+        page_subtitle: 'مكتبة إلكترونية متخصصة تضم أحدث الكتب، الأدلة الإرشادية، والأبحاث في علوم الاستزراع السمكي، الهندسة، والتغذية.',
+        cat_all: 'جميع التخصصات والمجالات',
+        cat_systems: 'أنظمة الاستزراع (RAS & Biofloc & Cages)',
+        cat_production: 'إنتاج وإدارة المزارع المائية',
+        cat_disease: 'أمراض الأسماك والأمان الحيوي',
+        cat_nutrition: 'تغذية وأعلاف الكائنات المائية',
+        btn_read: 'قراءة وتحميل المرجع',
+        lbl_views: 'مرات الاطلاع والتحميل',
+        empty_title: 'لم يتم العثور على كتب تطابق بحثك',
+        empty_sub: 'يرجى تجربة كلمات بحث أخرى أو تغيير تصنيف التصفية.',
+        footer_home: 'الصفحة الرئيسية'
+      },
+      en: {
+        back: 'Home',
+        hero_badge: 'Aquaculture Digital Library',
+        page_title: 'Scientific <span>Library & References</span>',
+        page_subtitle: 'A dedicated electronic repository of scientific books, field manuals, and research in aquaculture engineering, fish health, and nutrition.',
+        cat_all: 'All Categories & Fields',
+        cat_systems: 'Aquaculture Systems (RAS & Biofloc & Cages)',
+        cat_production: 'Aquaculture Production & Farm Management',
+        cat_disease: 'Aquatic Diseases & Biosecurity',
+        cat_nutrition: 'Aquafeed Nutrition & Physiology',
+        btn_read: 'Read & Download PDF',
+        lbl_views: 'Views & Downloads',
+        empty_title: 'No matching books found',
+        empty_sub: 'Try using different keywords or selecting another category.',
+        footer_home: 'Home'
+      }
+    };
+
+    // ============================================================
+    // BOOKS DATABASE
+    // ============================================================
+    const books = [
+      {
+        titleAr: "إنتاج الغذاء الحي في المفرخات المائية (Live Food Production)",
+        titleEn: "Live Food Production in Aquaculture Hatcheries",
+        categoryKey: "nutrition",
+        categoryAr: "تغذية وأعلاف الكائنات المائية",
+        categoryEn: "Aquafeed & Nutrition",
+        file: "https://drive.google.com/file/d/17pmrGY_fAruf315EE1Wtqi4bvRowdE39/view?usp=drive_link",
+        views: 310
+      },
+      {
+        titleAr: "دليل الزراعة المائية التكاملية (Aquaponics Food Production)",
+        titleEn: "Aquaponics: Small-scale Hydroponic & Fish Farming",
+        categoryKey: "systems",
+        categoryAr: "أنظمة الاستزراع المائي",
+        categoryEn: "Aquaculture Systems",
+        file: "https://drive.google.com/file/d/1AjJfZvgG0mn69ix7Di8nHuWP5UaxM9s1/view?usp=drive_link",
+        views: 427
+      },
+      {
+        titleAr: "استزراع وإنتاج سمك البلطي النيلي (Tilapia Culture)",
+        titleEn: "Tilapia Culture: Comprehensive Production Guide",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع المائية",
+        categoryEn: "Aquaculture Production",
+        file: "https://drive.google.com/file/d/1AmH_Txg76rbvsF9Bqbv95OEQfba1OUSF/view?usp=drive_link",
+        views: 119
+      },
+      {
+        titleAr: "دليل إنتاج وتفريخ القاروص والدنيس (Seabass & Seabream Manual)",
+        titleEn: "Manual for Hatchery Production of Seabass & Gilthead Seabream",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع المائية",
+        categoryEn: "Aquaculture Production",
+        file: "https://drive.google.com/file/d/1AzbGwuWIv3-Dj-umXn6T7gdD3KL0sPDm/view?usp=drive_link",
+        views: 236
+      },
+      {
+        titleAr: "تغذية الأسماك المتقدمة - الطبعة الرابعة (Fish Nutrition 4th Edition)",
+        titleEn: "Fish Nutrition (4th Edition) - Standard Academic Reference",
+        categoryKey: "nutrition",
+        categoryAr: "تغذية وأعلاف الكائنات المائية",
+        categoryEn: "Aquafeed & Nutrition",
+        file: "https://drive.google.com/file/d/1AlQDZTPs28QFyY2zJ4FNNVrepJIpy-e3/view?usp=drive_link",
+        views: 810
+      },
+      {
+        titleAr: "الأمراض المائية والتشخيص البيطري (Aquatic Diseases)",
+        titleEn: "Aquatic Animal Diseases & Health Management",
+        categoryKey: "disease",
+        categoryAr: "أمراض الأسماك والأمان الحيوي",
+        categoryEn: "Aquatic Diseases & Biosecurity",
+        file: "https://drive.google.com/file/d/1MzjJNFmTYFQnqjg5AnldNb5Tysz6f0PA/view?usp=drive_link",
+        views: 397
+      },
+      {
+        titleAr: "استزراع البلطي في الأقفاص العائمة (Net Cage Culture of Tilapia)",
+        titleEn: "Net Cage Culture of Tilapia: Design & Operation",
+        categoryKey: "systems",
+        categoryAr: "أنظمة الاستزراع المائي",
+        categoryEn: "Aquaculture Systems",
+        file: "https://drive.google.com/file/d/17MRgqrUI0Lmf-bMvWLG1nB1j7Un9iY4X/view?usp=drive_link",
+        views: 779
+      },
+      {
+        titleAr: "أساسيات أنظمة الاستزراع التكاملي (Integrated Farming Systems)",
+        titleEn: "Basics of Integrated Agri-Aquaculture Farming Systems",
+        categoryKey: "systems",
+        categoryAr: "أنظمة الاستزراع المائي",
+        categoryEn: "Aquaculture Systems",
+        file: "https://drive.google.com/file/d/1hKwWaKN4v2XK2-7wBePF7dEOTyLaV1xw/view?usp=drive_link",
+        views: 654
+      },
+      {
+        titleAr: "دليل استزراع الجمبري النمر الأسود (Black Tiger Shrimp Manual)",
+        titleEn: "Manual for Black Tiger Shrimp (Penaeus monodon)",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع المائية",
+        categoryEn: "Aquaculture Production",
+        file: "https://drive.google.com/file/d/1AFrwGmJzDprjdrQ-Tu2FKOQFxmJXKDQB/view?usp=drive_link",
+        views: 123
+      },
+      {
+        titleAr: "استزراع القشريات والرخويات في الولايات المتحدة",
+        titleEn: "Crustacean and Mollusk Aquaculture in the United States",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع المائية",
+        categoryEn: "Aquaculture Production",
+        file: "https://drive.google.com/file/d/1lKs3uzi01JosSSPYep1WxEHFcrDV6Asx/view?usp=drive_link",
+        views: 199
+      },
+      {
+        titleAr: "محاكاة ونمذجة الاستزراع التجاري (Simulation of Commercial Aquaculture)",
+        titleEn: "A Simulation Model of Commercial Aquaculture Systems",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع المائية",
+        categoryEn: "Aquaculture Production",
+        file: "https://drive.google.com/file/d/1dMba4OjLIngpkA656WQXFrj2SWMbGHuA/view?usp=drive_link",
+        views: 543
+      },
+      {
+        titleAr: "استزراع الأقفاص السمكية - الطبعة الثالثة (Cage Aquaculture)",
+        titleEn: "Cage Aquaculture (Third Edition)",
+        categoryKey: "systems",
+        categoryAr: "أنظمة الاستزراع المائي",
+        categoryEn: "Aquaculture Systems",
+        file: "https://drive.google.com/file/d/1OzOSDFwxd6a9V1bxXoEHjjojzn5tIZq7/view?usp=drive_link",
+        views: 432
+      },
+      {
+        titleAr: "تأثير المكملات الغذائية على نمو ومناعة الأسماك والقشريات",
+        titleEn: "Effect of Dietary Supplementation on Growth & Immunity",
+        categoryKey: "nutrition",
+        categoryAr: "تغذية وأعلاف الكائنات المائية",
+        categoryEn: "Aquafeed & Nutrition",
+        file: "https://drive.google.com/file/d/1cQH6ygCPrmm0IST1aScTjzhnK0Hu8eNd/view?usp=drive_link",
+        views: 275
+      },
+      {
+        titleAr: "مستخلصات الطحالب البحرية وتطبيقاتها في الأعلاف",
+        titleEn: "Marine Algae Extracts: Processes, Products & Applications",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع المائية",
+        categoryEn: "Aquaculture Production",
+        file: "https://drive.google.com/file/d/1MOUOD4qdX0vhK6B4x1-WV5u7Jkq55440/view?usp=drive_link",
+        views: 689
+      },
+      {
+        titleAr: "الاستزراع الحديث في المناطق الساحلية (Modern Coastal Aquaculture)",
+        titleEn: "Modern Aquaculture in the Coastal Zone: Lessons & Opportunities",
+        categoryKey: "systems",
+        categoryAr: "أنظمة الاستزراع المائي",
+        categoryEn: "Aquaculture Systems",
+        file: "https://drive.google.com/file/d/1kFXqmlUk4hrVV6wf2hp-O-wWFGlkWGC5/view?usp=drive_link",
+        views: 512
+      },
+      {
+        titleAr: "دليل أفضل الممارسات الإدارية لمزارع الجمبري الأبيض الفانامي",
+        titleEn: "Best Management Practices for White Shrimp Farming (Vannamei)",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع المائية",
+        categoryEn: "Aquaculture Production",
+        file: "https://drive.google.com/file/d/17jnsIXSkXM_-dgLI744Y9-3uMw3xpq0A/view?usp=drive_link",
+        views: 743
+      },
+      {
+        titleAr: "أمراض أسماك المبروك والعائلة الشبوطية (Diseases of Carp)",
+        titleEn: "Diseases of Carp and Other Cyprinid Fishes",
+        categoryKey: "disease",
+        categoryAr: "أمراض الأسماك والأمان الحيوي",
+        categoryEn: "Aquatic Diseases & Biosecurity",
+        file: "https://drive.google.com/file/d/1XAqm5Hb1-_67ON2wAljCxdffO-1vrahi/view?usp=drive_link",
+        views: 398
+      },
+      {
+        titleAr: "دليل أنظمة تدوير المياه والبيوفلوك (Manual of RAS & Biofloc)",
+        titleEn: "Technical Manual for RAS & Biofloc Water Technology",
+        categoryKey: "systems",
+        categoryAr: "أنظمة الاستزراع المائي",
+        categoryEn: "Aquaculture Systems",
+        file: "https://drive.google.com/file/d/121ewjRuJVZW4VDC1vZHUpx_OHN-49u85/view?usp=drive_link",
+        views: 267
+      },
+      {
+        titleAr: "تقنية البيوفلوك لمزارع الجمبري المغلقة (Biofloc Indoor Shrimp)",
+        titleEn: "Biofloc for Indoor Shrimp Farming (2nd Edition)",
+        categoryKey: "systems",
+        categoryAr: "أنظمة الاستزراع المائي",
+        categoryEn: "Aquaculture Systems",
+        file: "https://drive.google.com/file/d/1qNG5XAoasC_urj_w69hCEH3NxSugGB_C/view?usp=drive_link",
+        views: 267
+      },
+      {
+        titleAr: "تأثير التغير المناخي على أمراض أسماك الأقفاص العائمة",
+        titleEn: "Climate Change on Diseases & Disorders in Cage Culture",
+        categoryKey: "disease",
+        categoryAr: "أمراض الأسماك والأمان الحيوي",
+        categoryEn: "Aquatic Diseases & Biosecurity",
+        file: "https://drive.google.com/file/d/1g83G3BOT9PhGNWazUEI11g0R-pn1-4S5/view?usp=drive_link",
+        views: 267
+      },
+      {
+        titleAr: "أمراض طائفة جمبري البينيدات (Diseases of Penaeid Shrimps)",
+        titleEn: "Lightner: Diseases of Penaeid Shrimps Diagnostic Guide",
+        categoryKey: "disease",
+        categoryAr: "أمراض الأسماك والأمان الحيوي",
+        categoryEn: "Aquatic Diseases & Biosecurity",
+        file: "https://drive.google.com/file/d/1zDfljBsdtSocpcxUBPanlz1mStP73AlS/view?usp=drive_link",
+        views: 267
+      },
+      {
+        titleAr: "تشخيص وعلاج أمراض الأسماك - إدوارد نوجا (Edward J. Noga)",
+        titleEn: "Fish Disease: Diagnosis and Treatment (Edward J. Noga)",
+        categoryKey: "disease",
+        categoryAr: "أمراض الأسماك والأمان الحيوي",
+        categoryEn: "Aquatic Diseases & Biosecurity",
+        file: "https://drive.google.com/file/d/1s9e5ZVDQWHKSGdot7o8BO6zbWs5mQQkr/view?usp=drive_link",
+        views: 267
+      },
+      {
+        titleAr: "المذكرة الإرشادية لأمراض الأسماك (Fish Diseases Manual)",
+        titleEn: "Fish Pathology & Disease Diagnosis Handbook",
+        categoryKey: "disease",
+        categoryAr: "أمراض الأسماك والأمان الحيوي",
+        categoryEn: "Aquatic Diseases & Biosecurity",
+        file: "https://drive.google.com/file/d/1xMkPWSi1G2sDhVfpW3ETO3lzUawcIdTd/view?usp=drive_link",
+        views: 267
+      },
+      {
+        titleAr: "الهندسة وتصميم أنظمة تدوير المياه (RAS Engineering Yellow Book)",
+        titleEn: "Recirculating Aquaculture Systems (RAS) Engineering Yellow Book",
+        categoryKey: "systems",
+        categoryAr: "أنظمة الاستزراع المائي",
+        categoryEn: "Aquaculture Systems",
+        file: "https://drive.google.com/file/d/18gkQLU7fWAdrcXHZOflti7cVcAycJ3-I/view?usp=drive_link",
+        views: 267
+      }
+    ];
+
+    // ============================================================
+    // STATE & LOGIC
+    // ============================================================
+    let currentLang = localStorage.getItem('aqasoft_lang') || 'ar';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('aqasoft_lang', lang);
+
+      const isAr = lang === 'ar';
+      document.documentElement.lang = lang;
+      document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+      document.body.classList.toggle('ltr', !isAr);
+
+      document.getElementById('lang-toggle').textContent = isAr ? 'English' : 'عربي';
+
+      const backIcon = document.getElementById('back-icon');
+      if (backIcon) {
+        backIcon.className = isAr ? 'fa-solid fa-arrow-right' : 'fa-solid fa-arrow-left';
+      }
+
+      // Translate tagged elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[lang] && t[lang][key] !== undefined) {
+          el.innerHTML = t[lang][key];
+        }
+      });
+
+      // Translate search placeholder
+      const searchInput = document.getElementById('searchInput');
+      searchInput.placeholder = isAr ? searchInput.getAttribute('data-placeholder-ar') : searchInput.getAttribute('data-placeholder-en');
+
+      // Retranslate select options
+      document.querySelectorAll('#categoryFilter option[data-i18n]').forEach(opt => {
+        const key = opt.getAttribute('data-i18n');
+        if (key && t[lang][key]) opt.textContent = t[lang][key];
+      });
+
+      displayBooks();
+    }
+
+    document.getElementById('lang-toggle').addEventListener('click', () => {
+      applyLang(currentLang === 'ar' ? 'en' : 'ar');
+    });
+
+    // ============================================================
+    // DISPLAY BOOKS
+    // ============================================================
+    function displayBooks() {
+      const bookContainer = document.getElementById("bookList");
+      const searchTerm = document.getElementById("searchInput").value.trim().toLowerCase();
+      const selectedCategory = document.getElementById("categoryFilter").value;
+      const lang = currentLang;
+      const isAr = lang === 'ar';
+
+      bookContainer.innerHTML = "";
+
+      const filtered = books.filter(book => {
+        const titleMatch = (book.titleAr.toLowerCase().includes(searchTerm)) || (book.titleEn.toLowerCase().includes(searchTerm));
+        const catMatch = selectedCategory === "all" || book.categoryKey === selectedCategory;
+        return titleMatch && catMatch;
+      });
+
+      if (filtered.length === 0) {
+        bookContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-book-open"></i>
+            <h3>${t[lang].empty_title}</h3>
+            <p>${t[lang].empty_sub}</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(book => {
+        const title = isAr ? book.titleAr : book.titleEn;
+        const category = isAr ? book.categoryAr : book.categoryEn;
+
+        const card = document.createElement("div");
+        card.className = "book-card";
+
+        card.innerHTML = `
+          <div class="book-header">
+            <div class="category-pill">
+              <i class="fa-solid fa-bookmark" style="color: var(--color-aqua);"></i>
+              ${category}
+            </div>
+            <h3 class="book-title">${title}</h3>
+            <div class="book-meta-bar">
+              <span class="download-count">
+                <i class="fa-solid fa-arrow-down-long"></i>
+                ${book.views} ${t[lang].lbl_views}
+              </span>
+              <span style="font-size: 0.75rem; color: #94a3b8;"><i class="fa-solid fa-file-pdf"></i> PDF</span>
+            </div>
+          </div>
+          <div class="book-footer">
+            <a href="${book.file}" target="_blank" rel="noopener noreferrer" class="btn-read-download">
+              <i class="fa-solid fa-book-open-reader"></i>
+              <span>${t[lang].btn_read}</span>
+            </a>
+          </div>
+        `;
+
+        bookContainer.appendChild(card);
+      });
+    }
+
+    document.getElementById("searchInput").addEventListener("input", displayBooks);
+    document.getElementById("categoryFilter").addEventListener("change", displayBooks);
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Init
+    applyLang(currentLang);
+  </script>
+</body>
+</html>
