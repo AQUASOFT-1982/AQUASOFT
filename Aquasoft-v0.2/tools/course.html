@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#1F4B5D">
+  <link rel="apple-touch-icon" href="../icons/icon-192x192.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQUASoft | دورات الاستزراع المائي</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ===== Design Tokens (matching AQUASoft theme) ===== */
+    :root {
+      --color-ocean-blue: #1F4B5D;
+      --color-aqua: #68CFEB;
+      --color-soft-white: #FAFAFA;
+      --color-charcoal: #1F1E19;
+      --gradient-primary: linear-gradient(135deg, #1F4B5D 0%, #153644 100%);
+      --gradient-accent: linear-gradient(135deg, #68CFEB 0%, #4cb8d6 100%);
+      --shadow-sm: 0 4px 6px rgba(31, 75, 93, 0.05);
+      --shadow-md: 0 10px 20px rgba(31, 75, 93, 0.08);
+      --shadow-lg: 0 20px 40px rgba(31, 75, 93, 0.12);
+      --shadow-glow: 0 0 20px rgba(104, 207, 235, 0.4);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--color-soft-white);
+      color: var(--color-charcoal);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body.ltr {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    a { text-decoration: none; color: inherit; transition: var(--transition); }
+    ul { list-style: none; }
+
+    /* ===== Navbar ===== */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1rem 0;
+      transition: var(--transition);
+      background: transparent;
+    }
+
+    .navbar.scrolled {
+      background: rgba(250, 250, 250, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+      padding: 0.7rem 0;
+    }
+
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--color-ocean-blue);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .back-btn:hover { opacity: 0.75; }
+
+    #lang-toggle {
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1.5px solid var(--color-ocean-blue);
+      background: transparent;
+      color: var(--color-ocean-blue);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      letter-spacing: 0.3px;
+    }
+
+    #lang-toggle:hover {
+      background: var(--color-ocean-blue);
+      color: #fff;
+    }
+
+    /* ===== Page Hero ===== */
+    .page-hero {
+      background: var(--gradient-primary);
+      padding: 8rem 5% 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -20%;
+      width: 60%;
+      height: 200%;
+      background: radial-gradient(ellipse, rgba(104,207,235,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%; right: -10%;
+      width: 50%;
+      height: 150%;
+      background: radial-gradient(ellipse, rgba(104,207,235,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(104, 207, 235, 0.15);
+      border: 1px solid rgba(104, 207, 235, 0.3);
+      color: var(--color-aqua);
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.2rem;
+    }
+
+    .page-hero h1 {
+      color: #fff;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .page-hero h1 span {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-hero p {
+      color: rgba(255,255,255,0.75);
+      font-size: 1.1rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    /* ===== Main Content Layout ===== */
+    .main-content {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2.5rem 5% 5rem;
+    }
+
+    /* ===== Search & Filter Controls ===== */
+    .controls-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 1.5rem 2rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(31, 75, 93, 0.06);
+      margin-bottom: 2.5rem;
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search-box {
+      flex: 2;
+      min-width: 260px;
+      position: relative;
+    }
+
+    .search-box i {
+      position: absolute;
+      top: 50%;
+      right: 1.2rem;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 1rem;
+    }
+
+    html[dir="ltr"] .search-box i {
+      right: auto;
+      left: 1.2rem;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.85rem 3rem 0.85rem 1.2rem;
+      border-radius: 50px;
+      border: 1.5px solid #e2e8f0;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--color-charcoal);
+      background: var(--color-soft-white);
+      transition: var(--transition);
+      outline: none;
+    }
+
+    html[dir="ltr"] .search-box input {
+      padding: 0.85rem 1.2rem 0.85rem 3rem;
+    }
+
+    .search-box input:focus {
+      border-color: var(--color-aqua);
+      box-shadow: 0 0 0 3px rgba(104, 207, 235, 0.2);
+      background: #fff;
+    }
+
+    .filter-box {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .filter-box select {
+      width: 100%;
+      padding: 0.85rem 1.4rem;
+      border-radius: 50px;
+      border: 1.5px solid #e2e8f0;
+      font-size: 0.92rem;
+      font-family: inherit;
+      color: var(--color-charcoal);
+      background: var(--color-soft-white);
+      transition: var(--transition);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .filter-box select:focus {
+      border-color: var(--color-aqua);
+      box-shadow: 0 0 0 3px rgba(104, 207, 235, 0.2);
+    }
+
+    /* ===== Courses Grid ===== */
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.8rem;
+    }
+
+    .course-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(31, 75, 93, 0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .course-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(104, 207, 235, 0.4);
+    }
+
+    .course-header {
+      padding: 1.5rem 1.5rem 0.5rem;
+    }
+
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(31, 75, 93, 0.08);
+      color: var(--color-ocean-blue);
+      margin-bottom: 0.8rem;
+    }
+
+    .course-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--color-ocean-blue);
+      line-height: 1.4;
+      margin-bottom: 0.5rem;
+    }
+
+    .course-source-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 0.8rem;
+      padding-top: 0.8rem;
+      border-top: 1px dashed #e2e8f0;
+    }
+
+    .source-tag {
+      font-weight: 700;
+      color: var(--color-ocean-blue);
+      background: #f1f5f9;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+    }
+
+    .course-footer {
+      padding: 1.2rem 1.5rem 1.5rem;
+    }
+
+    .btn-watch {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      width: 100%;
+      padding: 0.8rem 1.2rem;
+      background: var(--gradient-primary);
+      color: #fff;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-watch:hover {
+      background: var(--gradient-accent);
+      color: var(--color-ocean-blue);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 1rem;
+      color: #64748b;
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      color: #cbd5e1;
+      margin-bottom: 1rem;
+    }
+
+    /* ===== Footer ===== */
+    .page-footer {
+      background: var(--gradient-primary);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .page-footer a { color: var(--color-aqua); }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo">
+        <img src="../images/in ob.png" alt="AQUASoft Logo">
+      </a>
+      <div class="nav-right">
+        <a href="../index.html" class="back-btn" id="back-link">
+          <i class="fa-solid fa-arrow-right" id="back-icon"></i>
+          <span data-i18n="back">الصفحة الرئيسية</span>
+        </a>
+        <button id="lang-toggle">English</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="hero-badge">
+      <i class="fa-solid fa-graduation-cap"></i>
+      <span data-i18n="hero_badge">أكاديمية ودورات الاستزراع المائي</span>
+    </div>
+    <h1 data-i18n="page_title">دورات <span>الاستزراع المائي والتدريب</span></h1>
+    <p data-i18n="page_subtitle">مكتبة رقمية شاملة من الدورات التدريبية المعتمدة والمحاضرات العلمية المتخصصة في نظم الاستزراع، التغذية، والأمان الحيوي.</p>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Search & Filter Controls -->
+    <div class="controls-card">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="ابحث باسم الدورة أو الكلمات المفتاحية..." data-placeholder-ar="ابحث باسم الدورة أو الكلمات المفتاحية..." data-placeholder-en="Search by course title or keywords...">
+      </div>
+
+      <div class="filter-box">
+        <select id="categoryFilter">
+          <option value="all" data-i18n="cat_all">جميع الفئات والتخصصات</option>
+          <option value="systems" data-i18n="cat_systems">أنظمة الاستزراع المائي (RAS & Aquaponics)</option>
+          <option value="production" data-i18n="cat_production">إنتاج وإدارة المزارع السمكية</option>
+          <option value="disease" data-i18n="cat_disease">أمراض الأسماك والأمان الحيوي</option>
+          <option value="nutrition" data-i18n="cat_nutrition">تغذية الأسماك وإدارة الأعلاف</option>
+          <option value="other" data-i18n="cat_other">التغير المناخي والاستدامة</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Courses Grid -->
+    <div class="courses-grid" id="courseList">
+      <!-- Dynamically filled by JavaScript -->
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <p>&copy; 2024 AQUASoft &mdash; <a href="../index.html" data-i18n="footer_home">الصفحة الرئيسية</a> | Integrated Aquaculture Platform</p>
+  </footer>
+
+  <script>
+    // ============================================================
+    // TRANSLATIONS DICTIONARY
+    // ============================================================
+    const t = {
+      ar: {
+        back: 'الصفحة الرئيسية',
+        hero_badge: 'أكاديمية ودورات الاستزراع المائي',
+        page_title: 'دورات <span>الاستزراع المائي والتدريب</span>',
+        page_subtitle: 'مكتبة رقمية شاملة من الدورات التدريبية المعتمدة والمحاضرات العلمية المتخصصة في نظم الاستزراع، التغذية، والأمان الحيوي.',
+        cat_all: 'جميع الفئات والتخصصات',
+        cat_systems: 'أنظمة الاستزراع المائي (RAS & Aquaponics)',
+        cat_production: 'إنتاج وإدارة المزارع السمكية',
+        cat_disease: 'أمراض الأسماك والأمان الحيوي',
+        cat_nutrition: 'تغذية الأسماك وإدارة الأعلاف',
+        cat_other: 'التغير المناخي والاستدامة',
+        btn_watch: 'شاهد الدورة الآن',
+        lbl_source: 'الجهة المنظمة:',
+        empty_title: 'لم يتم العثور على دورات تطابق بحثك',
+        empty_sub: 'يرجى تجربة كلمات بحث أخرى أو تغيير الفئة المختارة.',
+        footer_home: 'الصفحة الرئيسية'
+      },
+      en: {
+        back: 'Home',
+        hero_badge: 'Aquaculture Academy & Courses',
+        page_title: 'Aquaculture <span>Courses & Training</span>',
+        page_subtitle: 'A comprehensive digital library of accredited courses, technical workshops, and masterclasses in systems, nutrition, and aquatic biosecurity.',
+        cat_all: 'All Categories & Disciplines',
+        cat_systems: 'Aquaculture Systems (RAS & Aquaponics)',
+        cat_production: 'Aquaculture Production & Management',
+        cat_disease: 'Aquatic Health & Biosecurity',
+        cat_nutrition: 'Fish Nutrition & Feed Management',
+        cat_other: 'Climate Change & Sustainability',
+        btn_watch: 'Watch Course Now',
+        lbl_source: 'Provider:',
+        empty_title: 'No matching courses found',
+        empty_sub: 'Try adjusting your search keywords or switching category filters.',
+        footer_home: 'Home'
+      }
+    };
+
+    // ============================================================
+    // COURSES DATABASE
+    // ============================================================
+    const courses = [
+      {
+        titleAr: "أساسيات الاستزراع المائي (Introduction to Aquaculture)",
+        titleEn: "Basics of Aquaculture: Introduction",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع السمكية",
+        categoryEn: "Aquaculture Production",
+        file: "https://www.classcentral.com/classroom/youtube-aquaculture-introduction-to-aquaculture-179653",
+        source: "Class Central"
+      },
+      {
+        titleAr: "التحسين الوراثي والتفريخ في المزارع المائية",
+        titleEn: "Aquaculture Breeding and Genetics",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع السمكية",
+        categoryEn: "Aquaculture Production",
+        file: "https://elearning.fao.org/course/view.php?id=1259",
+        source: "FAO"
+      },
+      {
+        titleAr: "الجاهزية للطوارئ وإدارة تفشي الأمراض في المزارع",
+        titleEn: "Emergency Preparedness for Disease Outbreaks",
+        categoryKey: "disease",
+        categoryAr: "أمراض الأسماك والأمان الحيوي",
+        categoryEn: "Aquatic Health & Biosecurity",
+        file: "https://elearning.fao.org/course/view.php?id=1197",
+        source: "FAO"
+      },
+      {
+        titleAr: "مسار الأمان الحيوي وإدارة المخاطر المرضية في سلاسل الإمداد",
+        titleEn: "Pathway to Aquaculture Biosecurity & Disease Risk",
+        categoryKey: "disease",
+        categoryAr: "أمراض الأسماك والأمان الحيوي",
+        categoryEn: "Aquatic Health & Biosecurity",
+        file: "https://elearning.fao.org/course/view.php?id=979",
+        source: "FAO"
+      },
+      {
+        titleAr: "مؤشرات رعاية وصحة سمك البلطي النيلي",
+        titleEn: "Tilapia Welfare Indicators",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع السمكية",
+        categoryEn: "Aquaculture Production",
+        file: "https://enterprise.faifarms.com/catalog/tilapia-welfare-indicators",
+        source: "FAI Farms"
+      },
+      {
+        titleAr: "مؤشرات رعاية مبروك الحشائش (Grass Carp)",
+        titleEn: "Grass Carp Welfare Indicators",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع السمكية",
+        categoryEn: "Aquaculture Production",
+        file: "https://enterprise.faifarms.com/catalog/4e23227c9ec3c027661920f1385fc832",
+        source: "FAI Farms"
+      },
+      {
+        titleAr: "مؤشرات جودة ورعاية استزراع الجمبري / الروبيان",
+        titleEn: "Shrimp Welfare & Operational Indicators",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع السمكية",
+        categoryEn: "Aquaculture Production",
+        file: "https://enterprise.faifarms.com/catalog/shrimp-welfare-indicators-2023-en",
+        source: "FAI Farms"
+      },
+      {
+        titleAr: "بيئة البلطي وجودة المياه في الأحواض",
+        titleEn: "Tilapia Environment and Water Quality Welfare",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع السمكية",
+        categoryEn: "Aquaculture Production",
+        file: "https://enterprise.faifarms.com/catalog/tilapia-environmental-welfare",
+        source: "FAI Farms"
+      },
+      {
+        titleAr: "سلوك البلطي: من التغذية إلى الحصاد الإنساني",
+        titleEn: "Tilapia Behaviour & Welfare: Foraging to Harvest",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع السمكية",
+        categoryEn: "Aquaculture Production",
+        file: "https://enterprise.faifarms.com/catalog/tilapia-behaviour-welfare-2023-en",
+        source: "FAI Farms"
+      },
+      {
+        titleAr: "مؤشرات الصحة والأمراض لأسماك البلطي",
+        titleEn: "Tilapia Health & Clinical Welfare Indicators",
+        categoryKey: "disease",
+        categoryAr: "أمراض الأسماك والأمان الحيوي",
+        categoryEn: "Aquatic Health & Biosecurity",
+        file: "https://enterprise.faifarms.com/catalog/tilapia-health-welfare-2023-en",
+        source: "FAI Farms"
+      },
+      {
+        titleAr: "دورة إدارة جودة المياه المتقدمة (Water Quality)",
+        titleEn: "Advanced Water Quality Management",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع السمكية",
+        categoryEn: "Aquaculture Production",
+        file: "https://app.blueplanetacademy.com/courses/5c4bd047-4fc9-4b4b-a41d-54f22d3cea42/variants/e31e79b7-218c-46d1-8c75-e9409e83b4e5",
+        source: "Blue Planet"
+      },
+      {
+        titleAr: "استزراع المحار والرخويات البحرية (Oyster Culture)",
+        titleEn: "Online Oyster & Bivalve Culture Course",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع السمكية",
+        categoryEn: "Aquaculture Production",
+        file: "https://oyster-culture.teachable.com/p/online-oyster-course",
+        source: "University of Florida"
+      },
+      {
+        titleAr: "التغير المناخي وتأثيره على قطاع المصايد والاستزراع",
+        titleEn: "Climate Change Adaptation in Fisheries & Aquaculture",
+        categoryKey: "other",
+        categoryAr: "التغير المناخي والاستدامة",
+        categoryEn: "Climate & Sustainability",
+        file: "https://elearning.fao.org/course/view.php?id=579",
+        source: "FAO"
+      },
+      {
+        titleAr: "الزراعة التكاملية مع الأسماك (Aquaponics Systems)",
+        titleEn: "Aquaponics & Integrated Agri-Aquaculture",
+        categoryKey: "systems",
+        categoryAr: "أنظمة الاستزراع المائي",
+        categoryEn: "Aquaculture Systems",
+        file: "https://www.classcentral.com/course/food-science-zhaw-zurich-university-of-applied-sc-21911",
+        source: "ZHAW Zurich / Class Central"
+      },
+      {
+        titleAr: "تصميم وهندسة أنظمة الاستزراع المائي المكثف",
+        titleEn: "Aquaculture Systems Design & Technology",
+        categoryKey: "systems",
+        categoryAr: "أنظمة الاستزراع المائي",
+        categoryEn: "Aquaculture Systems",
+        file: "https://www.classcentral.com/course/food-science-zhaw-zurich-university-of-applied-sc-21911",
+        source: "Class Central"
+      },
+      {
+        titleAr: "طرق وأساليب تغذية الأسماك في المزارع",
+        titleEn: "Fish Feeding Methods & Best Practices",
+        categoryKey: "nutrition",
+        categoryAr: "تغذية الأسماك وإدارة الأعلاف",
+        categoryEn: "Fish Nutrition & Feed",
+        file: "https://youtu.be/mQKMt-TF9DU?si=JTTYtQcF_0e_IOhK",
+        source: "YouTube Academy"
+      },
+      {
+        titleAr: "إدارة التغذية ومعدلات التحويل الغذائي (FCR)",
+        titleEn: "Fish Feeding Management & FCR Optimization",
+        categoryKey: "nutrition",
+        categoryAr: "تغذية الأسماك وإدارة الأعلاف",
+        categoryEn: "Fish Nutrition & Feed",
+        file: "https://youtu.be/BI8tMcU7POk?si=skMRpaLmKtLAMsYy",
+        source: "YouTube Academy"
+      },
+      {
+        titleAr: "الإدارة التشغيلية الشاملة لمزارع الأسماك",
+        titleEn: "Comprehensive Fish Farm Management",
+        categoryKey: "production",
+        categoryAr: "إنتاج وإدارة المزارع السمكية",
+        categoryEn: "Aquaculture Production",
+        file: "https://youtu.be/bCmuOqq-km8?si=0X98pKiY3TpYyjLm",
+        source: "YouTube Academy"
+      },
+      {
+        titleAr: "تطبيق بروتوكولات الأمان الحيوي والوقاية في المزارع",
+        titleEn: "Application of Biosecurity in Aquaculture Farms",
+        categoryKey: "disease",
+        categoryAr: "أمراض الأسماك والأمان الحيوي",
+        categoryEn: "Aquatic Health & Biosecurity",
+        file: "https://youtu.be/srap-zxXmfM?si=yz84rvQvGWm6zcUm",
+        source: "YouTube Academy"
+      },
+      {
+        titleAr: "إدارة وتغذية مزارع الجمبري والروبيان المكثف",
+        titleEn: "Shrimp Feed & Feeding Management",
+        categoryKey: "nutrition",
+        categoryAr: "تغذية الأسماك وإدارة الأعلاف",
+        categoryEn: "Fish Nutrition & Feed",
+        file: "https://youtu.be/FZ1uuUZAVfk?si=Il_g3J39RfopwKuR",
+        source: "YouTube Academy"
+      }
+    ];
+
+    // ============================================================
+    // STATE & LOGIC
+    // ============================================================
+    let currentLang = localStorage.getItem('aqasoft_lang') || 'ar';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('aqasoft_lang', lang);
+
+      const isAr = lang === 'ar';
+      document.documentElement.lang = lang;
+      document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+      document.body.classList.toggle('ltr', !isAr);
+
+      document.getElementById('lang-toggle').textContent = isAr ? 'English' : 'عربي';
+
+      const backIcon = document.getElementById('back-icon');
+      if (backIcon) {
+        backIcon.className = isAr ? 'fa-solid fa-arrow-right' : 'fa-solid fa-arrow-left';
+      }
+
+      // Translate tagged elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[lang] && t[lang][key] !== undefined) {
+          el.innerHTML = t[lang][key];
+        }
+      });
+
+      // Translate search placeholder
+      const searchInput = document.getElementById('searchInput');
+      searchInput.placeholder = isAr ? searchInput.getAttribute('data-placeholder-ar') : searchInput.getAttribute('data-placeholder-en');
+
+      // Retranslate select options
+      document.querySelectorAll('#categoryFilter option[data-i18n]').forEach(opt => {
+        const key = opt.getAttribute('data-i18n');
+        if (key && t[lang][key]) opt.textContent = t[lang][key];
+      });
+
+      displayCourses();
+    }
+
+    document.getElementById('lang-toggle').addEventListener('click', () => {
+      applyLang(currentLang === 'ar' ? 'en' : 'ar');
+    });
+
+    // ============================================================
+    // DISPLAY COURSES
+    // ============================================================
+    function displayCourses() {
+      const courseContainer = document.getElementById("courseList");
+      const searchTerm = document.getElementById("searchInput").value.trim().toLowerCase();
+      const selectedCategory = document.getElementById("categoryFilter").value;
+      const lang = currentLang;
+      const isAr = lang === 'ar';
+
+      courseContainer.innerHTML = "";
+
+      const filtered = courses.filter(course => {
+        const titleMatch = (course.titleAr.toLowerCase().includes(searchTerm)) || (course.titleEn.toLowerCase().includes(searchTerm));
+        const catMatch = selectedCategory === "all" || course.categoryKey === selectedCategory;
+        return titleMatch && catMatch;
+      });
+
+      if (filtered.length === 0) {
+        courseContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-folder-open"></i>
+            <h3>${t[lang].empty_title}</h3>
+            <p>${t[lang].empty_sub}</p>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(course => {
+        const title = isAr ? course.titleAr : course.titleEn;
+        const category = isAr ? course.categoryAr : course.categoryEn;
+
+        const card = document.createElement("div");
+        card.className = "course-card";
+
+        card.innerHTML = `
+          <div class="course-header">
+            <div class="category-badge">
+              <i class="fa-solid fa-layer-group" style="color: var(--color-aqua);"></i>
+              ${category}
+            </div>
+            <h3 class="course-title">${title}</h3>
+            <div class="course-source-bar">
+              <i class="fa-solid fa-building-columns"></i>
+              <span>${t[lang].lbl_source}</span>
+              <span class="source-tag">${course.source}</span>
+            </div>
+          </div>
+          <div class="course-footer">
+            <a href="${course.file}" target="_blank" rel="noopener noreferrer" class="btn-watch">
+              <i class="fa-solid fa-play"></i>
+              <span>${t[lang].btn_watch}</span>
+            </a>
+          </div>
+        `;
+
+        courseContainer.appendChild(card);
+      });
+    }
+
+    document.getElementById("searchInput").addEventListener("input", displayCourses);
+    document.getElementById("categoryFilter").addEventListener("change", displayCourses);
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Init
+    applyLang(currentLang);
+  </script>
+</body>
+</html>

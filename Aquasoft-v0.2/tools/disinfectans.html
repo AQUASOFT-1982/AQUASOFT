@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#1F4B5D">
+  <link rel="apple-touch-icon" href="../icons/icon-192x192.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQUASoft | حاسبة المطهرات</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ===== Design Tokens (matching AQUASoft theme) ===== */
+    :root {
+      --color-ocean-blue: #1F4B5D;
+      --color-aqua: #68CFEB;
+      --color-soft-white: #FAFAFA;
+      --color-charcoal: #1F1E19;
+      --gradient-primary: linear-gradient(135deg, #1F4B5D 0%, #153644 100%);
+      --gradient-accent: linear-gradient(135deg, #68CFEB 0%, #4cb8d6 100%);
+      --shadow-sm: 0 4px 6px rgba(31, 75, 93, 0.05);
+      --shadow-md: 0 10px 20px rgba(31, 75, 93, 0.08);
+      --shadow-lg: 0 20px 40px rgba(31, 75, 93, 0.12);
+      --shadow-glow: 0 0 20px rgba(104, 207, 235, 0.4);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --color-danger: #e53e3e;
+      --color-warning: #d97706;
+      --color-safe: #059669;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--color-soft-white);
+      color: var(--color-charcoal);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body.ltr {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    a { text-decoration: none; color: inherit; transition: var(--transition); }
+    ul { list-style: none; }
+
+    /* ===== Navbar ===== */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1rem 0;
+      transition: var(--transition);
+      background: transparent;
+    }
+
+    .navbar.scrolled {
+      background: rgba(250, 250, 250, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+      padding: 0.7rem 0;
+    }
+
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--color-ocean-blue);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .back-btn:hover { opacity: 0.75; }
+
+    #lang-toggle {
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1.5px solid var(--color-ocean-blue);
+      background: transparent;
+      color: var(--color-ocean-blue);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      letter-spacing: 0.3px;
+    }
+
+    #lang-toggle:hover {
+      background: var(--color-ocean-blue);
+      color: #fff;
+    }
+
+    /* ===== Page Hero ===== */
+    .page-hero {
+      background: var(--gradient-primary);
+      padding: 8rem 5% 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -20%;
+      width: 60%;
+      height: 200%;
+      background: radial-gradient(ellipse, rgba(104,207,235,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%; right: -10%;
+      width: 50%;
+      height: 150%;
+      background: radial-gradient(ellipse, rgba(104,207,235,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(104, 207, 235, 0.15);
+      border: 1px solid rgba(104, 207, 235, 0.3);
+      color: var(--color-aqua);
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.2rem;
+    }
+
+    .page-hero h1 {
+      color: #fff;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .page-hero h1 span {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-hero p {
+      color: rgba(255,255,255,0.75);
+      font-size: 1.1rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    /* ===== Main Content Layout ===== */
+    .main-content {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 3rem 5% 5rem;
+    }
+
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 950px) {
+      .two-columns {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== Cards Style ===== */
+    .card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 2.2rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(31, 75, 93, 0.06);
+      margin-bottom: 2rem;
+    }
+
+    .card-header-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.8rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid rgba(31, 75, 93, 0.08);
+    }
+
+    .card-icon {
+      width: 50px;
+      height: 50px;
+      background: var(--gradient-accent);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: var(--color-ocean-blue);
+      flex-shrink: 0;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .card-header-bar h2, .card-header-bar h3 {
+      font-size: 1.3rem;
+      color: var(--color-ocean-blue);
+      font-weight: 700;
+    }
+
+    .card-header-bar p {
+      color: #64748b;
+      font-size: 0.85rem;
+      margin-top: 0.15rem;
+    }
+
+    /* ===== Form Inputs ===== */
+    .input-group {
+      margin-bottom: 1.3rem;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: 600;
+      color: var(--color-ocean-blue);
+      font-size: 0.88rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .input-group label i {
+      color: var(--color-aqua);
+      margin-left: 0.4rem;
+    }
+
+    html[dir="ltr"] .input-group label i {
+      margin-left: 0;
+      margin-right: 0.4rem;
+    }
+
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--color-charcoal);
+      background: var(--color-soft-white);
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .input-group input:focus,
+    .input-group select:focus {
+      border-color: var(--color-aqua);
+      box-shadow: 0 0 0 3px rgba(104, 207, 235, 0.2);
+      background: #fff;
+    }
+
+    .unit-hint {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 0.3rem;
+    }
+
+    /* ===== Unit Selector Pills ===== */
+    .unit-selector {
+      display: flex;
+      gap: 0.6rem;
+      margin-bottom: 1.3rem;
+    }
+
+    .unit-btn {
+      flex: 1;
+      padding: 0.65rem 1rem;
+      text-align: center;
+      background: #f1f5f9;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #475569;
+      transition: var(--transition);
+    }
+
+    .unit-btn.active {
+      background: var(--gradient-primary);
+      color: #fff;
+      border-color: var(--color-ocean-blue);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .unit-btn:hover:not(.active) {
+      background: #e2e8f0;
+      color: var(--color-ocean-blue);
+    }
+
+    /* ===== Action Buttons ===== */
+    .actions-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn-calc {
+      flex: 2;
+      padding: 0.9rem 1.5rem;
+      background: var(--gradient-primary);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-calc:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(31, 75, 93, 0.25);
+    }
+
+    .btn-reset {
+      flex: 1;
+      padding: 0.9rem 1.2rem;
+      background: #f1f5f9;
+      color: #475569;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-reset:hover {
+      background: #e2e8f0;
+      color: var(--color-ocean-blue);
+    }
+
+    /* ===== Calculation Results Box ===== */
+    .result-box-container {
+      background: linear-gradient(135deg, #1F4B5D 0%, #153644 100%);
+      border-radius: 20px;
+      padding: 1.8rem;
+      color: #fff;
+      margin-top: 2rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .result-box-container::before {
+      content: '';
+      position: absolute;
+      top: -20px; right: -20px;
+      width: 100px; height: 100px;
+      background: radial-gradient(circle, rgba(104, 207, 235, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .result-title-label {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.75);
+      margin-bottom: 0.3rem;
+    }
+
+    .result-main-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .result-sub-desc {
+      font-size: 0.85rem;
+      color: var(--color-aqua);
+      margin-top: 0.4rem;
+      font-weight: 500;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+      margin-top: 1.4rem;
+    }
+
+    @media (max-width: 500px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .info-item {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.9rem 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .info-item-label {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .info-item-value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 0.25rem;
+    }
+
+    /* ===== Chemical Warning Box ===== */
+    .warning-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-right: 4px solid #f59e0b;
+      padding: 1.2rem 1.4rem;
+      border-radius: 16px;
+      margin-top: 1.5rem;
+    }
+
+    html[dir="ltr"] .warning-box {
+      border-right: 1px solid #fde68a;
+      border-left: 4px solid #f59e0b;
+    }
+
+    .warning-box h4 {
+      color: #b45309;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .warning-box p {
+      font-size: 0.88rem;
+      color: #78350f;
+      line-height: 1.6;
+    }
+
+    /* ===== Disinfectant Interactive List ===== */
+    .disinfectant-list {
+      max-height: 480px;
+      overflow-y: auto;
+      padding-left: 4px;
+    }
+
+    html[dir="ltr"] .disinfectant-list {
+      padding-left: 0;
+      padding-right: 4px;
+    }
+
+    .disinfectant-card {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 1.1rem 1.2rem;
+      margin-bottom: 0.8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1.5px solid transparent;
+    }
+
+    .disinfectant-card:hover {
+      transform: translateX(-4px);
+      background: #f1f5f9;
+      border-color: rgba(104, 207, 235, 0.4);
+    }
+
+    html[dir="ltr"] .disinfectant-card:hover {
+      transform: translateX(4px);
+    }
+
+    .disinfectant-card.selected {
+      border-color: var(--color-ocean-blue);
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    }
+
+    .disinfectant-name-row {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--color-ocean-blue);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .disinfectant-details-row {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      align-items: center;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      background: rgba(31, 75, 93, 0.08);
+      color: var(--color-ocean-blue);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    /* ===== General Biosecurity Card ===== */
+    .biosecurity-box {
+      background: rgba(104, 207, 235, 0.08);
+      border: 1px solid rgba(104, 207, 235, 0.3);
+      border-right: 4px solid var(--color-ocean-blue);
+      padding: 1.2rem 1.4rem;
+      border-radius: 16px;
+      margin-top: 1.5rem;
+    }
+
+    html[dir="ltr"] .biosecurity-box {
+      border-right: 1px solid rgba(104, 207, 235, 0.3);
+      border-left: 4px solid var(--color-ocean-blue);
+    }
+
+    .biosecurity-box h4 {
+      color: var(--color-ocean-blue);
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .biosecurity-box ul {
+      padding-right: 1.2rem;
+      font-size: 0.85rem;
+      color: #334155;
+      line-height: 1.6;
+    }
+
+    html[dir="ltr"] .biosecurity-box ul {
+      padding-right: 0;
+      padding-left: 1.2rem;
+    }
+
+    .biosecurity-box li {
+      margin-bottom: 0.3rem;
+    }
+
+    /* ===== Footer ===== */
+    .page-footer {
+      background: var(--gradient-primary);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .page-footer a { color: var(--color-aqua); }
+
+    @media (max-width: 640px) {
+      .card { padding: 1.5rem; }
+      .actions-row { flex-direction: column; }
+      .page-hero { padding: 7rem 5% 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo">
+        <img src="../images/in ob.png" alt="AQUASoft Logo">
+      </a>
+      <div class="nav-right">
+        <a href="../index.html" class="back-btn" id="back-link">
+          <i class="fa-solid fa-arrow-right" id="back-icon"></i>
+          <span data-i18n="back">الصفحة الرئيسية</span>
+        </a>
+        <button id="lang-toggle">English</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="hero-badge">
+      <i class="fa-solid fa-shield-virus"></i>
+      <span data-i18n="hero_badge">دليل التعقيم والأمن الحيوي</span>
+    </div>
+    <h1 data-i18n="page_title">حاسبة <span>المطهرات والمعقمات</span></h1>
+    <p data-i18n="page_subtitle">حساب الجرعات الدقيقة للمطهرات الكيميائية المستخدمة في تعقيم الأحواض، علاج الأسماك، وتطهير المعدات.</p>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="two-columns">
+
+      <!-- Left Column: Calculator Form & Results -->
+      <div class="column-calculator">
+        <div class="card">
+          <div class="card-header-bar">
+            <div class="card-icon">
+              <i class="fa-solid fa-calculator"></i>
+            </div>
+            <div>
+              <h2 data-i18n="calc_title">حساب الجرعة المطلوبة</h2>
+              <p data-i18n="calc_sub">حدد الحجم والغرض ونوع المادة المطهرة</p>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="volume"><i class="fa-solid fa-ruler-combined"></i><span data-i18n="lbl_volume">حجم الحوض / المحلول</span></label>
+            <input type="number" id="volume" placeholder="100" data-placeholder-ar="100" data-placeholder-en="100" value="100" min="0" step="any">
+            <div class="unit-hint" id="unitHint" data-i18n="hint_m3">المتر المكعب (م³) — 1 م³ = 1000 لتر</div>
+          </div>
+
+          <div class="unit-selector">
+            <div class="unit-btn active" data-unit="m3" id="unitBtnM3" data-i18n="unit_btn_m3">متر مكعب (م³)</div>
+            <div class="unit-btn" data-unit="liter" id="unitBtnL" data-i18n="unit_btn_liter">لتر (L)</div>
+          </div>
+
+          <div class="input-group">
+            <label for="purpose"><i class="fa-solid fa-bullseye"></i><span data-i18n="lbl_purpose">الغرض من التطهير</span></label>
+            <select id="purpose">
+              <option value="preventive" data-i18n="opt_preventive">تطهير وقائي (تعقيم دوري)</option>
+              <option value="treatment" data-i18n="opt_treatment">علاج — إصابة قائمة بالأسماك</option>
+              <option value="empty" data-i18n="opt_empty">تطهير حوض فارغ (قبل التشغيل)</option>
+              <option value="equipment" data-i18n="opt_equipment">تطهير معدات وأدوات وشباك</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="disinfectantSelect"><i class="fa-solid fa-flask"></i><span data-i18n="lbl_chemical">نوع المادة المطهرة</span></label>
+            <select id="disinfectantSelect">
+              <option value="formalin" data-i18n="chem_formalin">فورمالين (Formalin 37%)</option>
+              <option value="potassium" data-i18n="chem_potassium">برمنجنات البوتاسيوم (KMnO₄)</option>
+              <option value="malachite" data-i18n="chem_malachite">مالاكيت جرين (Malachite Green)</option>
+              <option value="copper" data-i18n="chem_copper">سلفات النحاس (Copper Sulfate)</option>
+              <option value="chlorine" data-i18n="chem_chlorine">الكلورين (Chlorine / NaOCl)</option>
+              <option value="iodine" data-i18n="chem_iodine">اليود / بيتادين (Povidone-Iodine)</option>
+              <option value="salt" data-i18n="chem_salt">ملح الطعام (NaCl)</option>
+              <option value="hydrogen" data-i18n="chem_hydrogen">بيروكسيد الهيدروجين (H₂O₂)</option>
+            </select>
+          </div>
+
+          <div class="actions-row">
+            <button class="btn-calc" id="calculateBtn">
+              <i class="fa-solid fa-syringe"></i>
+              <span data-i18n="btn_calc">احسب الجرعة الآن</span>
+            </button>
+            <button class="btn-reset" id="resetBtn">
+              <i class="fa-solid fa-rotate-right"></i>
+              <span data-i18n="btn_reset">مسح الحقول</span>
+            </button>
+          </div>
+
+          <!-- Dynamic Result Box -->
+          <div class="result-box-container" id="resultsBox">
+            <div class="result-title-label" data-i18n="res_dose_title">الجرعة الكلية المطلوبة لإضافتها:</div>
+            <div class="result-main-value" id="doseAmount">—</div>
+            <div class="result-sub-desc" id="doseUnit"></div>
+
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-item-label" data-i18n="info_conc">التركيز الموصى به</div>
+                <div class="info-item-value" id="concentration">—</div>
+              </div>
+              <div class="info-item">
+                <div class="info-item-label" data-i18n="info_duration">مدة التعقيم</div>
+                <div class="info-item-value" id="duration">—</div>
+              </div>
+              <div class="info-item">
+                <div class="info-item-label" data-i18n="info_temp">درجة الحرارة الملائمة</div>
+                <div class="info-item-value" id="tempRange">—</div>
+              </div>
+              <div class="info-item">
+                <div class="info-item-label" data-i18n="info_safety">مستوى الأمان</div>
+                <div class="info-item-value" id="safety">—</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Warning Alerts for Chemical -->
+          <div class="warning-box" id="warningBox">
+            <h4>
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span data-i18n="warn_title">تنبيهات الاستخدام والأمان:</span>
+            </h4>
+            <p id="warningText"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Disinfectants Catalog & Biosecurity Tips -->
+      <div class="column-catalog">
+        <div class="card">
+          <div class="card-header-bar">
+            <div class="card-icon">
+              <i class="fa-solid fa-vials"></i>
+            </div>
+            <div>
+              <h3 data-i18n="catalog_title">قائمة المطهرات الشائعة</h3>
+              <p data-i18n="catalog_sub">اضغط على أي مادة لاختيارها وحساب جرعتها فوراً</p>
+            </div>
+          </div>
+
+          <div class="disinfectant-list" id="disinfectantList">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- General Guidelines Box -->
+          <div class="biosecurity-box">
+            <h4>
+              <i class="fa-solid fa-circle-info"></i>
+              <span data-i18n="bio_header">إرشادات السلامة والأمن الحيوي:</span>
+            </h4>
+            <ul>
+              <li data-i18n="bio_tip_1">تأكد من تهوية المكان جيداً عند استخدام المطهرات الكيميائية سريعة التطاير.</li>
+              <li data-i18n="bio_tip_2">ارتدِ القفازات والنظارات الواقية والكمامة عند التعامل مع المركزات.</li>
+              <li data-i18n="bio_tip_3">يُمنع خلط أنواع مختلفة من المطهرات الكيميائية معاً لتفادي التفاعلات السامة.</li>
+              <li data-i18n="bio_tip_4">توقف عن إطعام الأسماك قبل العلاج بـ 24 ساعة لتقليل استهلاك الأكسجين.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <p>&copy; 2024 AQUASoft &mdash; <a href="../index.html" data-i18n="footer_home">الصفحة الرئيسية</a> | Integrated Aquaculture Platform</p>
+  </footer>
+
+  <script>
+    // ============================================================
+    // TRANSLATIONS DICTIONARY
+    // ============================================================
+    const t = {
+      ar: {
+        back: 'الصفحة الرئيسية',
+        hero_badge: 'دليل التعقيم والأمن الحيوي',
+        page_title: 'حاسبة <span>المطهرات والمعقمات</span>',
+        page_subtitle: 'حساب الجرعات الدقيقة للمطهرات الكيميائية المستخدمة في تعقيم الأحواض، علاج الأسماك، وتطهير المعدات.',
+        calc_title: 'حساب الجرعة المطلوبة',
+        calc_sub: 'حدد الحجم والغرض ونوع المادة المطهرة',
+        lbl_volume: 'حجم الحوض / المحلول',
+        hint_m3: 'المتر المكعب (م³) — 1 م³ = 1000 لتر',
+        hint_liter: 'اللتر (L) — 1000 لتر = 1 متر مكعب',
+        unit_btn_m3: 'متر مكعب (م³)',
+        unit_btn_liter: 'لتر (L)',
+        lbl_purpose: 'الغرض من التطهير',
+        opt_preventive: 'تطهير وقائي (تعقيم دوري)',
+        opt_treatment: 'علاج — إصابة قائمة بالأسماك',
+        opt_empty: 'تطهير حوض فارغ (قبل التشغيل)',
+        opt_equipment: 'تطهير معدات وأدوات وشباك',
+        lbl_chemical: 'نوع المادة المطهرة',
+        chem_formalin: 'فورمالين (Formalin 37%)',
+        chem_potassium: 'برمنجنات البوتاسيوم (KMnO₄)',
+        chem_malachite: 'مالاكيت جرين (Malachite Green)',
+        chem_copper: 'سلفات النحاس (Copper Sulfate)',
+        chem_chlorine: 'الكلورين (Chlorine / NaOCl)',
+        chem_iodine: 'اليود / بيتادين (Povidone-Iodine)',
+        chem_salt: 'ملح الطعام (NaCl)',
+        chem_hydrogen: 'بيروكسيد الهيدروجين (H₂O₂)',
+        btn_calc: 'احسب الجرعة الآن',
+        btn_reset: 'مسح الحقول',
+        res_dose_title: 'الجرعة الكلية المطلوبة لإضافتها:',
+        info_conc: 'التركيز الموصى به',
+        info_duration: 'مدة التعقيم',
+        info_temp: 'درجة الحرارة الملائمة',
+        info_safety: 'مستوى الأمان',
+        warn_title: 'تنبيهات الاستخدام والأمان:',
+        catalog_title: 'قائمة المطهرات الشائعة',
+        catalog_sub: 'اضغط على أي مادة لاختيارها وحساب جرعتها فوراً',
+        bio_header: 'إرشادات السلامة والأمن الحيوي:',
+        bio_tip_1: 'تأكد من تهوية المكان جيداً عند استخدام المطهرات الكيميائية سريعة التطاير.',
+        bio_tip_2: 'ارتدِ القفازات والنظارات الواقية والكمامة عند التعامل مع المركزات.',
+        bio_tip_3: 'يُمنع خلط أنواع مختلفة من المطهرات الكيميائية معاً لتفادي التفاعلات السامة.',
+        bio_tip_4: 'توقف عن إطعام الأسماك قبل العلاج بـ 24 ساعة لتقليل استهلاك الأكسجين.',
+        footer_home: 'الصفحة الرئيسية',
+        err_volume: '⚠️ أدخل الحجم أولاً بشكل صحيح',
+        unit_gram: 'جرام (جم)',
+        unit_mg: 'ملجم (مجم)',
+        unit_kg: 'كجم',
+        unit_mgl: 'ملغم/لتر',
+        unit_gl: 'جرام/لتر'
+      },
+      en: {
+        back: 'Home',
+        hero_badge: 'Biosecurity & Sterilization Guide',
+        page_title: 'Disinfectant <span>Calculator</span>',
+        page_subtitle: 'Accurate dosing calculations for aquatic disinfectants used in pond sterilization, fish treatments, and equipment biosecurity.',
+        calc_title: 'Required Dose Calculation',
+        calc_sub: 'Specify volume, purpose, and chemical disinfectant',
+        lbl_volume: 'Pond / Tank / Solution Volume',
+        hint_m3: 'Cubic Meters (m³) — 1 m³ = 1000 Liters',
+        hint_liter: 'Liters (L) — 1000 Liters = 1 Cubic Meter',
+        unit_btn_m3: 'Cubic Meters (m³)',
+        unit_btn_liter: 'Liters (L)',
+        lbl_purpose: 'Disinfection Purpose',
+        opt_preventive: 'Preventive Routine Disinfection',
+        opt_treatment: 'Active Treatment / Disease Outbreak',
+        opt_empty: 'Empty Pond / Tank Pre-stocking Sanitization',
+        opt_equipment: 'Equipment, Nets & Tool Disinfection',
+        lbl_chemical: 'Disinfectant Chemical Type',
+        chem_formalin: 'Formalin (Formalin 37%)',
+        chem_potassium: 'Potassium Permanganate (KMnO₄)',
+        chem_malachite: 'Malachite Green',
+        chem_copper: 'Copper Sulfate (CuSO₄)',
+        chem_chlorine: 'Chlorine (NaOCl)',
+        chem_iodine: 'Iodine / Povidone-Iodine',
+        chem_salt: 'Common Salt (NaCl)',
+        chem_hydrogen: 'Hydrogen Peroxide (H₂O₂)',
+        btn_calc: 'Calculate Dose Now',
+        btn_reset: 'Reset Fields',
+        res_dose_title: 'Total Dosage Required to Add:',
+        info_conc: 'Recommended Concentration',
+        info_duration: 'Exposure Duration',
+        info_temp: 'Suitable Temperature',
+        info_safety: 'Safety Level',
+        warn_title: 'Usage Warnings & Precautions:',
+        catalog_title: 'Common Disinfectants Catalog',
+        catalog_sub: 'Click any chemical to select it and compute dosage immediately',
+        bio_header: 'Safety & Biosecurity Guidelines:',
+        bio_tip_1: 'Ensure excellent aeration and ventilation when utilizing volatile disinfectants.',
+        bio_tip_2: 'Always wear protective gloves, splash goggles, and respirators when handling concentrates.',
+        bio_tip_3: 'Never mix different disinfectant chemicals together to avoid lethal toxic gases.',
+        bio_tip_4: 'Cease feeding fish 24 hours prior to therapeutic baths to reduce metabolic oxygen demand.',
+        footer_home: 'Home',
+        err_volume: '⚠️ Please enter a valid positive volume',
+        unit_gram: 'grams (g)',
+        unit_mg: 'mg',
+        unit_kg: 'kg',
+        unit_mgl: 'mg/L',
+        unit_gl: 'g/L'
+      }
+    };
+
+    // ============================================================
+    // DISINFECTANT DATABASE
+    // ============================================================
+    const disinfectants = {
+      formalin: {
+        nameAr: "فورمالين (Formalin 37%)",
+        nameEn: "Formalin 37%",
+        icon: "fa-solid fa-vial-circle-check",
+        concentrations: {
+          preventive: { value: 15, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "15-25 ملغم/لتر لمدة 30-60 دقيقة", descEn: "15-25 mg/L for 30-60 minutes" },
+          treatment: { value: 25, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "25-50 ملغم/لتر لمدة 30-60 دقيقة", descEn: "25-50 mg/L for 30-60 minutes" },
+          empty: { value: 200, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "200-250 ملغم/لتر لمدة 24 ساعة", descEn: "200-250 mg/L for 24 hours" },
+          equipment: { value: 500, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "500 ملغم/لتر لمدة 1-2 ساعة", descEn: "500 mg/L for 1-2 hours" }
+        },
+        durationAr: "30-60 دقيقة (حمام قصير) | 24 ساعة (حوض فارغ)",
+        durationEn: "30-60 min (short bath) | 24 hrs (empty pond)",
+        tempRangeAr: "18 - 28 °C",
+        tempRangeEn: "18 - 28 °C",
+        safetyAr: "⚠️ شديد السمية — يخفض الأكسجين بشدة",
+        safetyEn: "⚠️ Highly toxic — severely depletes dissolved oxygen",
+        warningAr: "• يُمنع استخدامه في أحواض الزريعة الصغيرة جداً.\n• يستهلك الأكسجين المذاب (1 ملغم/لتر أكسجين لكل 5 ملغم/لتر فورمالين)، لذا يجب تشغيل أقصى تهوية.\n• يفضل إجراء تغيير جزئي للمياه بعد انتهاء فترة الحمام العلاجي.",
+        warningEn: "• Prohibited for very small fry and larvae.\n• Consumes dissolved oxygen (1 mg/L DO per 5 mg/L formalin) — run maximum aeration.\n• Perform partial water exchange after treatment duration."
+      },
+      potassium: {
+        nameAr: "برمنجنات البوتاسيوم (KMnO₄)",
+        nameEn: "Potassium Permanganate (KMnO₄)",
+        icon: "fa-solid fa-cube",
+        concentrations: {
+          preventive: { value: 2, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "2-4 ملغم/لتر لمدة 4-6 ساعات", descEn: "2-4 mg/L for 4-6 hours" },
+          treatment: { value: 4, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "4-6 ملغم/لتر لمدة 4-6 ساعات", descEn: "4-6 mg/L for 4-6 hours" },
+          empty: { value: 10, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "10-20 ملغم/لتر لمدة 24 ساعة", descEn: "10-20 mg/L for 24 hours" },
+          equipment: { value: 50, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "50-100 ملغم/لتر لمدة 2-4 ساعات", descEn: "50-100 mg/L for 2-4 hours" }
+        },
+        durationAr: "4-6 ساعات (حتى يتحول اللون للبني)",
+        durationEn: "4-6 hours (until color turns light brown)",
+        tempRangeAr: "20 - 28 °C",
+        tempRangeEn: "20 - 28 °C",
+        safetyAr: "⚠️ مؤكسد قوي — يصبغ الأسطح",
+        safetyEn: "⚠️ Strong oxidizer — stains surfaces",
+        warningAr: "• يتحول لون الماء للوردي/البنفسجي ثم البني مع التفاعل.\n• عند تحول اللون للبني الداكن، يمكن إضافة ثيوسلفات الصوديوم لإنهاء التفاعل فوراً.\n• لا يُستخدم مع الأسماك المجهدة أو التي تعاني من فقر الدم الشديد.",
+        warningEn: "• Water turns purple/pink then brown as organic load is oxidized.\n• Sodium thiosulfate can be added to neutralize residual permanganate immediately.\n• Do not apply to heavily stressed or anemic fish."
+      },
+      malachite: {
+        nameAr: "مالاكيت جرين (Malachite Green)",
+        nameEn: "Malachite Green",
+        icon: "fa-solid fa-leaf",
+        concentrations: {
+          preventive: { value: 0.1, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "0.1-0.2 ملغم/لتر لمدة 60 دقيقة", descEn: "0.1-0.2 mg/L for 60 min" },
+          treatment: { value: 0.2, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "0.2-0.5 ملغم/لتر لمدة 30-60 دقيقة", descEn: "0.2-0.5 mg/L for 30-60 min" },
+          empty: { value: 2, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "2-5 ملغم/لتر لمدة 24 ساعة", descEn: "2-5 mg/L for 24 hrs" },
+          equipment: { value: 10, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "10-20 ملغم/لتر لمدة 1-2 ساعة", descEn: "10-20 mg/L for 1-2 hrs" }
+        },
+        durationAr: "30-60 دقيقة (علاج) | 24 ساعة (حوض فارغ)",
+        durationEn: "30-60 min (treatment) | 24 hrs (empty)",
+        tempRangeAr: "18 - 26 °C",
+        tempRangeEn: "18 - 26 °C",
+        safetyAr: "🔴 مادة محظورة في أسماك المائدة التجارية",
+        safetyEn: "🔴 Prohibited in commercial food fish",
+        warningAr: "• يُمنع استخدامه لأسماك الاستهلاك الآدمي الموجهة للبيع.\n• يقتصر استخدامه فقط على أحواض الزينة أو أمهات التفريخ غير المخصصة للأكل.\n• يصبغ الأقمشة والأسطح البلاستيكية.",
+        warningEn: "• Banned for commercial food fish production.\n• Restricted exclusively to ornamental fish and breeding broodstock not destined for slaughter.\n• Strongly stains equipment and textiles."
+      },
+      copper: {
+        nameAr: "سلفات النحاس (CuSO₄)",
+        nameEn: "Copper Sulfate (CuSO₄)",
+        icon: "fa-solid fa-circle-dot",
+        concentrations: {
+          preventive: { value: 0.5, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "0.5-1 ملغم/لتر لمكافحة الطحالب", descEn: "0.5-1 mg/L for algal control" },
+          treatment: { value: 1, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "1-1.5 ملغم/لتر لمدة 24 ساعة", descEn: "1-1.5 mg/L for 24 hours" },
+          empty: { value: 5, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "5-10 ملغم/لتر لمدة 48 ساعة", descEn: "5-10 mg/L for 48 hours" },
+          equipment: { value: 20, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "20-50 ملغم/لتر لمدة 4-6 ساعات", descEn: "20-50 mg/L for 4-6 hours" }
+        },
+        durationAr: "24-48 ساعة حسب الغرض",
+        durationEn: "24-48 hours depending on target",
+        tempRangeAr: "22 - 30 °C",
+        tempRangeEn: "22 - 30 °C",
+        safetyAr: "⚠️ سام جداً للقشريات والمياه منخفضة القلوية",
+        safetyEn: "⚠️ Lethal to crustaceans and in low-alkalinity waters",
+        warningAr: "• يُمنع استخدامه قطعياً في أحواض الجمبري والقشريات.\n• تزداد سميته بشدة عندما تكون قلوية الماء الكلية أقل من 50 ملغم/لتر.\n• احسب الجرعة الدقيقة بناءً على قلوية الماء الكلية (Total Alkalinity).",
+        warningEn: "• Strictly prohibited in shrimp and crustacean culture.\n• Toxicity increases drastically in soft water where total alkalinity < 50 mg/L CaCO3.\n• Calibrate dose based on total water alkalinity."
+      },
+      chlorine: {
+        nameAr: "الكلورين (Chlorine / NaOCl)",
+        nameEn: "Chlorine (NaOCl)",
+        icon: "fa-solid fa-droplet",
+        concentrations: {
+          preventive: { value: 0.5, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "⚠️ لا يُستخدم بوجود الأسماك", descEn: "⚠️ Never use with live fish" },
+          treatment: { value: 0, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "❌ سام وقاتل للأسماك الحية", descEn: "❌ Lethal to live fish" },
+          empty: { value: 50, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "50-100 ملغم/لتر لمدة 6-12 ساعة", descEn: "50-100 mg/L for 6-12 hours" },
+          equipment: { value: 200, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "200-500 ملغم/لتر لمدة 1-2 ساعة", descEn: "200-500 mg/L for 1-2 hours" }
+        },
+        durationAr: "6-12 ساعة ثم المعادلة التامة",
+        durationEn: "6-12 hours followed by dechlorination",
+        tempRangeAr: "جميع الدرجات",
+        tempRangeEn: "All temperatures",
+        safetyAr: "🚨 قاتل للأسماك — يتطلب إزالة ومعادلة كاملة",
+        safetyEn: "🚨 Lethal to fish — complete dechlorination mandatory",
+        warningAr: "• يُستخدم فقط للأحواض الفارغة والمعدات والشباك والأرضيات.\n• يجب معادلة الكلور المتبقي بالكامل باستخدام ثيوسلفات الصوديوم وفحص بقايا الكلور بصفر قبل إنزال الأسماك.\n• لا تخلط الكلور مع الأحماض لتجنب انبعاث غاز الكلور الخانق.",
+        warningEn: "• Use only for sanitizing empty tanks, nets, and tools.\n• Neutralize residual chlorine completely with sodium thiosulfate and verify zero residual before stocking.\n• Never mix chlorine with acids to prevent toxic chlorine gas emission."
+      },
+      iodine: {
+        nameAr: "اليود / بيتادين (Povidone-Iodine)",
+        nameEn: "Povidone-Iodine",
+        icon: "fa-solid fa-briefcase-medical",
+        concentrations: {
+          preventive: { value: 25, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "25-50 ملغم/لتر لمدة 15-30 دقيقة", descEn: "25-50 mg/L for 15-30 min" },
+          treatment: { value: 10, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "10-25 ملغم/لتر أو دهان موضعي للجروح", descEn: "10-25 mg/L or topical wound swab" },
+          empty: { value: 50, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "50-100 ملغم/لتر لمدة 1-2 ساعة", descEn: "50-100 mg/L for 1-2 hours" },
+          equipment: { value: 100, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "100-200 ملغم/لتر لتعقيم الشباك والمعدات", descEn: "100-200 mg/L for tools and nets" }
+        },
+        durationAr: "15-30 دقيقة للحمامات وبيض الأسماك",
+        durationEn: "15-30 min for baths and egg disinfection",
+        tempRangeAr: "20 - 28 °C",
+        tempRangeEn: "20 - 28 °C",
+        safetyAr: "✅ آمن وممتاز لتعقيم بيض الأسماك والجروح",
+        safetyEn: "✅ Safe and ideal for egg disinfection and wounds",
+        warningAr: "• ممتاز لتعقيم البيض في المفرخات قبل الفقس (100 ملغم/لتر لمدة 10 دقائق عند pH 7).\n• فعال جداً كمس موضعي للجروح السطحية والتقرحات البكتيرية.\n• يزول لونه وتأثيره سريعاً في وجود المواد العضوية.",
+        warningEn: "• Excellent for fish egg disinfection in hatcheries (100 mg/L for 10 min at pH 7).\n• Ideal as a topical antiseptic on ulcers and skin lesions.\n• Activity diminishes rapidly in presence of heavy organic matter."
+      },
+      salt: {
+        nameAr: "ملح الطعام (NaCl)",
+        nameEn: "Sodium Chloride (NaCl)",
+        icon: "fa-solid fa-cubes-stacked",
+        concentrations: {
+          preventive: { value: 1, unitAr: "جرام/لتر", unitEn: "g/L", unitType: "g_per_liter", descAr: "1-3 جرام/لتر (حمام دائم ومستمر)", descEn: "1-3 g/L (continuous bath)" },
+          treatment: { value: 10, unitAr: "جرام/لتر", unitEn: "g/L", unitType: "g_per_liter", descAr: "10-25 جرام/لتر لمدة 5-15 دقيقة", descEn: "10-25 g/L for 5-15 minutes" },
+          empty: { value: 20, unitAr: "جرام/لتر", unitEn: "g/L", unitType: "g_per_liter", descAr: "20-40 جرام/لتر لمدة 24 ساعة", descEn: "20-40 g/L for 24 hours" },
+          equipment: { value: 50, unitAr: "جرام/لتر", unitEn: "g/L", unitType: "g_per_liter", descAr: "50-100 جرام/لتر لتعقيم الأدوات", descEn: "50-100 g/L for tool disinfection" }
+        },
+        durationAr: "حمام مستمر أو قصير (5-15 دقيقة)",
+        durationEn: "Continuous bath or short dip (5-15 min)",
+        tempRangeAr: "جميع درجات الحرارة",
+        tempRangeEn: "All temperatures",
+        safetyAr: "✅ آمن جداً — علاج أساسي للتنظيم الأسموزي",
+        safetyEn: "✅ Very safe — osmotic stabilizer and anti-parasitic",
+        warningAr: "• يخفف الإجهاد الأسموزي ويقلل سمية النتريت (NO2).\n• غير مناسب مع الأسماك النهرية شديدة الحساسية للملوحة في التركيزات العالية.\n• احرص على إذابة الملح الصخري الخالي من اليود والمواد المانعة للتكتل.",
+        warningEn: "• Relieves osmotic stress and blocks nitrite (NO2) branchial uptake.\n• Exercise caution with strict freshwater species at high dip concentrations.\n• Use pure non-iodized salt free from anti-caking additives."
+      },
+      hydrogen: {
+        nameAr: "بيروكسيد الهيدروجين (H₂O₂)",
+        nameEn: "Hydrogen Peroxide (H₂O₂)",
+        icon: "fa-solid fa-biohazard",
+        concentrations: {
+          preventive: { value: 50, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "50-100 ملغم/لتر لمدة 30-60 دقيقة", descEn: "50-100 mg/L for 30-60 min" },
+          treatment: { value: 75, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "75-150 ملغم/لتر لعلاج الفطريات والطفيليات", descEn: "75-150 mg/L for fungal/protozoan control" },
+          empty: { value: 200, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "200-500 ملغم/لتر لمدة 2-4 ساعات", descEn: "200-500 mg/L for 2-4 hours" },
+          equipment: { value: 500, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "500-1000 ملغم/لتر لتعقيم المعدات", descEn: "500-1000 mg/L for equipment" }
+        },
+        durationAr: "30-60 دقيقة (يتحلل سريعاً إلى ماء وأكسجين)",
+        durationEn: "30-60 min (degrades rapidly into H2O + O2)",
+        tempRangeAr: "18 - 28 °C",
+        tempRangeEn: "18 - 28 °C",
+        safetyAr: "⚠️ مهيج قوي في التركيزات العالية",
+        safetyEn: "⚠️ Highly irritating at high concentrations",
+        warningAr: "• يتحلل تلقائياً إلى ماء وأكسجين نقي ولا يترك أي رواسب كيميائية ضارة.\n• ترتفع سميته مع ارتفاع درجات الحرارة فوق 28°C.\n• ممتاز لعلاج الفطريات الخارجية (Saprolegnia) وطفيل خياشيم الأسماك.",
+        warningEn: "• Naturally breaks down into water and pure oxygen with zero chemical residues.\n• Toxicity increases at water temperatures exceeding 28°C.\n• Highly effective against Saprolegnia fungal infections and ectoparasites."
+      }
+    };
+
+    const disinfectantOrder = ['formalin', 'potassium', 'malachite', 'copper', 'chlorine', 'iodine', 'salt', 'hydrogen'];
+
+    // ============================================================
+    // STATE & LOGIC
+    // ============================================================
+    let currentLang = localStorage.getItem('aqasoft_lang') || 'ar';
+    let currentUnit = 'm3';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('aqasoft_lang', lang);
+
+      const isAr = lang === 'ar';
+      document.documentElement.lang = lang;
+      document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+      document.body.classList.toggle('ltr', !isAr);
+
+      document.getElementById('lang-toggle').textContent = isAr ? 'English' : 'عربي';
+
+      const backIcon = document.getElementById('back-icon');
+      if (backIcon) {
+        backIcon.className = isAr ? 'fa-solid fa-arrow-right' : 'fa-solid fa-arrow-left';
+      }
+
+      // Translate tagged elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[lang] && t[lang][key] !== undefined) {
+          el.innerHTML = t[lang][key];
+        }
+      });
+
+      // Translate placeholders
+      document.querySelectorAll('[data-placeholder-' + lang + ']').forEach(el => {
+        el.placeholder = el.getAttribute('data-placeholder-' + lang);
+      });
+
+      // Update unit hint text
+      document.getElementById('unitHint').textContent = currentUnit === 'm3' ? t[lang].hint_m3 : t[lang].hint_liter;
+
+      // Retranslate select options
+      const purposeSelect = document.getElementById('purpose');
+      if (purposeSelect) {
+        Array.from(purposeSelect.options).forEach(opt => {
+          const key = opt.getAttribute('data-i18n');
+          if (key && t[lang][key]) opt.textContent = t[lang][key];
+        });
+      }
+
+      const chemSelect = document.getElementById('disinfectantSelect');
+      if (chemSelect) {
+        Array.from(chemSelect.options).forEach(opt => {
+          const key = opt.getAttribute('data-i18n');
+          if (key && t[lang][key]) opt.textContent = t[lang][key];
+        });
+      }
+
+      loadDisinfectantList();
+      calculateDose();
+    }
+
+    document.getElementById('lang-toggle').addEventListener('click', () => {
+      applyLang(currentLang === 'ar' ? 'en' : 'ar');
+    });
+
+    // ============================================================
+    // CATALOG BUILDER
+    // ============================================================
+    function loadDisinfectantList() {
+      const listContainer = document.getElementById('disinfectantList');
+      listContainer.innerHTML = '';
+      const lang = currentLang;
+      const isAr = lang === 'ar';
+      const selectedKey = document.getElementById('disinfectantSelect').value;
+
+      disinfectantOrder.forEach(key => {
+        const d = disinfectants[key];
+        const card = document.createElement('div');
+        card.className = `disinfectant-card ${key === selectedKey ? 'selected' : ''}`;
+        card.setAttribute('data-key', key);
+
+        const name = isAr ? d.nameAr : d.nameEn;
+        const subName = isAr ? d.nameEn : d.nameAr;
+        const prevUnit = isAr ? d.concentrations.preventive.unitAr : d.concentrations.preventive.unitEn;
+
+        card.innerHTML = `
+          <div class="disinfectant-name-row">
+            <span><i class="${d.icon}" style="color: var(--color-aqua); margin-${isAr ? 'left' : 'right'}: 8px;"></i> ${name}</span>
+            <i class="fa-solid fa-chevron-${isAr ? 'left' : 'right'}" style="font-size: 12px; color: #94a3b8;"></i>
+          </div>
+          <div class="disinfectant-details-row">
+            <span>${subName}</span>
+            <span class="badge-pill">${d.concentrations.preventive.value} ${prevUnit}</span>
+          </div>
+        `;
+
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.disinfectant-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          document.getElementById('disinfectantSelect').value = key;
+          calculateDose();
+        });
+
+        listContainer.appendChild(card);
+      });
+    }
+
+    // ============================================================
+    // CALCULATION LOGIC
+    // ============================================================
+    function calculateDose() {
+      let volume = parseFloat(document.getElementById('volume').value);
+      const purpose = document.getElementById('purpose').value;
+      const disinfectantKey = document.getElementById('disinfectantSelect').value;
+      const lang = currentLang;
+      const isAr = lang === 'ar';
+
+      if (isNaN(volume) || volume <= 0) {
+        document.getElementById('doseAmount').innerHTML = t[lang].err_volume;
+        document.getElementById('doseUnit').innerHTML = '';
+        return;
+      }
+
+      let volumeInLiters = volume;
+      if (currentUnit === 'm3') {
+        volumeInLiters = volume * 1000;
+      }
+
+      const disinfectant = disinfectants[disinfectantKey];
+      const concentration = disinfectant.concentrations[purpose];
+
+      let dose, doseUnit, displayValue;
+      const concentrationValue = concentration.value;
+      const unitType = concentration.unitType;
+
+      if (unitType === 'mg_per_liter') {
+        const doseMg = concentrationValue * volumeInLiters;
+
+        if (doseMg >= 1000000) {
+          displayValue = (doseMg / 1000000).toFixed(2);
+          doseUnit = t[lang].unit_kg;
+        } else if (doseMg >= 1000) {
+          displayValue = (doseMg / 1000).toFixed(2);
+          doseUnit = t[lang].unit_gram;
+        } else {
+          displayValue = doseMg.toFixed(1);
+          doseUnit = t[lang].unit_mg;
+        }
+        dose = `${displayValue} ${doseUnit}`;
+      } else if (unitType === 'g_per_liter') {
+        const doseG = concentrationValue * volumeInLiters;
+
+        if (doseG >= 1000) {
+          displayValue = (doseG / 1000).toFixed(2);
+          doseUnit = t[lang].unit_kg;
+        } else {
+          displayValue = doseG.toFixed(1);
+          doseUnit = t[lang].unit_gram;
+        }
+        dose = `${displayValue} ${doseUnit}`;
+      }
+
+      document.getElementById('doseAmount').textContent = dose;
+      document.getElementById('doseUnit').textContent = isAr ? concentration.descAr : concentration.descEn;
+      document.getElementById('concentration').textContent = `${concentrationValue} ${isAr ? concentration.unitAr : concentration.unitEn}`;
+      document.getElementById('duration').textContent = isAr ? disinfectant.durationAr : disinfectant.durationEn;
+      document.getElementById('tempRange').textContent = isAr ? disinfectant.tempRangeAr : disinfectant.tempRangeEn;
+      document.getElementById('safety').textContent = isAr ? disinfectant.safetyAr : disinfectant.safetyEn;
+      document.getElementById('warningText').innerHTML = (isAr ? disinfectant.warningAr : disinfectant.warningEn).replace(/\n/g, '<br>');
+
+      // Update active selection on cards
+      document.querySelectorAll('.disinfectant-card').forEach(card => {
+        if (card.getAttribute('data-key') === disinfectantKey) {
+          card.classList.add('selected');
+        } else {
+          card.classList.remove('selected');
+        }
+      });
+    }
+
+    function switchUnit(unit) {
+      if (currentUnit === unit) return;
+      const volumeInput = document.getElementById('volume');
+      const currentValue = parseFloat(volumeInput.value);
+
+      if (!isNaN(currentValue) && currentValue > 0) {
+        if (unit === 'm3' && currentUnit === 'liter') {
+          volumeInput.value = (currentValue / 1000).toFixed(2);
+        } else if (unit === 'liter' && currentUnit === 'm3') {
+          volumeInput.value = (currentValue * 1000).toFixed(0);
+        }
+      }
+
+      currentUnit = unit;
+      document.getElementById('unitBtnM3').classList.toggle('active', unit === 'm3');
+      document.getElementById('unitBtnL').classList.toggle('active', unit === 'liter');
+      document.getElementById('unitHint').textContent = unit === 'm3' ? t[currentLang].hint_m3 : t[currentLang].hint_liter;
+
+      calculateDose();
+    }
+
+    function resetForm() {
+      document.getElementById('volume').value = '100';
+      document.getElementById('purpose').value = 'preventive';
+      document.getElementById('disinfectantSelect').value = 'formalin';
+      if (currentUnit === 'liter') {
+        switchUnit('m3');
+      } else {
+        calculateDose();
+      }
+    }
+
+    // Event listeners
+    document.getElementById('calculateBtn').addEventListener('click', calculateDose);
+    document.getElementById('resetBtn').addEventListener('click', resetForm);
+    document.getElementById('volume').addEventListener('input', calculateDose);
+    document.getElementById('purpose').addEventListener('change', calculateDose);
+    document.getElementById('disinfectantSelect').addEventListener('change', calculateDose);
+
+    document.querySelectorAll('.unit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        switchUnit(btn.getAttribute('data-unit'));
+      });
+    });
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Init
+    applyLang(currentLang);
+  </script>
+</body>
+</html>

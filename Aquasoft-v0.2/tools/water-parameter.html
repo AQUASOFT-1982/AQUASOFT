@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#1F4B5D">
+  <link rel="apple-touch-icon" href="../icons/icon-192x192.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQUASoft | مؤشرات جودة المياه</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ===== Design Tokens (matching AQUASoft theme) ===== */
+    :root {
+      --color-ocean-blue: #1F4B5D;
+      --color-aqua: #68CFEB;
+      --color-soft-white: #FAFAFA;
+      --color-charcoal: #1F1E19;
+      --gradient-primary: linear-gradient(135deg, #1F4B5D 0%, #153644 100%);
+      --gradient-accent: linear-gradient(135deg, #68CFEB 0%, #4cb8d6 100%);
+      --shadow-sm: 0 4px 6px rgba(31, 75, 93, 0.05);
+      --shadow-md: 0 10px 20px rgba(31, 75, 93, 0.08);
+      --shadow-lg: 0 20px 40px rgba(31, 75, 93, 0.12);
+      --shadow-glow: 0 0 20px rgba(104, 207, 235, 0.4);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --color-danger: #e53e3e;
+      --color-warning: #d97706;
+      --color-safe: #059669;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--color-soft-white);
+      color: var(--color-charcoal);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body.ltr {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    a { text-decoration: none; color: inherit; transition: var(--transition); }
+    ul, ol { list-style: none; }
+
+    /* ===== Navbar ===== */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1rem 0;
+      transition: var(--transition);
+      background: transparent;
+    }
+
+    .navbar.scrolled {
+      background: rgba(250, 250, 250, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+      padding: 0.7rem 0;
+    }
+
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--color-ocean-blue);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .back-btn:hover { opacity: 0.75; }
+
+    #lang-toggle {
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1.5px solid var(--color-ocean-blue);
+      background: transparent;
+      color: var(--color-ocean-blue);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      letter-spacing: 0.3px;
+    }
+
+    #lang-toggle:hover {
+      background: var(--color-ocean-blue);
+      color: #fff;
+    }
+
+    /* ===== Page Hero ===== */
+    .page-hero {
+      background: var(--gradient-primary);
+      padding: 8rem 5% 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -20%;
+      width: 60%;
+      height: 200%;
+      background: radial-gradient(ellipse, rgba(104,207,235,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%; right: -10%;
+      width: 50%;
+      height: 150%;
+      background: radial-gradient(ellipse, rgba(104,207,235,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(104, 207, 235, 0.15);
+      border: 1px solid rgba(104, 207, 235, 0.3);
+      color: var(--color-aqua);
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.2rem;
+    }
+
+    .page-hero h1 {
+      color: #fff;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .page-hero h1 span {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-hero p {
+      color: rgba(255,255,255,0.75);
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* ===== Main Content Layout ===== */
+    .main-content {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 3rem 5% 5rem;
+    }
+
+    /* ===== Species Selection Grid ===== */
+    .section-title-bar {
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .section-title-bar h2 {
+      font-size: 1.35rem;
+      color: var(--color-ocean-blue);
+      font-weight: 700;
+    }
+
+    .species-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .species-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 1.3rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 2px solid transparent;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .species-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(104, 207, 235, 0.4);
+    }
+
+    .species-card.active {
+      border-color: var(--color-ocean-blue);
+      background: linear-gradient(135deg, #eff6ff, #e0f2fe);
+      box-shadow: var(--shadow-md);
+    }
+
+    .species-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(104, 207, 235, 0.15);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: var(--color-ocean-blue);
+      transition: var(--transition);
+    }
+
+    .species-card.active .species-icon {
+      background: var(--gradient-accent);
+      color: var(--color-ocean-blue);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .species-name {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--color-ocean-blue);
+    }
+
+    /* ===== Species Detail Overview Card ===== */
+    .species-detail-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(31, 75, 93, 0.06);
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .species-detail-card {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    .species-image-wrapper {
+      width: 140px;
+      height: 140px;
+      border-radius: 20px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 3px solid rgba(104, 207, 235, 0.3);
+      box-shadow: var(--shadow-md);
+    }
+
+    .species-image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .species-info-text h3 {
+      font-size: 1.5rem;
+      color: var(--color-ocean-blue);
+      font-weight: 800;
+      margin-bottom: 0.6rem;
+    }
+
+    .species-info-text p {
+      color: #475569;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* ===== Parameters Table Card ===== */
+    .parameters-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 2.2rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(31, 75, 93, 0.06);
+      margin-bottom: 2.5rem;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      margin-top: 1rem;
+    }
+
+    .styled-params-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+      font-size: 0.9rem;
+    }
+
+    html[dir="ltr"] .styled-params-table {
+      text-align: left;
+    }
+
+    .styled-params-table thead {
+      background: var(--gradient-primary);
+      color: #fff;
+    }
+
+    .styled-params-table th {
+      padding: 14px 16px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .styled-params-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+
+    .styled-params-table tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    .param-name-cell {
+      font-weight: 700;
+      color: var(--color-ocean-blue);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .param-name-cell i {
+      color: var(--color-aqua);
+      width: 20px;
+      text-align: center;
+    }
+
+    .ideal-range-badge {
+      display: inline-block;
+      background: rgba(5, 150, 105, 0.1);
+      color: var(--color-safe);
+      border: 1px solid rgba(5, 150, 105, 0.25);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== Solutions & Troubleshooting Section ===== */
+    .solutions-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 2.2rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(31, 75, 93, 0.06);
+    }
+
+    .solutions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.5rem;
+    }
+
+    @media (max-width: 700px) {
+      .solutions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .solution-block {
+      background: #f8fafc;
+      border-radius: 18px;
+      padding: 1.4rem;
+      border: 1px solid #e2e8f0;
+      border-right: 4px solid var(--color-aqua);
+      transition: var(--transition);
+    }
+
+    html[dir="ltr"] .solution-block {
+      border-right: 1px solid #e2e8f0;
+      border-left: 4px solid var(--color-aqua);
+    }
+
+    .solution-block:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .solution-header {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-ocean-blue);
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .solution-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .solution-steps li {
+      position: relative;
+      padding-right: 1.4rem;
+      font-size: 0.88rem;
+      color: #475569;
+      line-height: 1.5;
+    }
+
+    html[dir="ltr"] .solution-steps li {
+      padding-right: 0;
+      padding-left: 1.4rem;
+    }
+
+    .solution-steps li::before {
+      content: '✓';
+      position: absolute;
+      right: 0.2rem;
+      color: var(--color-safe);
+      font-weight: bold;
+    }
+
+    html[dir="ltr"] .solution-steps li::before {
+      right: auto;
+      left: 0.2rem;
+    }
+
+    /* ===== Footer ===== */
+    .page-footer {
+      background: var(--gradient-primary);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .page-footer a { color: var(--color-aqua); }
+
+    @media (max-width: 640px) {
+      .parameters-card, .solutions-card { padding: 1.5rem; }
+      .page-hero { padding: 7rem 5% 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo">
+        <img src="../images/in ob.png" alt="AQUASoft Logo">
+      </a>
+      <div class="nav-right">
+        <a href="../index.html" class="back-btn" id="back-link">
+          <i class="fa-solid fa-arrow-right" id="back-icon"></i>
+          <span data-i18n="back">الصفحة الرئيسية</span>
+        </a>
+        <button id="lang-toggle">English</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="hero-badge">
+      <i class="fa-solid fa-water"></i>
+      <span data-i18n="hero_badge">دليل معايير المياه</span>
+    </div>
+    <h1 data-i18n="page_title">مؤشرات <span>جودة المياه</span></h1>
+    <p data-i18n="page_subtitle">مرجع شامل للمدى المثالي لمعايير جودة المياه، الحدود الحرجة، وبروتوكولات التدخل السريع لكل نوع من الأحياء المائية.</p>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Species Selection Section -->
+    <div class="section-title-bar">
+      <i class="fa-solid fa-fish-fins" style="color: var(--color-aqua); font-size: 1.4rem;"></i>
+      <h2 data-i18n="sec_choose_fish">اختر نوع الكائن المستزرع</h2>
+    </div>
+
+    <div class="species-grid" id="speciesGrid">
+      <div class="species-card active" data-fish="tilapia">
+        <div class="species-icon"><i class="fa-solid fa-fish"></i></div>
+        <div class="species-name" data-i18n="fish_tilapia">بلطي</div>
+      </div>
+      <div class="species-card" data-fish="mullet">
+        <div class="species-icon"><i class="fa-solid fa-fish"></i></div>
+        <div class="species-name" data-i18n="fish_mullet">بوري</div>
+      </div>
+      <div class="species-card" data-fish="carp">
+        <div class="species-icon"><i class="fa-solid fa-fish"></i></div>
+        <div class="species-name" data-i18n="fish_carp">مبروك</div>
+      </div>
+      <div class="species-card" data-fish="shrimp">
+        <div class="species-icon"><i class="fa-solid fa-shrimp"></i></div>
+        <div class="species-name" data-i18n="fish_shrimp">جمبري</div>
+      </div>
+      <div class="species-card" data-fish="sea-bream">
+        <div class="species-icon"><i class="fa-solid fa-fish"></i></div>
+        <div class="species-name" data-i18n="fish_seabream">دنيس</div>
+      </div>
+      <div class="species-card" data-fish="sea-bass">
+        <div class="species-icon"><i class="fa-solid fa-fish"></i></div>
+        <div class="species-name" data-i18n="fish_seabass">قاروص</div>
+      </div>
+    </div>
+
+    <!-- Species Detail Card -->
+    <div class="species-detail-card">
+      <div class="species-image-wrapper">
+        <img src="../images/in ob.png" alt="Species" id="fishImg">
+      </div>
+      <div class="species-info-text">
+        <h3 id="fishTitle">سمك البلطي</h3>
+        <p id="fishDescription"></p>
+      </div>
+    </div>
+
+    <!-- Ideal Parameters Table Card -->
+    <div class="parameters-card">
+      <div class="section-title-bar">
+        <i class="fa-solid fa-gauge-high" style="color: var(--color-aqua); font-size: 1.3rem;"></i>
+        <h2 data-i18n="sec_params_table">المدى المثالي لمعايير المياه</h2>
+      </div>
+
+      <div class="table-responsive">
+        <table class="styled-params-table">
+          <thead>
+            <tr>
+              <th data-i18n="th_parameter">المعيار البيئي</th>
+              <th data-i18n="th_unit">الوحدة</th>
+              <th data-i18n="th_ideal_range">المدى المثالي</th>
+              <th data-i18n="th_notes">الملاحظات والتأثير الحيوي</th>
+            </tr>
+          </thead>
+          <tbody id="parametersBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Solutions & Troubleshooting Card -->
+    <div class="solutions-card">
+      <div class="section-title-bar">
+        <i class="fa-solid fa-lightbulb" style="color: var(--color-aqua); font-size: 1.3rem;"></i>
+        <h2 data-i18n="sec_solutions">بروتوكولات وحلول مشاكل جودة المياه</h2>
+      </div>
+
+      <div class="solutions-grid" id="solutionsList">
+        <!-- Dynamically filled -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <p>&copy; 2024 AQUASoft &mdash; <a href="../index.html" data-i18n="footer_home">الصفحة الرئيسية</a> | Integrated Aquaculture Platform</p>
+  </footer>
+
+  <script>
+    // ============================================================
+    // TRANSLATIONS DICTIONARY
+    // ============================================================
+    const t = {
+      ar: {
+        back: 'الصفحة الرئيسية',
+        hero_badge: 'دليل معايير المياه',
+        page_title: 'مؤشرات <span>جودة المياه</span>',
+        page_subtitle: 'مرجع شامل للمدى المثالي لمعايير جودة المياه، الحدود الحرجة، وبروتوكولات التدخل السريع لكل نوع من الأحياء المائية.',
+        sec_choose_fish: 'اختر نوع الكائن المستزرع',
+        fish_tilapia: 'بلطي',
+        fish_mullet: 'بوري',
+        fish_carp: 'مبروك',
+        fish_shrimp: 'جمبري',
+        fish_seabream: 'دنيس',
+        fish_seabass: 'قاروص',
+        sec_params_table: 'المدى المثالي لمعايير المياه',
+        th_parameter: 'المعيار البيئي',
+        th_unit: 'الوحدة',
+        th_ideal_range: 'المدى المثالي',
+        th_notes: 'الملاحظات والتأثير الحيوي',
+        sec_solutions: 'بروتوكولات وحلول مشاكل جودة المياه',
+        footer_home: 'الصفحة الرئيسية',
+        unit_mgl: 'ملغم/لتر',
+        unit_c: '°م',
+        unit_ppt: 'جزء في الألف (ppt)',
+        unit_none: '—',
+        problems_solutions: 'حلول ومشاكل ',
+        no_specific_issues: 'الوضع مستقر — هذا النوع يتمتع بتحمل عالٍ للظروف البيئية المعتادة.'
+      },
+      en: {
+        back: 'Home',
+        hero_badge: 'Water Quality Standards',
+        page_title: 'Water Quality <span>Parameters</span>',
+        page_subtitle: 'A comprehensive reference for ideal water quality parameters, critical thresholds, and corrective protocols across cultured aquatic species.',
+        sec_choose_fish: 'Select Cultured Species',
+        fish_tilapia: 'Tilapia',
+        fish_mullet: 'Mullet',
+        fish_carp: 'Carp',
+        fish_shrimp: 'Shrimp',
+        fish_seabream: 'Seabream',
+        fish_seabass: 'Seabass',
+        sec_params_table: 'Optimal Water Quality Ranges',
+        th_parameter: 'Environmental Parameter',
+        th_unit: 'Unit',
+        th_ideal_range: 'Optimal Range',
+        th_notes: 'Notes & Biological Impact',
+        sec_solutions: 'Water Quality Troubleshooting & Corrective Protocols',
+        footer_home: 'Home',
+        unit_mgl: 'mg/L',
+        unit_c: '°C',
+        unit_ppt: 'ppt',
+        unit_none: '—',
+        problems_solutions: 'Corrective Protocols for ',
+        no_specific_issues: 'Stable conditions — this species possesses high resilience under standard environmental conditions.'
+      }
+    };
+
+    // ============================================================
+    // PARAMETERS METADATA
+    // ============================================================
+    const parameterMeta = {
+      oxygen: { nameAr: "الأكسجين المذاب (DO)", nameEn: "Dissolved Oxygen (DO)", icon: "fa-solid fa-wind" },
+      ph: { nameAr: "درجة الحموضة (pH)", nameEn: "pH Level", icon: "fa-solid fa-vial" },
+      temperature: { nameAr: "درجة الحرارة", nameEn: "Water Temperature", icon: "fa-solid fa-temperature-half" },
+      ammonia: { nameAr: "الأمونيا السامة (NH₃)", nameEn: "Toxic Ammonia (NH₃)", icon: "fa-solid fa-skull" },
+      nitrate: { nameAr: "النترات (NO₃)", nameEn: "Nitrate (NO₃)", icon: "fa-solid fa-flask-vial" },
+      nitrite: { nameAr: "النتريت (NO₂)", nameEn: "Nitrite (NO₂)", icon: "fa-solid fa-triangle-exclamation" },
+      co2: { nameAr: "ثاني أكسيد الكربون (CO₂)", nameEn: "Carbon Dioxide (CO₂)", icon: "fa-solid fa-cloud" },
+      salinity: { nameAr: "الملوحة (Salinity)", nameEn: "Salinity", icon: "fa-solid fa-water" }
+    };
+
+    // ============================================================
+    // SPECIES DATABASE
+    // ============================================================
+    const fishData = {
+      tilapia: {
+        nameAr: "سمك البلطي النيلي",
+        nameEn: "Nile Tilapia (Oreochromis niloticus)",
+        image: "https://images.unsplash.com/photo-1599156488010-9083de5a1c06?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        descAr: "البلطي من أهم الأسماك المستزرعة عالمياً؛ يتميز بمقاومته الفائقة للظروف البيئية المتغيرة وسرعة النمو وتحمله للأكسجين المنخفض والملوحة الخفيفة.",
+        descEn: "Nile tilapia is one of the world's most popular aquaculture species, celebrated for its robust environmental resilience, rapid growth rate, and tolerance to wide temperature ranges.",
+        parameters: {
+          oxygen: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "5.0 - 7.0", notesAr: "يجب ألا يقل الأكسجين عن 4 ملغم/لتر للحفاظ على أعلى معدل تحويل غذائي.", notesEn: "DO should remain above 4 mg/L to sustain optimal feed conversion." },
+          ph: { unitAr: "—", unitEn: "—", range: "6.5 - 8.5", notesAr: "تفضل درجة حموضة متعادلة إلى قلوية خفيفة (7.5 - 8.0).", notesEn: "Prefers neutral to slightly alkaline pH (7.5 - 8.0)." },
+          temperature: { unitAr: "°م", unitEn: "°C", range: "25 - 30", notesAr: "درجة الحرارة المثلى للنمو والشهية هي 28°م؛ يتوقف النمو دون 20°م.", notesEn: "Optimum growth temperature is 28°C; feeding drops below 20°C." },
+          ammonia: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 0.05", notesAr: "الأمونيا غير المتأينة سامة وتسبب تلف الخياشيم عند التراكم.", notesEn: "Un-ionized ammonia is toxic, damaging gills upon chronic accumulation." },
+          nitrite: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 0.5", notesAr: "يسبب تسمم الدم، ويمكن استخدام الملح لمعادلته.", notesEn: "Causes methemoglobinemia; sodium chloride blocks its toxicity." },
+          nitrate: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 50", notesAr: "التركيزات العالية تدل على تراكم الفضلات وضرورة تغيير جزء من الماء.", notesEn: "High values reflect excessive waste buildup and require water exchange." },
+          co2: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 20", notesAr: "التهوية الجيدة تطرد غاز ثاني أكسيد الكربون من الماء.", notesEn: "Strong aeration readily strips excess dissolved CO2." },
+          salinity: { unitAr: "ppt", unitEn: "ppt", range: "0 - 8", notesAr: "يفضل المياه العذبة ويتحمل حتى 15 ppt تدريجياً.", notesEn: "Prefers freshwater; acclimates up to 15 ppt gradually." }
+        },
+        solutions: {
+          oxygen: {
+            stepsAr: [
+              "تشغيل فوري لمضخات الهواء وعجلات البدالات (Paddlewheels).",
+              "إيقاف أو تقليل كميات التغذية فوراً حتى استقرار الأكسجين.",
+              "تجديد المياه بمياه جديدة غنية بالأكسجين.",
+              "إزالة الرواسب العضوية المتراكمة في قاع الحوض."
+            ],
+            stepsEn: [
+              "Activate supplemental paddlewheels and aeration blowers immediately.",
+              "Temporarily suspend feeding until dissolved oxygen recovers.",
+              "Flush with fresh, well-aerated water.",
+              "Purge organic sludge accumulated on pond bottom."
+            ]
+          },
+          ph: {
+            stepsAr: [
+              "لرفع pH المنخفض: إضافة بيكربونات الصوديوم أو الجير الزراعي تدريجياً.",
+              "لخفض pH المرتفع: زيادة التهوية وإضافة أحماض عضوية آمنة أو تجديد المياه.",
+              "مراقبة القلوية الكلية وتثبيتها فوق 80 ملغم/لتر."
+            ],
+            stepsEn: [
+              "To raise low pH: Gradually add sodium bicarbonate or agricultural limestone.",
+              "To lower high pH: Enhance aeration, add safe organic buffers, or exchange water.",
+              "Maintain total alkalinity above 80 mg/L as CaCO3."
+            ]
+          },
+          ammonia: {
+            stepsAr: [
+              "تغيير 20% - 30% من مياه الحوض بشكل عاجل.",
+              "خفض نسبة التغذية بمقدار 40% وإيقافها عند الخطورة.",
+              "جرعة من بكتيريا النترجة الحية لتحفيز الفلتر البيولوجي.",
+              "خفض درجة الـ pH قليلاً إن أمكن لتقليل نسبة NH₃ السامة."
+            ],
+            stepsEn: [
+              "Perform an immediate 20% - 30% water exchange.",
+              "Cut feeding rate by 40% or stop entirely during acute spikes.",
+              "Dose live nitrifying bacteria to supercharge biofiltration.",
+              "Slightly buffer down pH to decrease toxic un-ionized fraction."
+            ]
+          },
+          nitrite: {
+            stepsAr: [
+              "إضافة ملح طعام خالي من اليود (1-2 كجم لكل م³ مياه) لمعادلة سمية النتريت.",
+              "زيادة معدل التهوية لتسريع أكسدة النتريت إلى نترات.",
+              "تغيير جزئي للمياه."
+            ],
+            stepsEn: [
+              "Add non-iodized sodium chloride (1-2 kg per m³) to block nitrite gill uptake.",
+              "Boost aeration to accelerate biological conversion into nitrate.",
+              "Perform partial water exchange."
+            ]
+          }
+        }
+      },
+      mullet: {
+        nameAr: "سمك البوري (العائلة البورية)",
+        nameEn: "Grey Mullet (Mugil cephalus)",
+        image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        descAr: "البوري من الأسماك واسعة الملوحة التي تتكيف مع المياه العذبة والشروب والبحرية، ويتميز بنشاطه وقيمته الاقتصادية العالية وحساسيته للأكسجين.",
+        descEn: "Grey mullet is a highly adaptable euryhaline species thriving in freshwater, brackish, and marine environments, known for high commercial value and strict oxygen demand.",
+        parameters: {
+          oxygen: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "6.0 - 8.5", notesAr: "حساس لنقص الأكسجين؛ يتطلب تهوية مستمرة.", notesEn: "Sensitive to hypoxia; continuous aeration required." },
+          ph: { unitAr: "—", unitEn: "—", range: "7.5 - 8.5", notesAr: "تفضل المياه القلوية المائلة للبحرية.", notesEn: "Prefers alkaline, slightly marine pH." },
+          temperature: { unitAr: "°م", unitEn: "°C", range: "22 - 28", notesAr: "الحرارة المثلى للنمو هي 25 - 26°م.", notesEn: "Optimal growth temperature is 25 - 26°C." },
+          ammonia: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 0.05", notesAr: "مراقبة مستمرة للأمونيا خاصة في الأحواض المكثفة.", notesEn: "Monitor closely, especially in intensive culture." },
+          nitrite: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 0.3", notesAr: "النتريت سام ويجب إبقاؤه عند أدنى مستوى.", notesEn: "Keep nitrite minimal to protect respiratory health." },
+          nitrate: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 40", notesAr: "تغيير دوري للمياه لتفادي تراكم النترات.", notesEn: "Periodic flushing avoids nitrate accumulation." },
+          co2: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 15", notesAr: "التهوية السطحية تضمن انخفاض CO₂.", notesEn: "Surface agitation keeps dissolved CO2 low." },
+          salinity: { unitAr: "ppt", unitEn: "ppt", range: "10 - 25", notesAr: "يتحمل من 0 حتى 35 ppt بكفاءة.", notesEn: "Tolerates 0 to 35 ppt efficiently." }
+        },
+        solutions: {
+          oxygen: {
+            stepsAr: [
+              "تشغيل عجلات التهوية البدالة لرفع الأكسجين فوق 6 ملغم/لتر.",
+              "تقليل كثافة الأسماك في الأحواض المكثفة.",
+              "تنظيف قاع الأحواض وإزالة المواد العالقة."
+            ],
+            stepsEn: [
+              "Run aeration units to keep DO reliably above 6 mg/L.",
+              "Reduce stocking density in intensive tanks.",
+              "Purge bottom sediments and floating particulate matter."
+            ]
+          }
+        }
+      },
+      carp: {
+        nameAr: "أسماك المبروك (الكارب)",
+        nameEn: "Common Carp (Cyprinus carpio)",
+        image: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        descAr: "المبروك من الأسماك سريعة النمو في المياه العذبة، وتتحمل المدى الواسع من درجات الحرارة وتتغذى بكفاءة على الغذاء الطبيعي والأعلاف.",
+        descEn: "Common carp is a hardy freshwater fish with outstanding growth rates, wide thermal tolerance, and omnivorous feeding habits.",
+        parameters: {
+          oxygen: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "5.5 - 8.0", notesAr: "يتحمل الانخفاض المؤقت ولكنه يفضل الأكسجين المرتفع.", notesEn: "Tolerates temporary dips but thrives at high DO." },
+          ph: { unitAr: "—", unitEn: "—", range: "6.8 - 8.2", notesAr: "درجة حموضة معتدلة ومستقرة.", notesEn: "Requires stable, neutral-to-alkaline pH." },
+          temperature: { unitAr: "°م", unitEn: "°C", range: "20 - 27", notesAr: "النمو الأمثل يتحقق بين 24 - 26°م.", notesEn: "Peak feed intake achieved between 24 - 26°C." },
+          ammonia: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 0.08", notesAr: "التحكم في التغذية لمنع ارتفاع الأمونيا.", notesEn: "Manage feeding to prevent ammonia accumulation." },
+          nitrite: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 0.4", notesAr: "الحفاظ على توازن البكتيريا النافعة.", notesEn: "Maintain robust biofilter microbial balance." },
+          nitrate: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 60", notesAr: "يتحمل النترات بدرجة أعلى من الأسماك البحرية.", notesEn: "Tolerates higher nitrate levels than marine species." },
+          co2: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 25", notesAr: "التهوية الجيدة ضرورية في الأحواض المغلقة.", notesEn: "Good aeration is critical in closed recirculation." },
+          salinity: { unitAr: "ppt", unitEn: "ppt", range: "0 - 3", notesAr: "سمك مياه عذبة نقية (لا يتحمل الملوحة العالية).", notesEn: "Strict freshwater species (sensitive to high salinity)." }
+        },
+        solutions: {
+          oxygen: {
+            stepsAr: [
+              "زيادة التهوية الصناعية بالأحواض الترابية والمكثفة.",
+              "تجديد المياه في الصباح الباكر لتفادي اختناق الفجر."
+            ],
+            stepsEn: [
+              "Boost artificial aeration in earthen and lined ponds.",
+              "Flush fresh water during pre-dawn hours to prevent morning hypoxia."
+            ]
+          }
+        }
+      },
+      shrimp: {
+        nameAr: "الجمبري / الروبيان (الفانامي)",
+        nameEn: "Whiteleg Shrimp (Litopenaeus vannamei)",
+        image: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        descAr: "الجمبري من القشريات الدقيقة التي تتطلب عناية فائقة بجودة المياه، وخاصة الأكسجين المذاب أثناء الانسلاخ، ونسب المعادن والملوحة.",
+        descEn: "Pacific white shrimp is a high-value crustacean demanding strict water quality control, particularly dissolved oxygen during molting and ionic mineral balance.",
+        parameters: {
+          oxygen: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "5.5 - 7.5", notesAr: "حساس جداً لنقص الأكسجين أثناء فترات الانسلاخ والليل.", notesEn: "Critically vulnerable to hypoxia during nighttime and molting." },
+          ph: { unitAr: "—", unitEn: "—", range: "7.8 - 8.4", notesAr: "تقلب pH اليومي يجب ألا يتجاوز 0.5 وحدة.", notesEn: "Diurnal pH fluctuations should strictly stay < 0.5 units." },
+          temperature: { unitAr: "°م", unitEn: "°C", range: "27 - 31", notesAr: "الحرارة المثالية للنمو السريع والتمثيل الغذائي.", notesEn: "Optimal thermal window for rapid growth and metabolism." },
+          ammonia: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 0.03", notesAr: "شديد الحساسية للأمونيا السامة.", notesEn: "Extremely sensitive to un-ionized ammonia." },
+          nitrite: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 0.2", notesAr: "النتريت يسبب نفوقاً كبيراً في القشريات.", notesEn: "Elevated nitrite triggers heavy crustacean mortality." },
+          nitrate: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 30", notesAr: "التحكم في الحمل العضوي والبيوفلوك.", notesEn: "Regulate organic loading and biofloc volumes." },
+          co2: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 10", notesAr: "تحريك مستمر للمياه لطرد الغازات السامة.", notesEn: "Continuous surface agitation strips dissolved gases." },
+          salinity: { unitAr: "ppt", unitEn: "ppt", range: "15 - 28", notesAr: "يتكيف من 5 حتى 35 ppt مع ضبط نسبة الكالسيوم والمغنيسيوم.", notesEn: "Adapts between 5 - 35 ppt provided Ca/Mg ratios are balanced." }
+        },
+        solutions: {
+          oxygen: {
+            stepsAr: [
+              "تشغيل البدالات ومضخات الحقن القاعي 24 ساعة في الكثافات العالية.",
+              "مراقبة الأكسجين بين الساعة 3 فجراً وحتى شروق الشمس.",
+              "إضافة بيروكسيد الهيدروجين كطوارئ عند انعدام الأكسجين."
+            ],
+            stepsEn: [
+              "Run bottom diffusers and paddlewheels 24/7 in intensive culture.",
+              "Intensively track DO between 3:00 AM and sunrise.",
+              "Emergency dosing of hydrogen peroxide in acute asphyxiation events."
+            ]
+          },
+          ph: {
+            stepsAr: [
+              "ضبط القلوية (Alkalinity) بين 120 - 150 ملغم/لتر لثبات الـ pH.",
+              "استخدام الدولومايت أو الجير الزراعي بانتظام."
+            ],
+            stepsEn: [
+              "Maintain total alkalinity between 120 - 150 mg/L to stabilize pH.",
+              "Apply dolomite or agricultural lime routinely."
+            ]
+          }
+        }
+      },
+      "sea-bream": {
+        nameAr: "سمك الدنيس البحري",
+        nameEn: "Gilthead Seabream (Sparus aurata)",
+        image: "https://images.unsplash.com/photo-1534043464124-3be32fe00099?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        descAr: "الدنيس من الأسماك البحرية الفاخرة ذات الأهمية التصديرية الكبيرة؛ يتطلب مياهاً بحرية نقية وعالية الأكسجين وخالية تماماً من الملوثات.",
+        descEn: "Gilthead seabream is a premier marine species demanding pristine, high-salinity water, excellent dissolved oxygen, and minimal organic loads.",
+        parameters: {
+          oxygen: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "6.0 - 8.5", notesAr: "يحتاج إلى أكسجين مذاب مرتفع ومستمر.", notesEn: "Demands robust, continuous dissolved oxygen." },
+          ph: { unitAr: "—", unitEn: "—", range: "7.8 - 8.4", notesAr: "قلوية مياه البحر الطبيعية.", notesEn: "Natural marine seawater alkaline pH." },
+          temperature: { unitAr: "°م", unitEn: "°C", range: "18 - 25", notesAr: "درجة الحرارة المثلى للنمو هي 22 - 24°م.", notesEn: "Optimum growth achieved between 22 - 24°C." },
+          ammonia: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 0.02", notesAr: "حساس للأمونيا في درجات pH البحرية العالية.", notesEn: "High marine pH amplifies ammonia toxicity." },
+          nitrite: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 0.15", notesAr: "الحفاظ على النترجة الكاملة في الفلتر البيولوجي.", notesEn: "Maintain complete nitrification in biofilters." },
+          nitrate: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 25", notesAr: "تغيير دوري للمياه لضمان نقاء البيئة.", notesEn: "Regular sea water flushing to preserve water purity." },
+          co2: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 10", notesAr: "التهوية الجيدة أساسية لتفادي الحموضة الغازية.", notesEn: "Vigorous aeration prevents respiratory acidosis." },
+          salinity: { unitAr: "ppt", unitEn: "ppt", range: "30 - 38", notesAr: "سمك بحري بحت (ملوحة بحرية كاملة).", notesEn: "Strict marine species (full-strength seawater)." }
+        },
+        solutions: {
+          oxygen: {
+            stepsAr: [
+              "استخدام حقن الأكسجين النقي (LHO) في الأنظمة المغلقة المكثفة (RAS).",
+              "زيادة معدل تجديد مياه البحر."
+            ],
+            stepsEn: [
+              "Utilize pure oxygen injection (LHO / cones) in intensive RAS.",
+              "Increase pristine seawater turnover rates."
+            ]
+          }
+        }
+      },
+      "sea-bass": {
+        nameAr: "سمك القاروص (السي باس)",
+        nameEn: "European Seabass (Dicentrarchus labrax)",
+        image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        descAr: "القاروص سمك بحري مفترس ونشط؛ يحتاج إلى تغذية بروتينية عالية ومياه بحرية نقية وغنية بالأكسجين وتيار مائي مناسب.",
+        descEn: "European seabass is a high-trophic marine predator that requires protein-rich feed, high water currents, and well-oxygenated marine water.",
+        parameters: {
+          oxygen: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "6.5 - 9.0", notesAr: "طلب تنفسي مرتفع جداً بسبب نشاطه العضلي السريع.", notesEn: "High metabolic oxygen demand due to predatory activity." },
+          ph: { unitAr: "—", unitEn: "—", range: "7.8 - 8.4", notesAr: "درجة حموضة قلوية بحرية مستقرة.", notesEn: "Stable marine alkaline pH window." },
+          temperature: { unitAr: "°م", unitEn: "°C", range: "18 - 24", notesAr: "الحرارة المثلى للنمو والتحويل الغذائي 22°م.", notesEn: "Optimal growth and feed efficiency at 22°C." },
+          ammonia: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 0.02", notesAr: "حساسية شديدة للأمونيا في المياه البحرية.", notesEn: "Extreme sensitivity to un-ionized ammonia in seawater." },
+          nitrite: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 0.1", notesAr: "مراقبة دقيقة لنشاط البكتيريا المؤكسدة.", notesEn: "Strict monitoring of nitrite-oxidizing bacteria." },
+          nitrate: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 25", notesAr: "الحفاظ على المياه خالية من المخلفات.", notesEn: "Keep recirculation free from metabolic waste." },
+          co2: { unitAr: "ملغم/لتر", unitEn: "mg/L", range: "< 8", notesAr: "أبراج تهوية لإزالة ثاني أكسيد الكربون.", notesEn: "Degassing towers to strip dissolved CO2." },
+          salinity: { unitAr: "ppt", unitEn: "ppt", range: "25 - 37", notesAr: "ينمو بكفاءة في المياه البحرية والشروب المرتفعة.", notesEn: "Thrives in marine and high-salinity brackish water." }
+        },
+        solutions: {
+          oxygen: {
+            stepsAr: [
+              "تشغيل مراوح التهوية وتوفير تيار مائي كافٍ للسباحة والتنفس.",
+              "مراقبة استهلاك الأكسجين الحاد بعد كل وجبة تغذية."
+            ],
+            stepsEn: [
+              "Maintain strong water current and high-capacity aeration.",
+              "Closely track post-prandial oxygen consumption surges."
+            ]
+          }
+        }
+      }
+    };
+
+    // ============================================================
+    // STATE & LOGIC
+    // ============================================================
+    let currentLang = localStorage.getItem('aqasoft_lang') || 'ar';
+    let currentFish = 'tilapia';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('aqasoft_lang', lang);
+
+      const isAr = lang === 'ar';
+      document.documentElement.lang = lang;
+      document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+      document.body.classList.toggle('ltr', !isAr);
+
+      document.getElementById('lang-toggle').textContent = isAr ? 'English' : 'عربي';
+
+      const backIcon = document.getElementById('back-icon');
+      if (backIcon) {
+        backIcon.className = isAr ? 'fa-solid fa-arrow-right' : 'fa-solid fa-arrow-left';
+      }
+
+      // Translate tagged elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[lang] && t[lang][key] !== undefined) {
+          el.innerHTML = t[lang][key];
+        }
+      });
+
+      renderSpeciesView(currentFish);
+    }
+
+    document.getElementById('lang-toggle').addEventListener('click', () => {
+      applyLang(currentLang === 'ar' ? 'en' : 'ar');
+    });
+
+    // ============================================================
+    // RENDER SPECIES DETAILS
+    // ============================================================
+    function renderSpeciesView(fishKey) {
+      currentFish = fishKey;
+      const fish = fishData[fishKey];
+      const lang = currentLang;
+      const isAr = lang === 'ar';
+
+      // 1. Update Fish Overview
+      document.getElementById('fishImg').src = fish.image;
+      document.getElementById('fishTitle').textContent = isAr ? fish.nameAr : fish.nameEn;
+      document.getElementById('fishDescription').textContent = isAr ? fish.descAr : fish.descEn;
+
+      // 2. Update Parameters Table
+      const tableBody = document.getElementById('parametersBody');
+      tableBody.innerHTML = '';
+
+      for (const [paramKey, data] of Object.entries(fish.parameters)) {
+        const meta = parameterMeta[paramKey];
+        const row = document.createElement('tr');
+
+        const paramName = isAr ? meta.nameAr : meta.nameEn;
+        const unitText = isAr ? data.unitAr : data.unitEn;
+        const notesText = isAr ? data.notesAr : data.notesEn;
+
+        row.innerHTML = `
+          <td>
+            <div class="param-name-cell">
+              <i class="${meta.icon}"></i>
+              <span>${paramName}</span>
+            </div>
+          </td>
+          <td><strong>${unitText}</strong></td>
+          <td><span class="ideal-range-badge">${data.range}</span></td>
+          <td>${notesText}</td>
+        `;
+
+        tableBody.appendChild(row);
+      }
+
+      // 3. Update Solutions Grid
+      const solutionsContainer = document.getElementById('solutionsList');
+      solutionsContainer.innerHTML = '';
+
+      const solutionsObj = fish.solutions;
+      const solutionKeys = Object.keys(solutionsObj);
+
+      if (solutionKeys.length > 0) {
+        solutionKeys.forEach(paramKey => {
+          const meta = parameterMeta[paramKey];
+          const solData = solutionsObj[paramKey];
+          const paramName = isAr ? meta.nameAr : meta.nameEn;
+          const stepsList = isAr ? solData.stepsAr : solData.stepsEn;
+
+          const block = document.createElement('div');
+          block.className = 'solution-block';
+          block.innerHTML = `
+            <div class="solution-header">
+              <i class="${meta.icon}" style="color: var(--color-aqua);"></i>
+              <span>${t[lang].problems_solutions}${paramName}</span>
+            </div>
+            <ul class="solution-steps">
+              ${stepsList.map(step => `<li>${step}</li>`).join('')}
+            </ul>
+          `;
+
+          solutionsContainer.appendChild(block);
+        });
+      } else {
+        solutionsContainer.innerHTML = `
+          <div class="solution-block" style="border-right-color: var(--color-safe); grid-column: 1 / -1;">
+            <div class="solution-header" style="color: var(--color-safe);">
+              <i class="fa-solid fa-circle-check"></i>
+              <span>${isAr ? 'حالة التكيف البيئي' : 'Environmental Resilience'}</span>
+            </div>
+            <p style="font-size: 0.9rem; color: #475569;">${t[lang].no_specific_issues}</p>
+          </div>
+        `;
+      }
+
+      // Highlight species card
+      document.querySelectorAll('.species-card').forEach(card => {
+        card.classList.toggle('active', card.getAttribute('data-fish') === fishKey);
+      });
+    }
+
+    // Species card clicks
+    document.querySelectorAll('.species-card').forEach(card => {
+      card.addEventListener('click', function() {
+        const fishKey = this.getAttribute('data-fish');
+        renderSpeciesView(fishKey);
+      });
+    });
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Init
+    applyLang(currentLang);
+  </script>
+</body>
+</html>

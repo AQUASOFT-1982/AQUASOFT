@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#1F4B5D">
+  <link rel="apple-touch-icon" href="../icons/icon-192x192.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQUASoft | حاسبة الأمونيا السامة</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* ===== Design Tokens (matching AQUASoft theme) ===== */
+    :root {
+      --color-ocean-blue: #1F4B5D;
+      --color-aqua: #68CFEB;
+      --color-soft-white: #FAFAFA;
+      --color-charcoal: #1F1E19;
+      --gradient-primary: linear-gradient(135deg, #1F4B5D 0%, #153644 100%);
+      --gradient-accent: linear-gradient(135deg, #68CFEB 0%, #4cb8d6 100%);
+      --shadow-sm: 0 4px 6px rgba(31, 75, 93, 0.05);
+      --shadow-md: 0 10px 20px rgba(31, 75, 93, 0.08);
+      --shadow-lg: 0 20px 40px rgba(31, 75, 93, 0.12);
+      --shadow-glow: 0 0 20px rgba(104, 207, 235, 0.4);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --color-danger: #e53e3e;
+      --color-warning: #d97706;
+      --color-safe: #059669;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--color-soft-white);
+      color: var(--color-charcoal);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body.ltr {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    a { text-decoration: none; color: inherit; transition: var(--transition); }
+    ul { list-style: none; }
+
+    /* ===== Navbar ===== */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1rem 0;
+      transition: var(--transition);
+      background: transparent;
+    }
+
+    .navbar.scrolled {
+      background: rgba(250, 250, 250, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+      padding: 0.7rem 0;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--color-ocean-blue);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .back-btn:hover { opacity: 0.75; }
+
+    #lang-toggle {
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1.5px solid var(--color-ocean-blue);
+      background: transparent;
+      color: var(--color-ocean-blue);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      letter-spacing: 0.3px;
+    }
+
+    #lang-toggle:hover {
+      background: var(--color-ocean-blue);
+      color: #fff;
+    }
+
+    /* ===== Page Hero ===== */
+    .page-hero {
+      background: var(--gradient-primary);
+      padding: 8rem 5% 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -20%;
+      width: 60%;
+      height: 200%;
+      background: radial-gradient(ellipse, rgba(104,207,235,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%; right: -10%;
+      width: 50%;
+      height: 150%;
+      background: radial-gradient(ellipse, rgba(104,207,235,0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-badge-group {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(104, 207, 235, 0.15);
+      border: 1px solid rgba(104, 207, 235, 0.3);
+      color: var(--color-aqua);
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .page-hero h1 {
+      color: #fff;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .page-hero h1 span {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-hero p {
+      color: rgba(255,255,255,0.75);
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* ===== Main Layout ===== */
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 5% 5rem;
+    }
+
+    .calculator-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 992px) {
+      .calculator-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ===== Cards Style ===== */
+    .calc-card, .chart-card, .info-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 2.2rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(31, 75, 93, 0.06);
+      margin-bottom: 2rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.8rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid rgba(31, 75, 93, 0.08);
+    }
+
+    .card-icon {
+      width: 50px;
+      height: 50px;
+      background: var(--gradient-accent);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: var(--color-ocean-blue);
+      flex-shrink: 0;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .card-header h2, .card-header h3 {
+      font-size: 1.3rem;
+      color: var(--color-ocean-blue);
+      font-weight: 700;
+    }
+
+    .card-header p {
+      color: #64748b;
+      font-size: 0.85rem;
+      margin-top: 0.15rem;
+    }
+
+    /* ===== Form Inputs ===== */
+    .inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .inputs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: 600;
+      color: var(--color-ocean-blue);
+      font-size: 0.9rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .input-group label i {
+      color: var(--color-aqua);
+      margin-left: 0.4rem;
+    }
+
+    html[dir="ltr"] .input-group label i {
+      margin-left: 0;
+      margin-right: 0.4rem;
+    }
+
+    .input-with-unit {
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--color-charcoal);
+      background: var(--color-soft-white);
+      transition: var(--transition);
+      outline: none;
+    }
+
+    .input-with-unit input {
+      padding-left: 3.5rem;
+    }
+
+    html[dir="ltr"] .input-with-unit input {
+      padding-left: 1rem;
+      padding-right: 3.5rem;
+    }
+
+    .unit-tag {
+      position: absolute;
+      left: 1rem;
+      font-size: 0.85rem;
+      color: #64748b;
+      font-weight: 600;
+      pointer-events: none;
+    }
+
+    html[dir="ltr"] .unit-tag {
+      left: auto;
+      right: 1rem;
+    }
+
+    .input-group input:focus,
+    .input-group select:focus {
+      border-color: var(--color-aqua);
+      box-shadow: 0 0 0 3px rgba(104, 207, 235, 0.2);
+      background: #fff;
+    }
+
+    .input-hint {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 0.3rem;
+    }
+
+    /* ===== Buttons ===== */
+    .actions-row {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .calc-btn {
+      flex: 2;
+      padding: 0.9rem 1.5rem;
+      background: var(--gradient-primary);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .calc-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(31, 75, 93, 0.25);
+    }
+
+    .reset-btn {
+      flex: 1;
+      padding: 0.9rem 1.2rem;
+      background: #f1f5f9;
+      color: #475569;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .reset-btn:hover {
+      background: #e2e8f0;
+      color: var(--color-ocean-blue);
+    }
+
+    /* ===== Error Alert ===== */
+    .error-alert {
+      background: #fee2e2;
+      border: 1.5px solid #f87171;
+      color: #991b1b;
+      padding: 0.9rem 1.2rem;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      display: none;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    /* ===== Results Section ===== */
+    .results-section {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(31, 75, 93, 0.08);
+      display: none;
+    }
+
+    .results-section.visible {
+      display: block;
+      animation: fadeUp 0.4s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    @media (max-width: 600px) {
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .result-box {
+      background: linear-gradient(135deg, #f8fafb, #f1f5f8);
+      border-radius: 16px;
+      padding: 1.2rem 1.1rem;
+      text-align: center;
+      border: 1px solid rgba(31, 75, 93, 0.07);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-box::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; left: 0;
+      height: 3px;
+      background: var(--gradient-accent);
+    }
+
+    .result-box.highlight {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border-color: rgba(104, 207, 235, 0.4);
+    }
+
+    .result-box.highlight::before {
+      background: var(--color-ocean-blue);
+    }
+
+    .result-box:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .result-label {
+      font-size: 0.8rem;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+
+    .result-value {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--color-ocean-blue);
+      display: block;
+      line-height: 1.2;
+    }
+
+    .result-unit {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      font-weight: 500;
+      display: block;
+      margin-top: 0.2rem;
+    }
+
+    /* ===== Salinity Effect Box ===== */
+    .salinity-effect-box {
+      background: rgba(104, 207, 235, 0.08);
+      border: 1.5px dashed rgba(104, 207, 235, 0.4);
+      border-radius: 14px;
+      padding: 0.9rem 1.2rem;
+      font-size: 0.85rem;
+      color: var(--color-ocean-blue);
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.2rem;
+    }
+
+    /* ===== Status Box ===== */
+    .status-box {
+      border-radius: 14px;
+      padding: 1rem 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .status-box.safe   { background: rgba(5, 150, 105, 0.08); border: 1.5px solid rgba(5, 150, 105, 0.25); color: var(--color-safe); }
+    .status-box.warn   { background: rgba(217, 119, 6, 0.08); border: 1.5px solid rgba(217, 119, 6, 0.25); color: var(--color-warning); }
+    .status-box.danger { background: rgba(229, 62, 62, 0.08); border: 1.5px solid rgba(229, 62, 62, 0.25); color: var(--color-danger); }
+    .status-box i { font-size: 1.4rem; flex-shrink: 0; }
+
+    /* ===== Recommendations Box ===== */
+    .recommendations-box {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 1.4rem;
+      border: 1px solid #e2e8f0;
+    }
+
+    .recommendations-header {
+      color: var(--color-ocean-blue);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .rec-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .rec-list li {
+      position: relative;
+      padding-right: 1.4rem;
+      font-size: 0.88rem;
+      color: #334155;
+      line-height: 1.5;
+    }
+
+    html[dir="ltr"] .rec-list li {
+      padding-right: 0;
+      padding-left: 1.4rem;
+    }
+
+    .rec-list li::before {
+      content: '•';
+      position: absolute;
+      right: 0.3rem;
+      color: var(--color-aqua);
+      font-size: 1.2rem;
+      line-height: 1;
+      top: -0.1rem;
+    }
+
+    html[dir="ltr"] .rec-list li::before {
+      right: auto;
+      left: 0.3rem;
+    }
+
+    /* ===== Chart Card ===== */
+    .chart-wrapper {
+      position: relative;
+      height: 280px;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .chart-footer-note {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 1rem;
+    }
+
+    /* ===== Scientific Info Card ===== */
+    .info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      font-size: 0.88rem;
+      color: #475569;
+    }
+
+    .info-list li {
+      line-height: 1.5;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .info-list li strong {
+      color: var(--color-ocean-blue);
+    }
+
+    .limits-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+      margin-top: 0.6rem;
+    }
+
+    .limit-box {
+      background: #f8fafc;
+      padding: 0.6rem;
+      border-radius: 10px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+      font-size: 0.78rem;
+    }
+
+    .limit-box span {
+      display: block;
+      font-weight: 700;
+      color: var(--color-ocean-blue);
+      margin-top: 0.2rem;
+    }
+
+    /* ===== Footer ===== */
+    .page-footer {
+      background: var(--gradient-primary);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .page-footer a { color: var(--color-aqua); }
+
+    @media (max-width: 640px) {
+      .calc-card, .chart-card, .info-card { padding: 1.5rem; }
+      .actions-row { flex-direction: column; }
+      .limits-grid { grid-template-columns: 1fr; }
+      .page-hero { padding: 7rem 5% 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo">
+        <img src="../images/in ob.png" alt="AQUASoft Logo">
+      </a>
+      <div class="nav-right">
+        <a href="../index.html" class="back-btn" id="back-link">
+          <i class="fa-solid fa-arrow-right" id="back-icon"></i>
+          <span data-i18n="back">الصفحة الرئيسية</span>
+        </a>
+        <button id="lang-toggle">English</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Hero -->
+  <section class="page-hero">
+    <div class="hero-badge-group">
+      <div class="hero-badge">
+        <i class="fa-solid fa-flask-vial"></i>
+        <span data-i18n="badge_fdep">معايير FDEP الدولية</span>
+      </div>
+      <div class="hero-badge">
+        <i class="fa-solid fa-water"></i>
+        <span data-i18n="badge_salinity">تصحيح الملوحة المتكامل</span>
+      </div>
+    </div>
+    <h1 data-i18n="page_title">حاسبة <span>الأمونيا السامة</span></h1>
+    <p data-i18n="page_subtitle">حساب دقيق لنسبة الأمونيا غير المتأينة السامة (NH₃) بدلالة الحموضة والحرارة والملوحة لضمان سلامة الأحياء المائية.</p>
+  </section>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="calculator-layout">
+
+      <!-- Left Column: Inputs & Results -->
+      <div class="column-left">
+
+        <!-- Calculator Input Card -->
+        <div class="calc-card">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-skull-crossbones"></i>
+            </div>
+            <div>
+              <h2 data-i18n="inputs_title">معايير القياس والفحص</h2>
+              <p data-i18n="inputs_sub">أدخل قراءات الماء الحالية لحساب السمية بدقة</p>
+            </div>
+          </div>
+
+          <div class="inputs-grid">
+            <div class="input-group">
+              <label for="ph"><i class="fa-solid fa-chart-simple"></i><span data-i18n="lbl_ph">درجة الحموضة (pH)</span></label>
+              <input type="number" id="ph" step="0.1" min="6" max="10.2" value="8.0" placeholder="8.0" data-placeholder-ar="8.0" data-placeholder-en="8.0">
+              <div class="input-hint" data-i18n="hint_ph">المدى الآمن: 6.5 - 8.5</div>
+            </div>
+
+            <div class="input-group">
+              <label for="temp"><i class="fa-solid fa-temperature-half"></i><span data-i18n="lbl_temp">درجة الحرارة (°C)</span></label>
+              <div class="input-with-unit">
+                <input type="number" id="temp" min="0" max="40" value="25" placeholder="25" data-placeholder-ar="25" data-placeholder-en="25">
+                <span class="unit-tag">°C</span>
+              </div>
+              <div class="input-hint" data-i18n="hint_temp">المدى المثالي: 22 - 28°C</div>
+            </div>
+
+            <div class="input-group">
+              <label for="totalAmmonia"><i class="fa-solid fa-droplet"></i><span data-i18n="lbl_tan">إجمالي الأمونيا (TAN)</span></label>
+              <div class="input-with-unit">
+                <input type="number" id="totalAmmonia" step="0.05" min="0" value="0.5" placeholder="0.5" data-placeholder-ar="0.5" data-placeholder-en="0.5">
+                <span class="unit-tag" data-i18n="unit_mgl">ملغم/لتر</span>
+              </div>
+              <div class="input-hint" data-i18n="hint_tan">تركيز TAN الكلي (NH₃ + NH₄⁺)</div>
+            </div>
+
+            <div class="input-group">
+              <label for="salinity"><i class="fa-solid fa-cubes-stacked"></i><span data-i18n="lbl_salinity">الملوحة (Salinity)</span></label>
+              <div class="input-with-unit">
+                <input type="number" id="salinity" step="0.5" min="0" max="35" value="0" placeholder="0" data-placeholder-ar="0" data-placeholder-en="0">
+                <span class="unit-tag" data-i18n="unit_ppt">ppt</span>
+              </div>
+              <div class="input-hint" data-i18n="hint_salinity">عذبة (0-5) | شروب (5-25) | مالحة (25-35)</div>
+            </div>
+
+            <div class="input-group full-width">
+              <label for="waterType"><i class="fa-solid fa-water"></i><span data-i18n="lbl_water_type">نوع المياه (تحديد تلقائي للملوحة)</span></label>
+              <select id="waterType">
+                <option value="fresh" data-i18n="opt_fresh">مياه عذبة (0-5 ppt)</option>
+                <option value="brackish" data-i18n="opt_brackish">مياه شروب (5-25 ppt)</option>
+                <option value="marine" data-i18n="opt_marine">مياه مالحة (25-35 ppt)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="actions-row">
+            <button class="calc-btn" id="calc-btn">
+              <i class="fa-solid fa-calculator"></i>
+              <span data-i18n="calc_btn">احسب الأمونيا السامة</span>
+            </button>
+            <button class="reset-btn" id="reset-btn">
+              <i class="fa-solid fa-rotate-right"></i>
+              <span data-i18n="reset_btn">إعادة تعيين</span>
+            </button>
+          </div>
+
+          <div class="error-alert" id="error">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span id="error-msg"></span>
+          </div>
+
+          <!-- Dynamic Results Area -->
+          <div class="results-section" id="results">
+            <div class="card-header" style="margin-bottom: 1.2rem; padding-bottom: 0.8rem;">
+              <div class="card-icon" style="width: 40px; height: 40px; font-size: 1.1rem;">
+                <i class="fa-solid fa-square-poll-vertical"></i>
+              </div>
+              <div>
+                <h3 data-i18n="res_title">نتائج التحليل الكيميائي</h3>
+              </div>
+            </div>
+
+            <div class="results-grid">
+              <div class="result-box">
+                <span class="result-label" data-i18n="res_tan">إجمالي الأمونيا (TAN)</span>
+                <span class="result-value" id="total-ammonia-result">—</span>
+                <span class="result-unit" data-i18n="unit_mgl">ملغم/لتر</span>
+              </div>
+
+              <div class="result-box">
+                <span class="result-label" data-i18n="res_pka">ثابت التفكك (pKa)</span>
+                <span class="result-value" id="pka-value">—</span>
+                <span class="result-unit" data-i18n="res_pka_sub">عند الظروف الحالية</span>
+              </div>
+
+              <div class="result-box">
+                <span class="result-label" data-i18n="res_fraction">نسبة الأمونيا السامة (NH₃)</span>
+                <span class="result-value" id="toxic-percentage">—</span>
+                <span class="result-unit">% <span data-i18n="res_of_tan">من الإجمالي</span></span>
+              </div>
+
+              <div class="result-box highlight">
+                <span class="result-label" data-i18n="res_toxic_nh3">تركيز الأمونيا السامة (NH₃)</span>
+                <span class="result-value" id="toxic-ammonia" style="color: var(--color-ocean-blue); font-size: 1.6rem;">—</span>
+                <span class="result-unit" data-i18n="unit_mgl">ملغم/لتر</span>
+              </div>
+            </div>
+
+            <!-- Salinity Effect Notice -->
+            <div class="salinity-effect-box" id="salinity-effect-box">
+              <i class="fa-solid fa-circle-check" style="color: var(--color-aqua);"></i>
+              <span id="salinity-effect-text"></span>
+            </div>
+
+            <!-- Status Box -->
+            <div class="status-box safe" id="status-box">
+              <i class="fa-solid fa-circle-check" id="status-icon"></i>
+              <span id="status-text">—</span>
+            </div>
+
+            <!-- Recommendations Area -->
+            <div class="recommendations-box" id="recommendations">
+              <div class="recommendations-header">
+                <i class="fa-solid fa-lightbulb" style="color: var(--color-aqua);"></i>
+                <span data-i18n="rec_title">التوصيات والإجراءات الفورية:</span>
+              </div>
+              <ul class="rec-list" id="rec-list">
+                <!-- Dynamically populated -->
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Right Column: Interactive Chart & Reference Info -->
+      <div class="column-right">
+
+        <!-- Chart Card -->
+        <div class="chart-card">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div>
+              <h3 data-i18n="chart_title">تغير نسبة الأمونيا السامة مع الحرارة</h3>
+              <p data-i18n="chart_sub">المنحنى البياني عند قيمة pH المحددة</p>
+            </div>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="ammoniaChart"></canvas>
+          </div>
+          <div class="chart-footer-note" data-i18n="chart_footer">
+            المنحنى يحاكي المياه العذبة كمرجع أساسي وفق دراسة Thurston et al.
+          </div>
+        </div>
+
+        <!-- Scientific Reference Card -->
+        <div class="info-card">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="fa-solid fa-book-bookmark"></i>
+            </div>
+            <div>
+              <h3 data-i18n="info_title">المرجعية والمعادلات العلمية</h3>
+              <p data-i18n="info_sub">وفق دليل وكالة حماية البيئة بولاية فلوريدا (FDEP)</p>
+            </div>
+          </div>
+
+          <ul class="info-list">
+            <li>
+              <strong data-i18n="eq_label_1">معادلة الاتزان الكيميائي:</strong>
+              <div><code>NH₃·H₂O ⇌ NH₄⁺ + OH⁻</code></div>
+            </li>
+            <li>
+              <strong data-i18n="eq_label_2">معادلة pKa للمياه العذبة:</strong>
+              <div><code>pKa = 0.0901821 + 2729.92 / (T°C + 273.2)</code></div>
+            </li>
+            <li>
+              <strong data-i18n="eq_label_3">نسبة كسر الأمونيا السامة (f):</strong>
+              <div><code>f = 1 / (10^(pKa - pH) + 1)</code></div>
+            </li>
+            <li>
+              <strong data-i18n="eq_label_4">التحويل إلى جزيء NH₃:</strong>
+              <div><code>NH₃ (mg/L) = NH₃-N × (17/14)</code></div>
+            </li>
+          </ul>
+
+          <div style="margin-top: 1.2rem;">
+            <strong style="color: var(--color-ocean-blue); font-size: 0.9rem;" data-i18n="limits_title">حدود الأمان العامة لـ NH₃:</strong>
+            <div class="limits-grid">
+              <div class="limit-box">
+                <span data-i18n="limit_sens_label">الأسماك الحساسة</span>
+                <span>&lt; 0.02 mg/L</span>
+              </div>
+              <div class="limit-box">
+                <span data-i18n="limit_norm_label">معظم الأسماك</span>
+                <span>&lt; 0.05 mg/L</span>
+              </div>
+              <div class="limit-box">
+                <span data-i18n="limit_tol_label">الأسماك القوية</span>
+                <span>&lt; 0.10 mg/L</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <p>&copy; 2024 AQUASoft &mdash; <a href="../index.html" data-i18n="footer_home">الصفحة الرئيسية</a> | Florida DEP Standard (STORET 00619)</p>
+  </footer>
+
+  <script>
+    // ============================================================
+    // TRANSLATIONS DICTIONARY
+    // ============================================================
+    const t = {
+      ar: {
+        back: 'الصفحة الرئيسية',
+        badge_fdep: 'معايير FDEP الدولية',
+        badge_salinity: 'تصحيح الملوحة المتكامل',
+        page_title: 'حاسبة <span>الأمونيا السامة</span>',
+        page_subtitle: 'حساب دقيق لنسبة الأمونيا غير المتأينة السامة (NH₃) بدلالة الحموضة والحرارة والملوحة لضمان سلامة الأحياء المائية.',
+        inputs_title: 'معايير القياس والفحص',
+        inputs_sub: 'أدخل قراءات الماء الحالية لحساب السمية بدقة',
+        lbl_ph: 'درجة الحموضة (pH)',
+        hint_ph: 'المدى الآمن: 6.5 - 8.5',
+        lbl_temp: 'درجة الحرارة (°C)',
+        hint_temp: 'المدى المثالي: 22 - 28°C',
+        lbl_tan: 'إجمالي الأمونيا (TAN)',
+        hint_tan: 'تركيز TAN الكلي (NH₃ + NH₄⁺)',
+        lbl_salinity: 'الملوحة (Salinity)',
+        hint_salinity: 'عذبة (0-5) | شروب (5-25) | مالحة (25-35)',
+        lbl_water_type: 'نوع المياه (تحديد تلقائي للملوحة)',
+        opt_fresh: 'مياه عذبة (0-5 ppt)',
+        opt_brackish: 'مياه شروب (5-25 ppt)',
+        opt_marine: 'مياه مالحة (25-35 ppt)',
+        calc_btn: 'احسب الأمونيا السامة',
+        reset_btn: 'إعادة تعيين',
+        res_title: 'نتائج التحليل الكيميائي',
+        res_tan: 'إجمالي الأمونيا (TAN)',
+        res_pka: 'ثابت التفكك (pKa)',
+        res_pka_sub: 'عند الظروف الحالية',
+        res_fraction: 'نسبة الأمونيا السامة (NH₃)',
+        res_of_tan: 'من الإجمالي',
+        res_toxic_nh3: 'تركيز الأمونيا السامة (NH₃)',
+        unit_mgl: 'ملغم/لتر',
+        unit_ppt: 'ppt',
+        rec_title: 'التوصيات والإجراءات الفورية:',
+        chart_title: 'تغير نسبة الأمونيا السامة مع الحرارة',
+        chart_sub: 'المنحنى البياني عند قيمة pH المحددة',
+        chart_footer: 'المنحنى يحاكي المياه العذبة كمرجع أساسي وفق دراسة Thurston et al.',
+        chart_dataset_label: 'نسبة الأمونيا السامة (%) عند pH = ',
+        chart_y_title: 'نسبة الأمونيا السامة (%)',
+        chart_x_title: 'درجة الحرارة (°C)',
+        chart_tooltip_label: 'النسبة: ',
+        info_title: 'المرجعية والمعادلات العلمية',
+        info_sub: 'وفق دليل وكالة حماية البيئة بولاية فلوريدا (FDEP)',
+        eq_label_1: 'معادلة الاتزان الكيميائي:',
+        eq_label_2: 'معادلة pKa للمياه العذبة:',
+        eq_label_3: 'نسبة كسر الأمونيا السامة (f):',
+        eq_label_4: 'التحويل إلى جزيء NH₃:',
+        limits_title: 'حدود الأمان العامة لـ NH₃:',
+        limit_sens_label: 'الأسماك الحساسة',
+        limit_norm_label: 'معظم الأسماك',
+        limit_tol_label: 'الأسماك القوية',
+        footer_home: 'الصفحة الرئيسية',
+        err_ph: 'برجاء إدخال قيمة pH صحيحة بين 6.0 و 10.2',
+        err_temp: 'برجاء إدخال درجة حرارة صحيحة بين 0 و 40 درجة مئوية',
+        err_tan: 'برجاء إدخال قيمة صحيحة لإجمالي الأمونيا (أكبر من الصفر)',
+        status_danger: 'خطر — مستوى الأمونيا السامة مرتفع جداً! خطر داهم على الأسماك',
+        status_warn: 'تحذير — مستوى الأمونيا السامة مرتفع. مراقبة مستمرة وإجراءات مطلوبة',
+        status_safe: 'آمن — مستوى الأمونيا السامة ضمن الحدود المقبولة والطبيعية',
+        rec_urgent_water: 'إجراء عاجل: قم بتغيير 30-50% من المياه فوراً لتخفيف تركيز الأمونيا.',
+        rec_urgent_aeration: 'زيادة التهوية بشكل كبير (تشغيل كامل المضخات) لتسريع طرد الغازات.',
+        rec_urgent_stop_feed: 'أوقف التغذية لمدة 24-48 ساعة لتقليل إفراز النيتروجين.',
+        rec_add_bacteria: 'أضف بكتيريا نترجة نافعة (Nitrifiers) لتسريع أكسدة الأمونيا إلى نترات.',
+        rec_warn_water: 'إجراء وقائي: قم بتغيير 20-30% من المياه.',
+        rec_warn_aeration: 'زد التهوية لمدة 6-8 ساعات إضافية يومياً وخاصة ليلاً.',
+        rec_warn_reduce_feed: 'قلل كمية العلف بنسبة 30% حتى استقرار المستويات.',
+        rec_warn_monitor: 'راقب مستويات pH ودرجة الحرارة والأكسجين يومياً.',
+        rec_safe_good: 'وضع مستقر: استمر في المراقبة المنتظمة لمستويات الأمونيا.',
+        rec_safe_routine: 'حافظ على جدول تغيير المياه الدوري (10-15% أسبوعياً).',
+        rec_high_ph: 'pH مرتفع: تزداد سمية الأمونيا بشكل حاد مع ارتفاع pH. فكر في ضبط القلوية.',
+        rec_low_ph: 'pH منخفض: قد يؤثر على نشاط بكتيريا الفلتر البيولوجي.',
+        rec_high_temp: 'درجة حرارة مرتفعة: تزيد من تحول الأمونيوم إلى أمونيا سامة وتزيد استهلاك الأكسجين.',
+        rec_low_temp: 'درجة حرارة منخفضة: قلل التغذية لتجنب تراكم الفائض وضعف الهضم.',
+        rec_fresh_note: 'ملوحة منخفضة: الأسماك في المياه العذبة أكثر حساسية للأمونيا.',
+        rec_marine_note: 'ملوحة عالية: الأسماك في المياه المالحة تتحمل نسبة أعلى نسبياً، ولكن المراقبة واجبة.',
+        salinity_correction_text: 'الملوحة {sal} ppt ترفع القوة الأيونية وتقلل سمية الأمونيا بنسبة {pct}% مقارنة بالمياه العذبة ({type}).'
+      },
+      en: {
+        back: 'Home',
+        badge_fdep: 'FDEP International Standard',
+        badge_salinity: 'Integrated Salinity Correction',
+        page_title: 'Toxic Ammonia <span>Calculator</span>',
+        page_subtitle: 'Precise calculation of toxic un-ionized ammonia (NH₃) as a function of pH, temperature, and salinity to safeguard aquatic life.',
+        inputs_title: 'Measurement & Test Parameters',
+        inputs_sub: 'Enter current water readings to calculate toxicity precisely',
+        lbl_ph: 'Acidity / pH Level',
+        hint_ph: 'Safe range: 6.5 - 8.5',
+        lbl_temp: 'Water Temperature (°C)',
+        hint_temp: 'Ideal range: 22 - 28°C',
+        lbl_tan: 'Total Ammonia (TAN)',
+        hint_tan: 'Total TAN concentration (NH₃ + NH₄⁺)',
+        lbl_salinity: 'Salinity',
+        hint_salinity: 'Fresh (0-5) | Brackish (5-25) | Marine (25-35)',
+        lbl_water_type: 'Water Type (Auto-set Salinity)',
+        opt_fresh: 'Freshwater (0-5 ppt)',
+        opt_brackish: 'Brackish Water (5-25 ppt)',
+        opt_marine: 'Marine Water (25-35 ppt)',
+        calc_btn: 'Calculate Toxic Ammonia',
+        reset_btn: 'Reset Fields',
+        res_title: 'Chemical Analysis Results',
+        res_tan: 'Total Ammonia (TAN)',
+        res_pka: 'Dissociation Constant (pKa)',
+        res_pka_sub: 'At current conditions',
+        res_fraction: 'Toxic Ammonia Fraction (NH₃)',
+        res_of_tan: 'of Total',
+        res_toxic_nh3: 'Toxic Ammonia Concentration (NH₃)',
+        unit_mgl: 'mg/L',
+        unit_ppt: 'ppt',
+        rec_title: 'Immediate Recommendations & Actions:',
+        chart_title: 'Toxic Ammonia % vs Temperature',
+        chart_sub: 'Calculated response curve at current pH level',
+        chart_footer: 'Curve simulates freshwater baseline according to Thurston et al.',
+        chart_dataset_label: 'Toxic Ammonia (%) at pH = ',
+        chart_y_title: 'Toxic Ammonia Percentage (%)',
+        chart_x_title: 'Water Temperature (°C)',
+        chart_tooltip_label: 'Percentage: ',
+        info_title: 'Scientific Reference & Formulas',
+        info_sub: 'According to Florida Dept. of Environmental Protection (FDEP)',
+        eq_label_1: 'Chemical Equilibrium Formula:',
+        eq_label_2: 'Freshwater pKa Formula:',
+        eq_label_3: 'Toxic Ammonia Fraction (f):',
+        eq_label_4: 'Conversion to NH₃ molecule:',
+        limits_title: 'General Safety Limits for NH₃:',
+        limit_sens_label: 'Sensitive Fish',
+        limit_norm_label: 'Most Fish Species',
+        limit_tol_label: 'Tolerant Fish',
+        footer_home: 'Home',
+        err_ph: 'Please enter a valid pH value between 6.0 and 10.2',
+        err_temp: 'Please enter a valid temperature between 0 and 40 °C',
+        err_tan: 'Please enter a valid Total Ammonia value (greater than zero)',
+        status_danger: 'Danger — Toxic ammonia is critically high! Imminent risk of fish mortality',
+        status_warn: 'Warning — Toxic ammonia is elevated. Continuous monitoring and actions required',
+        status_safe: 'Safe — Toxic ammonia is well within normal, acceptable thresholds',
+        rec_urgent_water: 'Urgent Action: Perform an immediate 30-50% water exchange to dilute ammonia.',
+        rec_urgent_aeration: 'Substantially increase aeration (turn on all blowers) to accelerate gas stripping.',
+        rec_urgent_stop_feed: 'Cease feeding for 24-48 hours to minimize metabolic nitrogen excretion.',
+        rec_add_bacteria: 'Dose beneficial nitrifying bacteria to accelerate oxidation into nitrate.',
+        rec_warn_water: 'Precautionary Action: Perform a 20-30% partial water exchange.',
+        rec_warn_aeration: 'Increase aeration by 6-8 additional hours daily, especially overnight.',
+        rec_warn_reduce_feed: 'Cut feeding rate by 30% until ammonia levels stabilize.',
+        rec_warn_monitor: 'Monitor pH, temperature, and dissolved oxygen daily.',
+        rec_safe_good: 'Stable Conditions: Continue regular periodic monitoring of ammonia levels.',
+        rec_safe_routine: 'Maintain the routine weekly water exchange schedule (10-15%).',
+        rec_high_ph: 'High pH: Toxic NH₃ surges sharply with higher pH. Consider biological buffering.',
+        rec_low_ph: 'Low pH: May inhibit beneficial nitrifying biofilter bacteria activity.',
+        rec_high_temp: 'High Temperature: Accelerates NH₄⁺ conversion to toxic NH₃ and elevates DO demand.',
+        rec_low_temp: 'Low Temperature: Reduce feed to avoid unconsumed waste accumulation.',
+        rec_fresh_note: 'Low Salinity: Freshwater fish species have lower tolerance thresholds to ammonia.',
+        rec_marine_note: 'High Salinity: Marine organisms exhibit higher ionic tolerance, yet caution is required.',
+        salinity_correction_text: 'Salinity {sal} ppt raises ionic strength, reducing ammonia toxicity by {pct}% compared to freshwater ({type}).'
+      }
+    };
+
+    // ============================================================
+    // STATE & CHART INIT
+    // ============================================================
+    let currentLang = localStorage.getItem('aqasoft_lang') || 'ar';
+    let lastCalcData = null;
+    let ammoniaChart = null;
+    const temperatures = [6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34];
+
+    // ============================================================
+    // SCIENTIFIC FDEP FORMULAS
+    // ============================================================
+    function calculatePKa_FreshWater(tempCelsius) {
+      const Tk = tempCelsius + 273.2;
+      return 0.0901821 + (2729.92 / Tk);
+    }
+
+    function calculateIonicStrength(salinity) {
+      return (19.973 * salinity) / (1000 - 1.2005109 * salinity);
+    }
+
+    function calculatePKa_SalineWater(tempCelsius, salinity) {
+      const Tk = tempCelsius + 273.2;
+      const I = calculateIonicStrength(salinity);
+      return 0.0901821 + (2729.92 / Tk) + (0.1552 - 0.0003142 * tempCelsius) * I;
+    }
+
+    function calculatePKa(tempCelsius, salinity) {
+      if (salinity <= 1) {
+        return calculatePKa_FreshWater(tempCelsius);
+      } else {
+        return calculatePKa_SalineWater(tempCelsius, salinity);
+      }
+    }
+
+    function calculateAmmoniaFraction(pKa, pH) {
+      const exponent = pKa - pH;
+      return 1 / (Math.pow(10, exponent) + 1);
+    }
+
+    function convertToNH3(nh3_n_mgL) {
+      return nh3_n_mgL * (17 / 14);
+    }
+
+    function getAmmoniaPercentageForChart(ph, temp) {
+      const pKa = calculatePKa_FreshWater(temp);
+      const fraction = calculateAmmoniaFraction(pKa, ph);
+      return fraction * 100;
+    }
+
+    // ============================================================
+    // DOM ELEMENTS
+    // ============================================================
+    const phInput = document.getElementById('ph');
+    const tempInput = document.getElementById('temp');
+    const totalAmmoniaInput = document.getElementById('totalAmmonia');
+    const salinityInput = document.getElementById('salinity');
+    const waterTypeSelect = document.getElementById('waterType');
+    const calcBtn = document.getElementById('calc-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const errorElement = document.getElementById('error');
+    const errorMsg = document.getElementById('error-msg');
+    const resultsElement = document.getElementById('results');
+    const statusBox = document.getElementById('status-box');
+    const statusIcon = document.getElementById('status-icon');
+    const statusText = document.getElementById('status-text');
+    const recList = document.getElementById('rec-list');
+    const salinityBox = document.getElementById('salinity-effect-box');
+    const salinityText = document.getElementById('salinity-effect-text');
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorElement.style.display = 'flex';
+      resultsElement.classList.remove('visible');
+    }
+
+    function clearError() {
+      errorElement.style.display = 'none';
+    }
+
+    // ============================================================
+    // CHART SETUP
+    // ============================================================
+    function initChart() {
+      const ctx = document.getElementById('ammoniaChart').getContext('2d');
+      const lang = currentLang;
+      const defaultPH = parseFloat(phInput.value) || 8.0;
+      const defaultData = temperatures.map(temp => getAmmoniaPercentageForChart(defaultPH, temp));
+
+      ammoniaChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: temperatures.map(t => t + '°C'),
+          datasets: [{
+            label: t[lang].chart_dataset_label + defaultPH.toFixed(1),
+            data: defaultData,
+            borderColor: '#1F4B5D',
+            backgroundColor: 'rgba(104, 207, 235, 0.25)',
+            borderWidth: 2.5,
+            fill: true,
+            tension: 0.35,
+            pointRadius: 4,
+            pointBackgroundColor: '#68CFEB',
+            pointBorderColor: '#1F4B5D',
+            pointBorderWidth: 2,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return `${t[currentLang].chart_tooltip_label}${context.raw.toFixed(3)}%`;
+                }
+              }
+            },
+            legend: {
+              position: 'top',
+              labels: {
+                font: { family: currentLang === 'ar' ? 'Tajawal' : 'Outfit', size: 12 },
+                color: '#1F4B5D'
+              }
+            }
+          },
+          scales: {
+            y: {
+              title: {
+                display: true,
+                text: t[lang].chart_y_title,
+                font: { family: currentLang === 'ar' ? 'Tajawal' : 'Outfit', size: 11 },
+                color: '#64748b'
+              },
+              ticks: { callback: (val) => val.toFixed(1) + '%' }
+            },
+            x: {
+              title: {
+                display: true,
+                text: t[lang].chart_x_title,
+                font: { family: currentLang === 'ar' ? 'Tajawal' : 'Outfit', size: 11 },
+                color: '#64748b'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function updateChart(currentPH) {
+      if (!ammoniaChart) return;
+      const lang = currentLang;
+      const newData = temperatures.map(temp => getAmmoniaPercentageForChart(currentPH, temp));
+      ammoniaChart.data.datasets[0].data = newData;
+      ammoniaChart.data.datasets[0].label = t[lang].chart_dataset_label + currentPH.toFixed(1);
+      ammoniaChart.options.scales.y.title.text = t[lang].chart_y_title;
+      ammoniaChart.options.scales.x.title.text = t[lang].chart_x_title;
+      ammoniaChart.options.legend.labels.font.family = lang === 'ar' ? 'Tajawal' : 'Outfit';
+      ammoniaChart.update();
+    }
+
+    // ============================================================
+    // CALCULATION LOGIC
+    // ============================================================
+    function calculateToxicAmmonia() {
+      clearError();
+
+      const ph = parseFloat(phInput.value);
+      const temp = parseFloat(tempInput.value);
+      const totalAmmonia = parseFloat(totalAmmoniaInput.value);
+      let salinity = parseFloat(salinityInput.value);
+
+      if (isNaN(ph) || ph < 6 || ph > 10.2) {
+        showError(t[currentLang].err_ph);
+        return;
+      }
+
+      if (isNaN(temp) || temp < 0 || temp > 40) {
+        showError(t[currentLang].err_temp);
+        return;
+      }
+
+      if (isNaN(totalAmmonia) || totalAmmonia <= 0) {
+        showError(t[currentLang].err_tan);
+        return;
+      }
+
+      if (isNaN(salinity) || salinity < 0) salinity = 0;
+      if (salinity > 35) salinity = 35;
+
+      const pKa = calculatePKa(temp, salinity);
+      const fraction = calculateAmmoniaFraction(pKa, ph);
+      const toxicAmmonia_N = totalAmmonia * fraction;
+      const toxicAmmonia = convertToNH3(toxicAmmonia_N);
+      const toxicPercentage = fraction * 100;
+
+      lastCalcData = {
+        ph,
+        temp,
+        totalAmmonia,
+        salinity,
+        pKa,
+        fraction,
+        toxicAmmonia,
+        toxicPercentage
+      };
+
+      renderResults(lastCalcData);
+      updateChart(ph);
+
+      resultsElement.classList.add('visible');
+    }
+
+    function renderResults(data) {
+      const lang = currentLang;
+
+      document.getElementById('total-ammonia-result').textContent = data.totalAmmonia.toFixed(2);
+      document.getElementById('pka-value').textContent = data.pKa.toFixed(4);
+      document.getElementById('toxic-percentage').textContent = data.toxicPercentage.toFixed(3) + '%';
+      document.getElementById('toxic-ammonia').textContent = data.toxicAmmonia.toFixed(4);
+
+      // Salinity Correction Calculation
+      if (data.salinity > 1) {
+        const pKa_fresh = calculatePKa_FreshWater(data.temp);
+        const fraction_fresh = calculateAmmoniaFraction(pKa_fresh, data.ph);
+        const toxic_fresh = convertToNH3(data.totalAmmonia * fraction_fresh);
+        const reductionPct = Math.max(0, ((toxic_fresh - data.toxicAmmonia) / toxic_fresh) * 100).toFixed(1);
+
+        let typeName = lang === 'ar' ? 'مياه شروب' : 'Brackish Water';
+        if (data.salinity > 25) typeName = lang === 'ar' ? 'مياه مالحة' : 'Marine Water';
+
+        salinityText.textContent = t[lang].salinity_correction_text
+          .replace('{sal}', data.salinity)
+          .replace('{pct}', reductionPct)
+          .replace('{type}', typeName);
+        salinityBox.style.display = 'flex';
+      } else {
+        salinityBox.style.display = 'none';
+      }
+
+      // Safety Thresholds
+      let safeLimit = 0.05;
+      let warningLimit = 0.02;
+      if (data.salinity > 25) {
+        safeLimit = 0.08;
+        warningLimit = 0.04;
+      } else if (data.salinity > 5) {
+        safeLimit = 0.06;
+        warningLimit = 0.03;
+      }
+
+      statusBox.className = 'status-box';
+      if (data.toxicAmmonia > safeLimit) {
+        statusBox.classList.add('danger');
+        statusIcon.className = 'fa-solid fa-triangle-exclamation';
+        statusText.textContent = t[lang].status_danger;
+      } else if (data.toxicAmmonia > warningLimit) {
+        statusBox.classList.add('warn');
+        statusIcon.className = 'fa-solid fa-circle-exclamation';
+        statusText.textContent = t[lang].status_warn;
+      } else {
+        statusBox.classList.add('safe');
+        statusIcon.className = 'fa-solid fa-circle-check';
+        statusText.textContent = t[lang].status_safe;
+      }
+
+      // Build Recommendations List
+      const recs = [];
+      if (data.toxicAmmonia > safeLimit) {
+        recs.push(t[lang].rec_urgent_water);
+        recs.push(t[lang].rec_urgent_aeration);
+        recs.push(t[lang].rec_urgent_stop_feed);
+        recs.push(t[lang].rec_add_bacteria);
+      } else if (data.toxicAmmonia > warningLimit) {
+        recs.push(t[lang].rec_warn_water);
+        recs.push(t[lang].rec_warn_aeration);
+        recs.push(t[lang].rec_warn_reduce_feed);
+        recs.push(t[lang].rec_warn_monitor);
+      } else {
+        recs.push(t[lang].rec_safe_good);
+        recs.push(t[lang].rec_safe_routine);
+      }
+
+      if (data.ph > 8.5) recs.push(t[lang].rec_high_ph);
+      if (data.ph < 6.5) recs.push(t[lang].rec_low_ph);
+      if (data.temp > 28) recs.push(t[lang].rec_high_temp);
+      if (data.temp < 20) recs.push(t[lang].rec_low_temp);
+
+      if (data.salinity > 0 && data.salinity <= 5) recs.push(t[lang].rec_fresh_note);
+      else if (data.salinity > 25) recs.push(t[lang].rec_marine_note);
+
+      recList.innerHTML = recs.map(r => `<li>${r}</li>`).join('');
+    }
+
+    // ============================================================
+    // LANGUAGE SWITCHER
+    // ============================================================
+    function applyLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('aqasoft_lang', lang);
+
+      const isAr = lang === 'ar';
+      document.documentElement.lang = lang;
+      document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+      document.body.classList.toggle('ltr', !isAr);
+
+      document.getElementById('lang-toggle').textContent = isAr ? 'English' : 'عربي';
+
+      const backIcon = document.getElementById('back-icon');
+      if (backIcon) {
+        backIcon.className = isAr ? 'fa-solid fa-arrow-right' : 'fa-solid fa-arrow-left';
+      }
+
+      // Translate static tags
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[lang] && t[lang][key] !== undefined) {
+          el.innerHTML = t[lang][key];
+        }
+      });
+
+      // Translate placeholders
+      document.querySelectorAll('[data-placeholder-' + lang + ']').forEach(el => {
+        el.placeholder = el.getAttribute('data-placeholder-' + lang);
+      });
+
+      // Select Options
+      const wtSelect = document.getElementById('waterType');
+      if (wtSelect) {
+        Array.from(wtSelect.options).forEach(opt => {
+          const key = opt.getAttribute('data-i18n');
+          if (key && t[lang][key]) opt.textContent = t[lang][key];
+        });
+      }
+
+      // Refresh dynamic calculation & chart if already calculated
+      if (lastCalcData) {
+        renderResults(lastCalcData);
+        updateChart(lastCalcData.ph);
+      } else {
+        const currentPH = parseFloat(phInput.value) || 8.0;
+        updateChart(currentPH);
+      }
+    }
+
+    document.getElementById('lang-toggle').addEventListener('click', () => {
+      applyLang(currentLang === 'ar' ? 'en' : 'ar');
+    });
+
+    // Water Type dropdown listener
+    waterTypeSelect.addEventListener('change', () => {
+      const val = waterTypeSelect.value;
+      if (val === 'fresh') salinityInput.value = '0';
+      else if (val === 'brackish') salinityInput.value = '15';
+      else if (val === 'marine') salinityInput.value = '35';
+      calculateToxicAmmonia();
+    });
+
+    function resetForm() {
+      phInput.value = '8.0';
+      tempInput.value = '25';
+      totalAmmoniaInput.value = '0.5';
+      salinityInput.value = '0';
+      waterTypeSelect.value = 'fresh';
+      clearError();
+      calculateToxicAmmonia();
+      phInput.focus();
+    }
+
+    calcBtn.addEventListener('click', calculateToxicAmmonia);
+    resetBtn.addEventListener('click', resetForm);
+
+    [phInput, tempInput, totalAmmoniaInput, salinityInput].forEach(input => {
+      input.addEventListener('input', () => {
+        clearError();
+        calculateToxicAmmonia();
+      });
+      input.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') calculateToxicAmmonia();
+      });
+    });
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ============================================================
+    // INITIALIZATION
+    // ============================================================
+    initChart();
+    applyLang(currentLang);
+    calculateToxicAmmonia();
+  </script>
+</body>
+</html>

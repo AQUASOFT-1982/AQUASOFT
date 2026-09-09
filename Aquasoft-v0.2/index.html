@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQUASoft | Integrated Aquaculture Platform</title>
+    <meta name="description"
+        content="The region's first fully integrated aquaculture platform for fish farmers, technicians, students, and industry professionals.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
+    <!-- PWA Setup -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1F4B5D">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <img src="images/in ob.png" alt="AQUASoft Logo" class="site-logo">
+            </a>
+            <ul class="nav-links">
+                <li><a href="#home" data-i18n="nav_home">Home</a></li>
+                <li><a href="#about" data-i18n="nav_about">About Us</a></li>
+                <li><a href="#tools" data-i18n="nav_tools">Tools &amp; Services</a></li>
+                <li><a href="#resources" data-i18n="nav_resources">Resources</a></li>
+                <li><a href="#contact" data-i18n="nav_contact">Contact Us</a></li>
+            </ul>
+            <div class="nav-actions">
+                <!-- PWA Install Button -->
+                <button id="pwa-install-btn" class="btn-pwa-install">
+                    <i class="fa-solid fa-download"></i>
+                    <span data-i18n="pwa_install">Install App</span>
+                </button>
+                <!-- Language Toggle -->
+                <div class="lang-switcher">
+                    <button id="lang-toggle" class="btn btn-outline"
+                        style="padding: 5px 15px; font-size: 13px; font-weight: 700;">&#1593;&#1585;&#1576;&#1610;</button>
+                </div>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+        </div>
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1 data-i18n="hero_title">Smart Aquaculture <span>Simplified.</span></h1>
+                <p data-i18n="hero_desc">Empowering fish farmers and industry professionals with expert guidance,
+                    practical tools, and real-time information in one integrated ecosystem.</p>
+                <div class="hero-actions">
+                    <a href="#tools" class="btn btn-primary" data-i18n="btn_explore">Explore Tools</a>
+                    <a href="#about" class="btn btn-outline" data-i18n="btn_learn">Learn More</a>
+                </div>
+            </div>
+            <div class="hero-image-wrapper">
+                <div class="glass-card main-stats-card">
+                    <div class="stat-icon"><i class="fa-solid fa-fish-fins"></i></div>
+                    <div class="stat-info">
+                        <h3 data-i18n="stat1_title">Optimized</h3>
+                        <p data-i18n="stat1_desc">Production Yield</p>
+                    </div>
+                </div>
+                <div class="glass-card secondary-stats-card">
+                    <div class="stat-icon"><i class="fa-solid fa-droplet"></i></div>
+                    <div class="stat-info">
+                        <h3 data-i18n="stat2_title">Real-time</h3>
+                        <p data-i18n="stat2_desc">Water Analytics</p>
+                    </div>
+                </div>
+                <div class="hero-visual-circle">
+                    <i class="fa-solid fa-chart-line placeholder-icon"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="about">
+        <div class="container about-container">
+            <div class="about-image">
+                <div class="image-grid">
+                    <div class="grid-item img-1"></div>
+                    <div class="grid-item img-2"></div>
+                </div>
+                <div class="experience-badge">
+                    <span data-i18n="badge_span">1st</span>
+                    <p data-i18n="badge_p">Integrated<br>Platform</p>
+                </div>
+            </div>
+            <div class="about-text">
+                <div class="section-header">
+                    <span class="subtitle" data-i18n="about_subtitle">About Us</span>
+                    <h2 data-i18n="about_title">Revolutionizing the Aquaculture Industry</h2>
+                </div>
+                <p class="lead-text" data-i18n="about_lead">Welcome to the region's first fully integrated aquaculture
+                    platform, designed to bring every tool, resource, and service you need into one smart, accessible space.
+                </p>
+                <p data-i18n="about_p1">Our mission is simple: empower fish farmers, technicians, students, and industry
+                    professionals with the knowledge, technology, and support they need to achieve sustainable, efficient,
+                    and profitable production.</p>
+                <p data-i18n="about_p2">We combine expert guidance, practical tools, real-time information, and
+                    industry-level solutions into a single ecosystem. Whether you're managing a farm, studying aquaculture,
+                    seeking technical assistance, or exploring the latest innovations, our platform delivers everything in
+                    one place.</p>
+
+                <ul class="features-list">
+                    <li data-i18n="feat1"><i class="fa-solid fa-circle-check"></i> Sustainable &amp; Efficient</li>
+                    <li data-i18n="feat2"><i class="fa-solid fa-circle-check"></i> Expert Guidance</li>
+                    <li data-i18n="feat3"><i class="fa-solid fa-circle-check"></i> Real-time Analytics</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section id="tools" class="tools">
+        <div class="container">
+            <div class="section-header center">
+                <span class="subtitle" data-i18n="tools_subtitle">Our Platform</span>
+                <h2 data-i18n="tools_title">Tools &amp; Applications</h2>
+                <p data-i18n="tools_desc">Access our comprehensive suite of calculators and management tools.</p>
+            </div>
+
+            <div class="tools-grid">
+                <!-- Feed Calc -->
+                <a href="tools/feed.html" class="tool-card">
+                    <div class="tool-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                    <h3 data-i18n="tool1_title">Feed Calc</h3>
+                    <p data-i18n="tool1_desc">Optimize feeding rates for maximum growth and minimum waste.</p>
+                    <span class="tool-link" data-i18n="tool1_link">Launch Tool <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+
+                <!-- Universal Feed Formulation -->
+                <a href="tools/feed-formulation.html" class="tool-card">
+                    <div class="tool-icon"><i class="fa-solid fa-wheat-awn"></i></div>
+                    <h3 data-i18n="tool_formulation_title">Universal Feed Formulation</h3>
+                    <p data-i18n="tool_formulation_desc">Design and balance feeds for all animals (livestock, ruminants, poultry, rabbits, fish) and batch cost.</p>
+                    <span class="tool-link" data-i18n="tool_formulation_link">Formulate Feed <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+
+                <!-- Disinfectant -->
+                <a href="tools/disinfectans.html" class="tool-card">
+                    <div class="tool-icon"><i class="fa-solid fa-shield-virus"></i></div>
+                    <h3 data-i18n="tool2_title">Disinfectant</h3>
+                    <p data-i18n="tool2_desc">Calculate precise biosecurity dosages for farm protection.</p>
+                    <span class="tool-link" data-i18n="tool2_link">Launch Tool <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+
+                <!-- Water Corrector -->
+                <a href="tools/water-corrector.html" class="tool-card">
+                    <div class="tool-icon"><i class="fa-solid fa-vial"></i></div>
+                    <h3 data-i18n="tool3_title">Water Corrector</h3>
+                    <p data-i18n="tool3_desc">Adjust and balance critical water chemistry parameters.</p>
+                    <span class="tool-link" data-i18n="tool3_link">Launch Tool <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+
+                <!-- Fish Diseases -->
+                <a href="tools/coming-soon.html" class="tool-card">
+                    <div class="tool-icon"><i class="fa-solid fa-notes-medical"></i></div>
+                    <h3 data-i18n="tool4_title">Fish Diseases</h3>
+                    <p data-i18n="tool4_desc">Diagnostic guides and treatment protocols for aquatic health.</p>
+                    <span class="tool-link" data-i18n="tool4_link">Explore <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+
+                <!-- Log Book -->
+                <a href="tools/log-book.html" class="tool-card">
+                    <div class="tool-icon"><i class="fa-solid fa-book-open"></i></div>
+                    <h3 data-i18n="tool5_title">Log Book</h3>
+                    <p data-i18n="tool5_desc">Digital record keeping for daily farm management.</p>
+                    <span class="tool-link" data-i18n="tool5_link">Open Log <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+
+                <!-- Water Parameter -->
+                <a href="tools/water-parameter.html" class="tool-card">
+                    <div class="tool-icon"><i class="fa-solid fa-temperature-half"></i></div>
+                    <h3 data-i18n="tool6_title">Water Parameter</h3>
+                    <p data-i18n="tool6_desc">Monitor and track essential water quality indicators.</p>
+                    <span class="tool-link" data-i18n="tool6_link">Monitor <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+
+                <!-- Toxic Ammonia Calc -->
+                <a href="tools/ammonia.html" class="tool-card">
+                    <div class="tool-icon"><i class="fa-solid fa-skull-crossbones"></i></div>
+                    <h3 data-i18n="tool7_title">Toxic Ammonia Calc</h3>
+                    <p data-i18n="tool7_desc">Determine un-ionized ammonia levels accurately.</p>
+                    <span class="tool-link" data-i18n="tool7_link">Calculate <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+
+                <!-- Oxygen Calc -->
+                <a href="tools/oxygen.html" class="tool-card">
+                    <div class="tool-icon"><i class="fa-solid fa-wind"></i></div>
+                    <h3 data-i18n="tool8_title">Oxygen Calc</h3>
+                    <p data-i18n="tool8_desc">Calculate dissolved oxygen requirements for your fish stock.</p>
+                    <span class="tool-link" data-i18n="tool8_link">Calculate <i class="fa-solid fa-arrow-right"></i></span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section id="resources" class="resources">
+        <div class="container">
+            <div class="section-header center">
+                <span class="subtitle" data-i18n="res_subtitle">Knowledge Base</span>
+                <h2 data-i18n="res_title">Learning Resources</h2>
+            </div>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-bg lib-bg"></div>
+                    <div class="resource-content">
+                        <h3 data-i18n="res1_title">Library</h3>
+                        <p data-i18n="res1_desc">Access our extensive collection of research papers, manuals, and
+                            industry guides.</p>
+                        <a href="tools/library.html" class="btn btn-outline btn-light" data-i18n="res1_link">Browse Library</a>
+                    </div>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-bg course-bg"></div>
+                    <div class="resource-content">
+                        <h3 data-i18n="res2_title">Courses</h3>
+                        <p data-i18n="res2_desc">Advance your skills with expert-led courses in aquaculture management.</p>
+                        <a href="tools/course.html" class="btn btn-primary" data-i18n="res2_link">View Courses</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container contact-container">
+            <div class="section-header center">
+                <span class="subtitle" data-i18n="contact_subtitle">Get In Touch</span>
+                <h2 data-i18n="contact_title">Contact Us</h2>
+                <p data-i18n="contact_desc">Have questions or need assistance? We're here to help.</p>
+            </div>
+            <div class="contact-cards">
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="fa-solid fa-phone"></i></div>
+                    <h3 data-i18n="contact1_title">Phone</h3>
+                    <p data-i18n="contact1_desc">Give us a call</p>
+                    <a href="tel:01012567737" class="contact-link">01012567737</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
+                    <h3 data-i18n="contact2_title">Email</h3>
+                    <p data-i18n="contact2_desc">Send us a message</p>
+                    <a href="mailto:mohamedshoker092@gmail.com" class="contact-link">mohamedshoker092@gmail.com</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <a href="#" class="logo footer-logo">
+                    <img src="images/in white.png" alt="AQUASoft Logo" class="site-logo">
+                </a>
+                <p data-i18n="footer_desc">The region's first fully integrated aquaculture platform, designed for sustainable and profitable production.</p>
+            </div>
+            <div class="footer-links">
+                <h4 data-i18n="footer_quick">Quick Links</h4>
+                <ul>
+                    <li><a href="#home" data-i18n="nav_home">Home</a></li>
+                    <li><a href="#about" data-i18n="nav_about">About Us</a></li>
+                    <li><a href="#tools" data-i18n="nav_tools">Tools &amp; Services</a></li>
+                    <li><a href="tools/course.html" data-i18n="res2_title">Courses</a></li>
+                    <li><a href="tools/library.html" data-i18n="res1_title">Library</a></li>
+                    <li><a href="#contact" data-i18n="nav_contact">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4 data-i18n="footer_contact">Contact</h4>
+                <p><i class="fa-solid fa-phone"></i> 01012567737</p>
+                <p><i class="fa-solid fa-envelope"></i> mohamedshoker092@gmail.com</p>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/in/mohamed-karam-0a1b27256/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+                    <a href="https://www.facebook.com/mesh.mohamed.karam?locale=ar_AR" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p data-i18n="footer_rights">&copy; 2024 AQUASoft. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="translations.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

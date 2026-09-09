@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#1F4B5D">
+  <link rel="apple-touch-icon" href="../icons/icon-192x192.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQUASoft | قريباً - أداة قادمة</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ===== Design Tokens (matching AQUASoft theme) ===== */
+    :root {
+      --color-ocean-blue: #1F4B5D;
+      --color-aqua: #68CFEB;
+      --color-soft-white: #FAFAFA;
+      --color-charcoal: #1F1E19;
+      --gradient-primary: linear-gradient(135deg, #1F4B5D 0%, #153644 100%);
+      --gradient-accent: linear-gradient(135deg, #68CFEB 0%, #4cb8d6 100%);
+      --shadow-sm: 0 4px 6px rgba(31, 75, 93, 0.05);
+      --shadow-md: 0 10px 20px rgba(31, 75, 93, 0.08);
+      --shadow-lg: 0 20px 40px rgba(31, 75, 93, 0.12);
+      --shadow-glow: 0 0 25px rgba(104, 207, 235, 0.5);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: linear-gradient(135deg, #0d2833 0%, #153644 40%, #1F4B5D 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body.ltr {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    a { text-decoration: none; color: inherit; transition: var(--transition); }
+
+    /* ===== Animated Water Bubbles ===== */
+    .bubbles-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      overflow: hidden;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25), rgba(104, 207, 235, 0.08));
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 0 12px rgba(104, 207, 235, 0.2);
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(105vh) scale(0.3);
+        opacity: 0;
+      }
+      15% {
+        opacity: 0.45;
+      }
+      85% {
+        opacity: 0.45;
+      }
+      100% {
+        transform: translateY(-80px) scale(1);
+        opacity: 0;
+      }
+    }
+
+    /* ===== Navbar ===== */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 1.2rem 0;
+      transition: var(--transition);
+      background: transparent;
+    }
+
+    .navbar.scrolled {
+      background: rgba(21, 54, 68, 0.85);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      padding: 0.8rem 0;
+    }
+
+    .nav-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255,255,255,0.9);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .back-btn:hover {
+      color: var(--color-aqua);
+      transform: translateX(-3px);
+    }
+
+    html[dir="ltr"] .back-btn:hover {
+      transform: translateX(3px);
+    }
+
+    #lang-toggle {
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1.5px solid var(--color-aqua);
+      background: transparent;
+      color: var(--color-aqua);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      letter-spacing: 0.3px;
+    }
+
+    #lang-toggle:hover {
+      background: var(--color-aqua);
+      color: var(--color-ocean-blue);
+    }
+
+    /* ===== Main Hero Center Section ===== */
+    .main-section {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7.5rem 5% 4rem;
+      min-height: calc(100vh - 80px);
+    }
+
+    .coming-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 32px;
+      padding: 3.5rem 3rem;
+      max-width: 720px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+      animation: cardFade 0.8s ease-out;
+    }
+
+    @keyframes cardFade {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .icon-halo {
+      width: 95px;
+      height: 95px;
+      margin: 0 auto 1.8rem;
+      border-radius: 26px;
+      background: var(--gradient-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: var(--color-ocean-blue);
+      box-shadow: var(--shadow-glow);
+      animation: pulseGlow 3s infinite alternate ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      from { transform: scale(1); box-shadow: 0 0 20px rgba(104, 207, 235, 0.4); }
+      to   { transform: scale(1.05); box-shadow: 0 0 35px rgba(104, 207, 235, 0.8); }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(104, 207, 235, 0.12);
+      border: 1px solid rgba(104, 207, 235, 0.35);
+      color: var(--color-aqua);
+      padding: 0.4rem 1.4rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5rem;
+    }
+
+    .coming-card h1 {
+      font-size: clamp(2.3rem, 5vw, 3.4rem);
+      font-weight: 800;
+      margin-bottom: 1.2rem;
+      line-height: 1.2;
+    }
+
+    .coming-card h1 span {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .coming-card p.lead {
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 1.15rem;
+      line-height: 1.8;
+      max-width: 580px;
+      margin: 0 auto 2.5rem;
+    }
+
+    /* ===== Upcoming Feature Badges ===== */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.8rem;
+    }
+
+    .feature-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 0.9rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      text-align: right;
+      transition: var(--transition);
+    }
+
+    html[dir="ltr"] .feature-pill {
+      text-align: left;
+    }
+
+    .feature-pill:hover {
+      background: rgba(104, 207, 235, 0.12);
+      border-color: rgba(104, 207, 235, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .feature-pill i {
+      font-size: 1.3rem;
+      color: var(--color-aqua);
+      flex-shrink: 0;
+    }
+
+    .feature-pill-title {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #fff;
+    }
+
+    .feature-pill-desc {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    /* ===== Actions ===== */
+    .btn-return-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      background: var(--gradient-accent);
+      color: var(--color-ocean-blue);
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 0.9rem 2.2rem;
+      border-radius: 50px;
+      box-shadow: var(--shadow-glow);
+      transition: var(--transition);
+    }
+
+    .btn-return-home:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 30px rgba(104, 207, 235, 0.8);
+      color: #0c2d3a;
+    }
+
+    /* ===== Footer ===== */
+    .page-footer {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.5);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .page-footer a { color: var(--color-aqua); }
+
+    @media (max-width: 600px) {
+      .coming-card { padding: 2.5rem 1.5rem; }
+      .features-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Bubbles Canvas -->
+  <div class="bubbles-container" id="bubblesContainer"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo">
+        <img src="../images/in ob.png" alt="AQUASoft Logo">
+      </a>
+      <div class="nav-right">
+        <a href="../index.html" class="back-btn" id="back-link">
+          <i class="fa-solid fa-arrow-right" id="back-icon"></i>
+          <span data-i18n="back">الصفحة الرئيسية</span>
+        </a>
+        <button id="lang-toggle">English</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-section">
+    <div class="coming-card">
+      <div class="icon-halo">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+      </div>
+
+      <div class="hero-badge">
+        <i class="fa-solid fa-code-branch"></i>
+        <span data-i18n="badge_text">قيد التطوير والبرمجة</span>
+      </div>
+
+      <h1>
+        <span data-i18n="title_part1">قريباً</span> &mdash; <span data-i18n="title_part2">أداة جديدة</span>
+      </h1>
+
+      <p class="lead" data-i18n="lead_desc">
+        نعمل بكل شغف على تطوير وإطلاق مجموعة من الأنظمة التفاعلية والذكية المدعومة بالذكاء الاصطناعي لرفع كفاءة وإنتاجية مزرعتك المائية إلى أعلى المستويات.
+      </p>
+
+      <!-- Features Preview Grid -->
+      <div class="features-grid">
+        <div class="feature-pill">
+          <i class="fa-solid fa-notes-medical"></i>
+          <div>
+            <div class="feature-pill-title" data-i18n="feat1_title">تشخيص أمراض الأسماك</div>
+            <div class="feature-pill-desc" data-i18n="feat1_desc">دليل تشخيصي تفاعلي بالصور وبروتوكولات العلاج</div>
+          </div>
+        </div>
+
+        <div class="feature-pill">
+          <i class="fa-solid fa-brain"></i>
+          <div>
+            <div class="feature-pill-title" data-i18n="feat2_title">مساعد الذكاء الاصطناعي</div>
+            <div class="feature-pill-desc" data-i18n="feat2_desc">تحليلات تنبؤية لمؤشرات المياه ومواعيد الحصاد</div>
+          </div>
+        </div>
+
+        <div class="feature-pill">
+          <i class="fa-solid fa-mobile-screen-button"></i>
+          <div>
+            <div class="feature-pill-title" data-i18n="feat3_title">تطبيق الهواتف الذكية</div>
+            <div class="feature-pill-desc" data-i18n="feat3_desc">إدارة وتنبيهات فورية لمزرعتك من أي مكان</div>
+          </div>
+        </div>
+
+        <div class="feature-pill">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <div>
+            <div class="feature-pill-title" data-i18n="feat4_title">المزامنة السحابية</div>
+            <div class="feature-pill-desc" data-i18n="feat4_desc">حفظ السجلات ومشاركتها مع فريق العمل والخبراء</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Return Button -->
+      <div>
+        <a href="../index.html" class="btn-return-home">
+          <i class="fa-solid fa-house"></i>
+          <span data-i18n="btn_return">العودة إلى الصفحة الرئيسية</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <p>&copy; 2024 AQUASoft &mdash; <a href="../index.html" data-i18n="footer_home">الصفحة الرئيسية</a> | Integrated Aquaculture Platform</p>
+  </footer>
+
+  <script>
+    // ============================================================
+    // TRANSLATIONS DICTIONARY
+    // ============================================================
+    const t = {
+      ar: {
+        back: 'الصفحة الرئيسية',
+        badge_text: 'قيد التطوير والبرمجة',
+        title_part1: 'قريباً',
+        title_part2: 'أداة جديدة',
+        lead_desc: 'نعمل بكل شغف على تطوير وإطلاق مجموعة من الأنظمة التفاعلية والذكية المدعومة بالذكاء الاصطناعي لرفع كفاءة وإنتاجية مزرعتك المائية إلى أعلى المستويات.',
+        feat1_title: 'تشخيص أمراض الأسماك',
+        feat1_desc: 'دليل تشخيصي تفاعلي بالصور وبروتوكولات العلاج',
+        feat2_title: 'مساعد الذكاء الاصطناعي',
+        feat2_desc: 'تحليلات تنبؤية لمؤشرات المياه ومواعيد الحصاد',
+        feat3_title: 'تطبيق الهواتف الذكية',
+        feat3_desc: 'إدارة وتنبيهات فورية لمزرعتك من أي مكان',
+        feat4_title: 'المزامنة السحابية',
+        feat4_desc: 'حفظ السجلات ومشاركتها مع فريق العمل والخبراء',
+        btn_return: 'العودة إلى الصفحة الرئيسية',
+        footer_home: 'الصفحة الرئيسية'
+      },
+      en: {
+        back: 'Home',
+        badge_text: 'Under Active Development',
+        title_part1: 'Coming Soon',
+        title_part2: 'New Tool',
+        lead_desc: 'We are passionately engineering an intelligent, AI-assisted aquaculture suite to maximize your farm productivity, biosecurity, and water quality optimization.',
+        feat1_title: 'Fish Pathology & Disease Diagnostics',
+        feat1_desc: 'Interactive diagnostic visual guide and treatment protocols',
+        feat2_title: 'AI Aquaculture Assistant',
+        feat2_desc: 'Predictive water parameter modeling & harvest timelines',
+        feat3_title: 'Native Mobile App',
+        feat3_desc: 'Real-time farm alerts and telemetry anywhere',
+        feat4_title: 'Cloud Synchronization',
+        feat4_desc: 'Secure farm log backup & expert collaboration',
+        btn_return: 'Return to Home Page',
+        footer_home: 'Home'
+      }
+    };
+
+    // ============================================================
+    // STATE & LOGIC
+    // ============================================================
+    let currentLang = localStorage.getItem('aqasoft_lang') || 'ar';
+
+    function applyLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('aqasoft_lang', lang);
+
+      const isAr = lang === 'ar';
+      document.documentElement.lang = lang;
+      document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+      document.body.classList.toggle('ltr', !isAr);
+
+      document.getElementById('lang-toggle').textContent = isAr ? 'English' : 'عربي';
+
+      const backIcon = document.getElementById('back-icon');
+      if (backIcon) {
+        backIcon.className = isAr ? 'fa-solid fa-arrow-right' : 'fa-solid fa-arrow-left';
+      }
+
+      // Translate tagged elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[lang] && t[lang][key] !== undefined) {
+          el.innerHTML = t[lang][key];
+        }
+      });
+    }
+
+    document.getElementById('lang-toggle').addEventListener('click', () => {
+      applyLang(currentLang === 'ar' ? 'en' : 'ar');
+    });
+
+    // ============================================================
+    // BUBBLES GENERATOR
+    // ============================================================
+    function createBubbles() {
+      const container = document.getElementById('bubblesContainer');
+      const bubbleCount = 28;
+      for (let i = 0; i < bubbleCount; i++) {
+        const b = document.createElement('div');
+        b.className = 'bubble';
+        const size = Math.random() * 65 + 15;
+        const posX = Math.random() * 100;
+        const duration = Math.random() * 10 + 7;
+        const delay = Math.random() * 12;
+
+        b.style.width = `${size}px`;
+        b.style.height = `${size}px`;
+        b.style.left = `${posX}%`;
+        b.style.animationDuration = `${duration}s`;
+        b.style.animationDelay = `${delay}s`;
+
+        container.appendChild(b);
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 30);
+    });
+
+    // Init
+    createBubbles();
+    applyLang(currentLang);
+  </script>
+</body>
+</html>

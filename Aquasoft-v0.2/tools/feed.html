@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#1F4B5D">
+  <link rel="apple-touch-icon" href="../icons/icon-192x192.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQUASoft | حاسبة العلف</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --color-ocean-blue: #1F4B5D;
+      --color-aqua: #68CFEB;
+      --color-soft-white: #FAFAFA;
+      --color-charcoal: #1F1E19;
+      --gradient-primary: linear-gradient(135deg, #1F4B5D 0%, #153644 100%);
+      --gradient-accent: linear-gradient(135deg, #68CFEB 0%, #4cb8d6 100%);
+      --shadow-sm: 0 4px 6px rgba(31,75,93,0.05);
+      --shadow-md: 0 10px 20px rgba(31,75,93,0.08);
+      --shadow-lg: 0 20px 40px rgba(31,75,93,0.12);
+      --shadow-glow: 0 0 20px rgba(104,207,235,0.4);
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+      --color-danger: #e53e3e;
+      --color-warning: #d97706;
+      --color-safe: #059669;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Tajawal',sans-serif; background:var(--color-soft-white); color:var(--color-charcoal); line-height:1.6; min-height:100vh; overflow-x:hidden; }
+    body.ltr { font-family:'Outfit',sans-serif; }
+    a { text-decoration:none; color:inherit; transition:var(--transition); }
+
+    /* Navbar */
+    .navbar { position:fixed; top:0; left:0; right:0; z-index:1000; padding:1rem 0; transition:var(--transition); }
+    .navbar.scrolled { background:rgba(250,250,250,0.95); backdrop-filter:blur(10px); box-shadow:var(--shadow-sm); padding:.7rem 0; }
+    .nav-container { max-width:1200px; margin:0 auto; padding:0 5%; display:flex; align-items:center; justify-content:space-between; }
+    .logo img { height:40px; width:auto; }
+    .nav-right { display:flex; align-items:center; gap:1.5rem; }
+    .back-btn { display:flex; align-items:center; gap:.5rem; color:var(--color-ocean-blue); font-weight:600; font-size:.95rem; }
+    .back-btn:hover { opacity:.75; }
+    #lang-toggle { padding:6px 18px; font-size:13px; font-weight:700; border:1.5px solid var(--color-ocean-blue); background:transparent; color:var(--color-ocean-blue); border-radius:50px; cursor:pointer; transition:var(--transition); font-family:inherit; }
+    #lang-toggle:hover { background:var(--color-ocean-blue); color:#fff; }
+
+    /* Hero */
+    .page-hero { background:var(--gradient-primary); padding:8rem 5% 4rem; text-align:center; position:relative; overflow:hidden; }
+    .page-hero::before { content:''; position:absolute; top:-50%; left:-20%; width:60%; height:200%; background:radial-gradient(ellipse,rgba(104,207,235,.15) 0%,transparent 60%); pointer-events:none; }
+    .page-hero::after  { content:''; position:absolute; bottom:-30%; right:-10%; width:50%; height:150%; background:radial-gradient(ellipse,rgba(104,207,235,.1) 0%,transparent 60%); pointer-events:none; }
+    .hero-badge { display:inline-flex; align-items:center; gap:.5rem; background:rgba(104,207,235,.15); border:1px solid rgba(104,207,235,.3); color:var(--color-aqua); padding:.4rem 1.2rem; border-radius:50px; font-size:.85rem; font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-bottom:1.2rem; }
+    .page-hero h1 { color:#fff; font-size:clamp(2rem,5vw,3rem); font-weight:800; margin-bottom:1rem; }
+    .page-hero h1 span { background:var(--gradient-accent); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .page-hero p { color:rgba(255,255,255,.75); font-size:1.1rem; max-width:550px; margin:0 auto; }
+
+    /* Content */
+    .main-content { max-width:900px; margin:0 auto; padding:3rem 5% 5rem; }
+    .calc-card, .results-section { background:#fff; border-radius:24px; padding:2.5rem; box-shadow:var(--shadow-lg); border:1px solid rgba(31,75,93,.06); }
+    .calc-card { margin-bottom:2rem; }
+    .card-header { display:flex; align-items:center; gap:1rem; margin-bottom:2rem; padding-bottom:1.5rem; border-bottom:1px solid rgba(31,75,93,.08); }
+    .card-icon { width:52px; height:52px; background:var(--gradient-accent); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:var(--color-ocean-blue); flex-shrink:0; box-shadow:var(--shadow-glow); }
+    .card-header h2 { font-size:1.4rem; color:var(--color-ocean-blue); }
+    .card-header p { color:#64748b; font-size:.9rem; margin-top:.15rem; }
+    .inputs-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1.5rem; margin-bottom:1.8rem; }
+    .input-group label { display:block; font-weight:600; color:var(--color-ocean-blue); font-size:.9rem; margin-bottom:.5rem; }
+    .input-group label i { color:var(--color-aqua); margin-left:.4rem; }
+    html[dir="ltr"] .input-group label i { margin-left:0; margin-right:.4rem; }
+    .input-group input, .input-group select { width:100%; padding:.75rem 1rem; border-radius:12px; border:1.5px solid #e2e8f0; font-size:1rem; font-family:inherit; color:var(--color-charcoal); background:var(--color-soft-white); transition:var(--transition); outline:none; }
+    .input-group input:focus, .input-group select:focus { border-color:var(--color-aqua); box-shadow:0 0 0 3px rgba(104,207,235,.2); background:#fff; }
+    .input-group input::placeholder { color:#a0aec0; }
+    .calc-btn { width:100%; padding:1rem 2rem; background:var(--gradient-primary); color:#fff; border:none; border-radius:14px; font-size:1.05rem; font-weight:700; cursor:pointer; transition:var(--transition); font-family:inherit; display:flex; align-items:center; justify-content:center; gap:.6rem; box-shadow:var(--shadow-md); }
+    .calc-btn:hover { transform:translateY(-3px); box-shadow:0 15px 30px rgba(31,75,93,.25); }
+    .results-section { display:none; }
+    .results-section.visible { display:block; animation:fadeUp .4s ease forwards; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+    .results-header { display:flex; align-items:center; gap:.8rem; margin-bottom:1.8rem; padding-bottom:1.2rem; border-bottom:1px solid rgba(31,75,93,.08); }
+    .results-header h3 { font-size:1.2rem; color:var(--color-ocean-blue); }
+    .dot { width:10px; height:10px; background:var(--color-aqua); border-radius:50%; flex-shrink:0; }
+    .results-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:1.2rem; margin-bottom:1.5rem; }
+    .result-box { background:linear-gradient(135deg,#f8fafb,#f1f5f8); border-radius:16px; padding:1.4rem 1.2rem; text-align:center; border:1px solid rgba(31,75,93,.07); transition:var(--transition); position:relative; overflow:hidden; }
+    .result-box::before { content:''; position:absolute; top:0; right:0; left:0; height:3px; background:var(--gradient-accent); }
+    .result-box:hover { transform:translateY(-4px); box-shadow:var(--shadow-md); }
+    .result-icon { font-size:1.5rem; margin-bottom:.5rem; }
+    .result-label { font-size:.8rem; color:#64748b; font-weight:500; margin-bottom:.5rem; display:block; }
+    .result-value { font-size:1.6rem; font-weight:800; color:var(--color-ocean-blue); display:block; line-height:1.1; }
+    .result-unit { font-size:.75rem; color:#94a3b8; font-weight:500; display:block; margin-top:.2rem; }
+    .status-box { border-radius:14px; padding:1.2rem 1.5rem; display:flex; align-items:center; gap:1rem; font-weight:600; font-size:.95rem; }
+    .status-box.safe   { background:rgba(5,150,105,.08); border:1.5px solid rgba(5,150,105,.25); color:var(--color-safe); }
+    .status-box.warn   { background:rgba(217,119,6,.08); border:1.5px solid rgba(217,119,6,.25); color:var(--color-warning); }
+    .status-box.danger { background:rgba(229,62,62,.08); border:1.5px solid rgba(229,62,62,.25); color:var(--color-danger); }
+    .status-box i { font-size:1.4rem; flex-shrink:0; }
+    .tool-note { background:rgba(104,207,235,.07); border:1px solid rgba(104,207,235,.2); border-radius:12px; padding:1rem 1.2rem; font-size:.85rem; color:#64748b; display:flex; align-items:flex-start; gap:.6rem; margin-top:1.5rem; }
+    .tool-note i { color:var(--color-aqua); margin-top:.1rem; flex-shrink:0; }
+    .page-footer { background:var(--gradient-primary); color:rgba(255,255,255,.7); text-align:center; padding:1.5rem; font-size:.85rem; }
+    .page-footer a { color:var(--color-aqua); }
+    @media(max-width:640px) { .calc-card,.results-section{padding:1.5rem;} .inputs-grid{grid-template-columns:1fr 1fr;} .page-hero{padding:7rem 5% 3rem;} }
+  </style>
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo"><img src="../images/in ob.png" alt="AQUASoft Logo"></a>
+      <div class="nav-right">
+        <a href="../index.html" class="back-btn">
+          <i class="fa-solid fa-arrow-right" id="back-icon"></i>
+          <span data-i18n="back">الصفحة الرئيسية</span>
+        </a>
+        <button id="lang-toggle">English</button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <div class="hero-badge"><i class="fa-solid fa-scale-balanced"></i> <span data-i18n="tool_badge">حاسبة ذكية</span></div>
+    <h1 data-i18n="page_title">حاسبة <span>العلف</span></h1>
+    <p data-i18n="page_subtitle">احسب الكمية المثالية من العلف اليومي بدقة عالية اعتماداً على الجداول العلمية.</p>
+  </section>
+
+  <main class="main-content">
+    <div class="calc-card">
+      <div class="card-header">
+        <div class="card-icon"><i class="fa-solid fa-fish-fins"></i></div>
+        <div>
+          <h2 data-i18n="inputs_title">بيانات الحساب</h2>
+          <p data-i18n="inputs_sub">أدخل المعلومات الخاصة بمزرعتك</p>
+        </div>
+      </div>
+      <div class="inputs-grid">
+        <div class="input-group">
+          <label for="weight"><i class="fa-solid fa-weight-hanging"></i><span data-i18n="lbl_weight">وزن السمكة (جم)</span></label>
+          <input type="number" id="weight" min="0" placeholder="مثال: 150" data-placeholder-ar="مثال: 150" data-placeholder-en="e.g. 150">
+        </div>
+        <div class="input-group">
+          <label for="count"><i class="fa-solid fa-layer-group"></i><span data-i18n="lbl_count">عدد الأسماك</span></label>
+          <input type="number" id="count" min="0" placeholder="مثال: 1000" data-placeholder-ar="مثال: 1000" data-placeholder-en="e.g. 1000">
+        </div>
+        <div class="input-group">
+          <label for="temp"><i class="fa-solid fa-temperature-half"></i><span data-i18n="lbl_temp">درجة الحرارة (°C)</span></label>
+          <input type="number" id="temp" min="0" placeholder="16 - 32" data-placeholder-ar="16 - 32" data-placeholder-en="16 - 32">
+        </div>
+        <div class="input-group">
+          <label for="proteinSelect"><i class="fa-solid fa-flask"></i><span data-i18n="lbl_protein">نسبة البروتين</span></label>
+          <select id="proteinSelect">
+            <option value="25">25% بروتين</option>
+            <option value="27" selected>27% بروتين</option>
+            <option value="30">30% بروتين</option>
+            <option value="32">32% بروتين</option>
+          </select>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calculate()">
+        <i class="fa-solid fa-calculator"></i>
+        <span data-i18n="calc_btn">احسب كمية العلف</span>
+      </button>
+    </div>
+
+    <div class="results-section" id="results-section">
+      <div class="results-header">
+        <div class="dot"></div>
+        <h3 data-i18n="results_title">نتائج الحساب</h3>
+      </div>
+      <div class="results-grid">
+        <div class="result-box">
+          <div class="result-icon">&#x1F41F;</div>
+          <span class="result-label" data-i18n="res_feed">العلف اليومي</span>
+          <span class="result-value" id="feed">-</span>
+          <span class="result-unit" data-i18n="unit_kg">كجم</span>
+        </div>
+        <div class="result-box">
+          <div class="result-icon">&#x1F9EA;</div>
+          <span class="result-label" data-i18n="res_protein">كتلة البروتين</span>
+          <span class="result-value" id="proteinMass">-</span>
+          <span class="result-unit" data-i18n="unit_kg">كجم</span>
+        </div>
+        <div class="result-box">
+          <div class="result-icon">&#x2697;</div>
+          <span class="result-label" data-i18n="res_nitrogen">انبعاث النيتروجين</span>
+          <span class="result-value" id="nitrogen">-</span>
+          <span class="result-unit" data-i18n="unit_kg">كجم</span>
+        </div>
+        <div class="result-box">
+          <div class="result-icon">&#x1F4A7;</div>
+          <span class="result-label" data-i18n="res_ammonia">انبعاث الأمونيا</span>
+          <span class="result-value" id="ammonia">-</span>
+          <span class="result-unit" data-i18n="unit_kg">كجم</span>
+        </div>
+      </div>
+      <div class="status-box safe" id="status-box">
+        <i class="fa-solid fa-circle-check" id="status-icon"></i>
+        <span id="status-text">-</span>
+      </div>
+      <div class="tool-note">
+        <i class="fa-solid fa-circle-info"></i>
+        <span data-i18n="note_text">يعتمد الحساب على جداول Excel الدقيقة (25%، 27%، 30%، 32% بروتين) وفق وزن السمكة ودرجة الحرارة.</span>
+      </div>
+    </div>
+  </main>
+
+  <footer class="page-footer">
+    <p>&copy; 2024 AQUASoft &mdash; <a href="../index.html" data-i18n="footer_home">الصفحة الرئيسية</a></p>
+  </footer>
+
+  <script>
+    var t = {
+      ar: {
+        back:'الصفحة الرئيسية', tool_badge:'حاسبة ذكية',
+        page_title:'حاسبة <span>العلف</span>',
+        page_subtitle:'احسب الكمية المثالية من العلف اليومي بدقة عالية اعتماداً على الجداول العلمية.',
+        inputs_title:'بيانات الحساب', inputs_sub:'أدخل المعلومات الخاصة بمزرعتك',
+        lbl_weight:'وزن السمكة (جم)', lbl_count:'عدد الأسماك',
+        lbl_temp:'درجة الحرارة (°C)', lbl_protein:'نسبة البروتين',
+        calc_btn:'احسب كمية العلف', results_title:'نتائج الحساب',
+        res_feed:'العلف اليومي', res_protein:'كتلة البروتين',
+        res_nitrogen:'انبعاث النيتروجين', res_ammonia:'انبعاث الأمونيا',
+        unit_kg:'كجم',
+        status_safe:'آمن — جودة مياه ممتازة',
+        status_warn1:'تنبيه — مراقبة مستمرة مطلوبة',
+        status_warn2:'تحذير — يجب تغيير جزء من الماء',
+        status_danger:'خطر — الأمونيا مرتفعة جداً',
+        note_text:'يعتمد الحساب على جداول Excel الدقيقة (25%، 27%، 30%، 32% بروتين) وفق وزن السمكة ودرجة الحرارة.',
+        footer_home:'الصفحة الرئيسية',
+        alert_inputs:'يرجى إدخال جميع البيانات بشكل صحيح.',
+        protein_lbl:'بروتين'
+      },
+      en: {
+        back:'Home', tool_badge:'Smart Calculator',
+        page_title:'Feed <span>Calculator</span>',
+        page_subtitle:'Calculate the optimal daily feed amount with high precision based on scientific feeding tables.',
+        inputs_title:'Calculation Inputs', inputs_sub:'Enter your farm details below',
+        lbl_weight:'Fish Weight (g)', lbl_count:'Number of Fish',
+        lbl_temp:'Water Temperature (°C)', lbl_protein:'Protein Content',
+        calc_btn:'Calculate Feed Amount', results_title:'Calculation Results',
+        res_feed:'Daily Feed', res_protein:'Protein Mass',
+        res_nitrogen:'Nitrogen Emission', res_ammonia:'Ammonia Emission',
+        unit_kg:'kg',
+        status_safe:'Safe — Excellent water quality',
+        status_warn1:'Alert — Continuous monitoring required',
+        status_warn2:'Warning — Partial water change needed',
+        status_danger:'Danger — Ammonia critically high',
+        note_text:'Calculations based on precise Excel feeding tables (25%, 27%, 30%, 32% protein) by fish weight and temperature.',
+        footer_home:'Home',
+        alert_inputs:'Please enter all required data correctly.',
+        protein_lbl:'Protein'
+      }
+    };
+
+    var currentLang = localStorage.getItem('aqasoft_lang') || 'ar';
+    var lastAmmonia = null;
+
+    function applyLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('aqasoft_lang', lang);
+      var isAr = lang === 'ar';
+      document.documentElement.lang = lang;
+      document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+      document.body.classList.toggle('ltr', !isAr);
+      document.getElementById('lang-toggle').textContent = isAr ? 'English' : 'عربي';
+      var bi = document.getElementById('back-icon');
+      if (bi) bi.className = isAr ? 'fa-solid fa-arrow-right' : 'fa-solid fa-arrow-left';
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var k = el.getAttribute('data-i18n');
+        if (t[lang] && t[lang][k] !== undefined) el.innerHTML = t[lang][k];
+      });
+      document.querySelectorAll('[data-placeholder-' + lang + ']').forEach(function(el) {
+        el.placeholder = el.getAttribute('data-placeholder-' + lang);
+      });
+      var sel = document.getElementById('proteinSelect'), cur = sel ? sel.value : null;
+      if (sel) {
+        ['25','27','30','32'].forEach(function(v) {
+          var o = sel.querySelector('option[value="' + v + '"]');
+          if (o) o.textContent = v + '% ' + t[lang].protein_lbl;
+        });
+        if (cur) sel.value = cur;
+      }
+      if (lastAmmonia !== null && document.getElementById('results-section').classList.contains('visible')) updateStatus();
+    }
+
+    document.getElementById('lang-toggle').addEventListener('click', function() {
+      applyLang(currentLang === 'ar' ? 'en' : 'ar');
+    });
+
+    var tables = {
+      25: [{range:[80,120],temps:{16:1.25,22:2.25,24:2.5,27:3,30:2.75,32:2.5}},{range:[120,200],temps:{16:1.25,22:2,24:2.25,27:2.75,30:2.5,32:2.25}},{range:[200,300],temps:{16:1.1,22:1.75,24:2.25,27:2.75,30:2.5,32:2.25}},{range:[300,400],temps:{16:1.1,22:1.75,24:2,27:2.5,30:2.25,32:2}},{range:[400,1e9],temps:{16:1,22:1.25,24:1.5,27:2,30:2,32:1.75}}],
+      27: [{range:[80,120],temps:{16:1.25,22:2.25,24:2.5,27:2.75,30:3,32:2.5}},{range:[120,200],temps:{16:1.25,22:2,24:2.25,27:2.5,30:2.75,32:2.25}},{range:[200,300],temps:{16:1,22:1.75,24:2.25,27:2.5,30:2.75,32:2.25}},{range:[300,400],temps:{16:1,22:1.75,24:2,27:2.25,30:2.5,32:2}},{range:[400,1e9],temps:{16:.75,22:1.25,24:1.5,27:1.75,30:2.25,32:1.75}}],
+      30: [{range:[20,25],temps:{16:1.75,22:2.75,24:4,27:4.25,30:3.75,32:3.25}},{range:[25,30],temps:{16:1.75,22:2.5,24:3.75,27:4,30:3.5,32:3.25}},{range:[30,40],temps:{16:1.5,22:2.5,24:3.5,27:3.75,30:3.25,32:3}},{range:[40,50],temps:{16:1.5,22:2.5,24:3.25,27:3.5,30:3,32:2.75}},{range:[50,70],temps:{16:1.25,22:2.25,24:3,27:3.25,30:2.75,32:2.5}},{range:[70,100],temps:{16:1,22:2,24:2.75,27:3,30:2.7,32:2.5}}],
+      32: [{range:[10,15],temps:{16:2,22:2.5,24:4,27:4.25,30:4,32:3}},{range:[15,20],temps:{16:1.75,22:2.25,24:3.75,27:4,30:3.75,32:2.75}},{range:[20,30],temps:{16:1.5,22:2.25,24:3.5,27:3.75,30:3.75,32:2.75}},{range:[30,40],temps:{16:1.5,22:2.25,24:3.5,27:3.5,30:3.5,32:2.5}},{range:[40,50],temps:{16:1.25,22:2,24:3.25,27:3.25,30:3.25,32:2.25}}]
+    };
+
+    function getFeedRate(w, temp, pct) {
+      var tbl = tables[pct]; if (!tbl) return .02;
+      var row = null;
+      for (var i=0; i<tbl.length; i++) { if (w>=tbl[i].range[0] && w<tbl[i].range[1]) { row=tbl[i]; break; } }
+      if (!row) return .02;
+      var ks = Object.keys(row.temps).map(Number).sort(function(a,b){return a-b;});
+      if (temp<=ks[0]) return row.temps[ks[0]]/100;
+      if (temp>=ks[ks.length-1]) return row.temps[ks[ks.length-1]]/100;
+      for (var j=0; j<ks.length-1; j++) {
+        if (temp>=ks[j] && temp<=ks[j+1]) {
+          return (row.temps[ks[j]] + (temp-ks[j])*(row.temps[ks[j+1]]-row.temps[ks[j]])/(ks[j+1]-ks[j])) / 100;
+        }
+      }
+      return .02;
+    }
+
+    function updateStatus() {
+      var box=document.getElementById('status-box'), icon=document.getElementById('status-icon'), txt=document.getElementById('status-text');
+      box.className = 'status-box';
+      if (lastAmmonia > 1) { box.classList.add('danger'); icon.className='fa-solid fa-triangle-exclamation'; txt.textContent=t[currentLang].status_danger; }
+      else if (lastAmmonia > .5) { box.classList.add('warn'); icon.className='fa-solid fa-circle-exclamation'; txt.textContent=t[currentLang].status_warn2; }
+      else if (lastAmmonia > .2) { box.classList.add('warn'); icon.className='fa-solid fa-circle-exclamation'; txt.textContent=t[currentLang].status_warn1; }
+      else { box.classList.add('safe'); icon.className='fa-solid fa-circle-check'; txt.textContent=t[currentLang].status_safe; }
+    }
+
+    function calculate() {
+      var w=parseFloat(document.getElementById('weight').value),
+          n=parseFloat(document.getElementById('count').value),
+          temp=parseFloat(document.getElementById('temp').value),
+          pct=parseInt(document.getElementById('proteinSelect').value);
+      if (isNaN(w)||isNaN(n)||isNaN(temp)||w<=0||n<=0) { alert(t[currentLang].alert_inputs); return; }
+      var bio=(w*n)/1000, rate=getFeedRate(w,temp,pct),
+          feed=(bio*rate).toFixed(2), pm=(feed*(pct/100)).toFixed(2),
+          ni=(pm*.16).toFixed(3), am=(ni*1.214).toFixed(3);
+      lastAmmonia = parseFloat(am);
+      document.getElementById('feed').textContent = feed;
+      document.getElementById('proteinMass').textContent = pm;
+      document.getElementById('nitrogen').textContent = ni;
+      document.getElementById('ammonia').textContent = am;
+      updateStatus();
+      var sec=document.getElementById('results-section');
+      sec.classList.add('visible');
+      sec.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+
+    window.addEventListener('scroll', function() {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    applyLang(currentLang);
+  </script>
+</body>
+</html>
