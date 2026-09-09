@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <link rel="manifest" href="../manifest.json">
+  <meta name="theme-color" content="#1F4B5D">
+  <link rel="apple-touch-icon" href="../icons/icon-192x192.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQUASoft | أداة تركيب وموازنة علائق الأعلاف العامة (ماشية، دواجن، أرانب، أسماك)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --color-ocean-blue: #1F4B5D;
+      --color-aqua: #68CFEB;
+      --color-soft-white: #FAFAFA;
+      --color-charcoal: #1F1E19;
+      --gradient-primary: linear-gradient(135deg, #1F4B5D 0%, #153644 100%);
+      --gradient-accent: linear-gradient(135deg, #68CFEB 0%, #4cb8d6 100%);
+      --shadow-sm: 0 4px 6px rgba(31,75,93,0.05);
+      --shadow-md: 0 10px 20px rgba(31,75,93,0.08);
+      --shadow-lg: 0 20px 40px rgba(31,75,93,0.12);
+      --shadow-glow: 0 0 20px rgba(104,207,235,0.4);
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+      --color-danger: #e53e3e;
+      --color-warning: #d97706;
+      --color-safe: #059669;
+      --color-info: #0284c7;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Tajawal',sans-serif; background:var(--color-soft-white); color:var(--color-charcoal); line-height:1.6; min-height:100vh; overflow-x:hidden; }
+    body.ltr { font-family:'Outfit',sans-serif; }
+    a { text-decoration:none; color:inherit; transition:var(--transition); }
+
+    /* Navbar */
+    .navbar { position:fixed; top:0; left:0; right:0; z-index:1000; padding:1rem 0; transition:var(--transition); background:rgba(250,250,250,0.95); backdrop-filter:blur(10px); box-shadow:var(--shadow-sm); }
+    .nav-container { max-width:1320px; margin:0 auto; padding:0 4%; display:flex; align-items:center; justify-content:space-between; }
+    .logo img { height:40px; width:auto; }
+    .nav-right { display:flex; align-items:center; gap:1.2rem; }
+    .back-btn { display:flex; align-items:center; gap:.5rem; color:var(--color-ocean-blue); font-weight:600; font-size:.95rem; }
+    .back-btn:hover { color:var(--color-aqua); }
+    #lang-toggle { padding:6px 18px; font-size:13px; font-weight:700; border:1.5px solid var(--color-ocean-blue); background:transparent; color:var(--color-ocean-blue); border-radius:50px; cursor:pointer; transition:var(--transition); font-family:inherit; }
+    #lang-toggle:hover { background:var(--color-ocean-blue); color:#fff; }
+
+    /* Page Hero */
+    .page-hero { background:var(--gradient-primary); padding:7.5rem 5% 3.5rem; text-align:center; position:relative; overflow:hidden; color:#fff; }
+    .page-hero::before { content:''; position:absolute; top:-50%; left:-20%; width:60%; height:200%; background:radial-gradient(ellipse,rgba(104,207,235,.18) 0%,transparent 60%); pointer-events:none; }
+    .page-hero::after  { content:''; position:absolute; bottom:-30%; right:-10%; width:50%; height:150%; background:radial-gradient(ellipse,rgba(104,207,235,.12) 0%,transparent 60%); pointer-events:none; }
+    .hero-badge { display:inline-flex; align-items:center; gap:.5rem; background:rgba(104,207,235,.15); border:1px solid rgba(104,207,235,.3); color:var(--color-aqua); padding:.4rem 1.2rem; border-radius:50px; font-size:.85rem; font-weight:700; letter-spacing:1px; margin-bottom:1rem; }
+    .page-hero h1 { font-size:clamp(1.9rem,4.5vw,2.8rem); font-weight:800; margin-bottom:.8rem; }
+    .page-hero h1 span { background:var(--gradient-accent); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .page-hero p { color:rgba(255,255,255,.8); font-size:1.05rem; max-width:760px; margin:0 auto 1.5rem; }
+
+    /* Sector Badges Row in Hero */
+    .sector-icons { display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+    .sector-tag { display:inline-flex; align-items:center; gap:.4rem; background:rgba(255,255,255,.12); padding:.4rem .9rem; border-radius:30px; font-size:.85rem; font-weight:700; color:#fff; border:1px solid rgba(255,255,255,.2); }
+
+    /* Tab Navigation */
+    .tabs-wrapper { display:flex; justify-content:center; gap:.8rem; flex-wrap:wrap; margin-top:1.2rem; }
+    .tab-btn { padding:.75rem 1.6rem; border-radius:50px; font-weight:700; font-size:.95rem; border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.1); color:#fff; cursor:pointer; transition:var(--transition); display:flex; align-items:center; gap:.5rem; }
+    .tab-btn:hover { background:rgba(255,255,255,.2); }
+    .tab-btn.active { background:var(--color-aqua); color:var(--color-ocean-blue); border-color:var(--color-aqua); box-shadow:var(--shadow-glow); }
+
+    /* Main Container */
+    .main-content { max-width:1320px; margin:0 auto; padding:2.5rem 4% 5rem; }
+    .tab-pane { display:none; }
+    .tab-pane.active { display:block; animation:fadeUp .35s ease forwards; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(15px);} to{opacity:1;transform:translateY(0);} }
+
+    /* Formulation Layout */
+    .formulation-grid { display:grid; grid-template-columns:1.55fr 1fr; gap:2rem; align-items:start; }
+    @media (max-width: 1024px) {
+      .formulation-grid { grid-template-columns:1fr; }
+    }
+
+    /* Cards */
+    .card { background:#fff; border-radius:20px; padding:2rem; box-shadow:var(--shadow-md); border:1px solid rgba(31,75,93,.07); margin-bottom:2rem; }
+    .card-title-bar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid #e2e8f0; }
+    .card-title-bar h2, .card-title-bar h3 { font-size:1.25rem; color:var(--color-ocean-blue); display:flex; align-items:center; gap:.6rem; }
+    .card-title-bar h2 i, .card-title-bar h3 i { color:var(--color-aqua); }
+
+    /* Animal Sector Selector Bar */
+    .sector-selector-bar { background:linear-gradient(135deg, #f1f5f9, #e2e8f0); padding:1rem 1.4rem; border-radius:16px; margin-bottom:1.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; border:1.5px solid #cbd5e1; }
+    .sector-group { display:flex; align-items:center; gap:.8rem; flex-wrap:wrap; }
+    .sector-group label { font-weight:800; color:var(--color-ocean-blue); font-size:1rem; }
+    .sector-group select { padding:.6rem 1.2rem; border-radius:12px; border:2px solid var(--color-ocean-blue); font-weight:700; font-size:1rem; font-family:inherit; background:#fff; color:var(--color-ocean-blue); outline:none; cursor:pointer; }
+    .sector-group select:focus { border-color:var(--color-aqua); box-shadow:0 0 0 3px rgba(104,207,235,.25); }
+
+    /* Preset selector pills categorized */
+    .preset-section { margin-bottom:1.4rem; }
+    .preset-label { font-size:.85rem; font-weight:800; color:var(--color-ocean-blue); display:block; margin-bottom:.5rem; }
+    .preset-pills { display:flex; flex-wrap:wrap; gap:.5rem; }
+    .preset-pill { padding:.45rem 1rem; border-radius:30px; font-size:.85rem; font-weight:700; background:#f8fafc; color:var(--color-ocean-blue); border:1.5px solid #cbd5e1; cursor:pointer; transition:var(--transition); display:inline-flex; align-items:center; gap:.4rem; }
+    .preset-pill:hover { background:rgba(104,207,235,.2); border-color:var(--color-aqua); transform:translateY(-1px); }
+    .preset-pill.active { background:var(--color-ocean-blue); color:#fff; border-color:var(--color-ocean-blue); box-shadow:var(--shadow-sm); }
+
+    /* Top Controls Bar */
+    .controls-bar { display:flex; flex-wrap:wrap; gap:1rem; align-items:center; justify-content:space-between; background:#f8fafc; padding:1.2rem; border-radius:16px; margin-bottom:1.5rem; border:1px solid #e2e8f0; }
+    .control-item { display:flex; align-items:center; gap:.6rem; }
+    .control-item label { font-size:.9rem; font-weight:700; color:var(--color-ocean-blue); white-space:nowrap; }
+    .control-item select, .control-item input { padding:.5rem .9rem; border-radius:10px; border:1.5px solid #cbd5e1; font-size:.95rem; font-family:inherit; background:#fff; color:var(--color-charcoal); outline:none; }
+    .control-item select:focus, .control-item input:focus { border-color:var(--color-aqua); box-shadow:0 0 0 3px rgba(104,207,235,.2); }
+
+    /* Ingredients Table */
+    .table-container { overflow-x:auto; margin-bottom:1.5rem; border-radius:14px; border:1px solid #e2e8f0; }
+    .recipe-table { width:100%; border-collapse:collapse; text-align:right; font-size:.9rem; }
+    body.ltr .recipe-table { text-align:left; }
+    .recipe-table th { background:#f1f5f9; color:var(--color-ocean-blue); padding:.9rem .8rem; font-weight:700; border-bottom:2px solid #cbd5e1; white-space:nowrap; }
+    .recipe-table td { padding:.75rem .8rem; border-bottom:1px solid #f1f5f9; vertical-align:middle; }
+    .recipe-table tr:hover { background:#f8fafc; }
+    .recipe-table input[type="number"] { width:80px; padding:.45rem .6rem; border-radius:8px; border:1.5px solid #cbd5e1; font-size:.9rem; text-align:center; font-family:inherit; outline:none; font-weight:700; }
+    .recipe-table input[type="number"]:focus { border-color:var(--color-aqua); box-shadow:0 0 0 2px rgba(104,207,235,.2); }
+    .ing-name-cell { font-weight:700; color:var(--color-ocean-blue); display:flex; flex-direction:column; }
+    .ing-category-tag { font-size:.72rem; color:#64748b; font-weight:500; }
+    .delete-btn { color:#ef4444; background:rgba(239,68,68,.1); border:none; width:32px; height:32px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:var(--transition); }
+    .delete-btn:hover { background:#ef4444; color:#fff; }
+
+    /* Add ingredient row button */
+    .btn-add-ing { background:#f0fdf4; border:1.5px dashed #22c55e; color:#16a34a; padding:.85rem 1.4rem; border-radius:12px; font-size:1rem; font-weight:700; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:.5rem; transition:var(--transition); margin-bottom:1.5rem; font-family:inherit; }
+    .btn-add-ing:hover { background:#dcfce7; border-color:#16a34a; transform:translateY(-1px); }
+
+    /* Action Buttons Row */
+    .actions-row { display:flex; flex-wrap:wrap; gap:.8rem; justify-content:space-between; }
+    .btn-action { padding:.65rem 1.3rem; border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:.5rem; border:none; transition:var(--transition); font-family:inherit; }
+    .btn-primary-action { background:var(--gradient-primary); color:#fff; }
+    .btn-primary-action:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); }
+    .btn-secondary-action { background:#e2e8f0; color:var(--color-charcoal); }
+    .btn-secondary-action:hover { background:#cbd5e1; }
+    .btn-outline-action { background:transparent; border:1.5px solid var(--color-ocean-blue); color:var(--color-ocean-blue); }
+    .btn-outline-action:hover { background:var(--color-ocean-blue); color:#fff; }
+
+    /* Results Dashboard (Sticky Sidebar) */
+    .summary-sticky { position:sticky; top:90px; }
+    .total-badge-bar { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.2rem; border-radius:14px; margin-bottom:1.5rem; font-weight:800; font-size:1.1rem; }
+    .total-badge-bar.perfect { background:rgba(5,150,105,.12); color:#059669; border:1.5px solid rgba(5,150,105,.3); }
+    .total-badge-bar.warning { background:rgba(217,119,6,.12); color:#d97706; border:1.5px solid rgba(217,119,6,.3); }
+    .total-badge-bar.danger { background:rgba(229,62,62,.12); color:#dc2626; border:1.5px solid rgba(229,62,62,.3); }
+
+    /* Nutrients Metric Cards */
+    .nutrients-grid { display:grid; grid-template-columns:1fr 1fr; gap:.9rem; margin-bottom:1.5rem; }
+    .metric-card { background:#f8fafc; border-radius:14px; padding:1rem; border:1px solid #e2e8f0; text-align:center; transition:var(--transition); position:relative; overflow:hidden; }
+    .metric-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-sm); border-color:var(--color-aqua); }
+    .metric-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--gradient-accent); }
+    .metric-card.highlight::before { background:var(--gradient-primary); height:4px; }
+    .metric-card.highlight { background:#eff6ff; border-color:#bfdbfe; }
+    .metric-name { font-size:.8rem; color:#64748b; font-weight:600; display:block; margin-bottom:.3rem; }
+    .metric-val { font-size:1.5rem; font-weight:800; color:var(--color-ocean-blue); line-height:1.1; }
+    .metric-unit { font-size:.75rem; color:#94a3b8; font-weight:600; }
+    .metric-subval { font-size:.72rem; color:#64748b; display:block; margin-top:.2rem; font-weight:600; }
+
+    /* Target Comparison Progress Bars */
+    .target-box { background:#f8fafc; border-radius:14px; padding:1.2rem; border:1px solid #e2e8f0; margin-bottom:1.5rem; }
+    .target-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+    .target-header h4 { font-size:.95rem; color:var(--color-ocean-blue); font-weight:700; display:flex; align-items:center; gap:.4rem; }
+    .progress-group { margin-bottom:1rem; }
+    .progress-group:last-child { margin-bottom:0; }
+    .progress-labels { display:flex; justify-content:space-between; font-size:.82rem; font-weight:600; margin-bottom:.3rem; }
+    .progress-bar-bg { background:#e2e8f0; height:10px; border-radius:20px; overflow:hidden; position:relative; }
+    .progress-fill { height:100%; border-radius:20px; transition:width .5s ease; background:var(--gradient-accent); }
+    .progress-fill.match { background:#10b981; }
+    .progress-fill.low { background:#f59e0b; }
+    .progress-fill.high { background:#3b82f6; }
+
+    /* Cost Box */
+    .cost-card { background:linear-gradient(135deg, #1F4B5D 0%, #153644 100%); color:#fff; border-radius:14px; padding:1.2rem; display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+    .cost-val { font-size:1.4rem; font-weight:800; color:var(--color-aqua); }
+
+    /* Pearson Square View */
+    .pearson-card { max-width:850px; margin:0 auto; }
+    .pearson-layout { display:grid; grid-template-columns:1fr 1.2fr 1fr; gap:1.5rem; align-items:center; margin:2.5rem 0; position:relative; }
+    @media (max-width: 768px) {
+      .pearson-layout { grid-template-columns:1fr; gap:1rem; }
+    }
+    .pearson-source-box { background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:14px; padding:1.2rem; text-align:center; }
+    .pearson-center-box { background:var(--gradient-primary); color:#fff; border-radius:20px; padding:1.8rem 1.2rem; text-align:center; box-shadow:var(--shadow-glow); }
+    .pearson-center-box h3 { color:var(--color-aqua); font-size:1.8rem; font-weight:800; }
+    .pearson-result-box { background:#ecfdf5; border:1.5px solid #a7f3d0; border-radius:14px; padding:1.2rem; text-align:center; color:#065f46; font-weight:700; }
+    .pearson-result-val { font-size:1.8rem; font-weight:800; color:#059669; }
+
+    /* Library / Database View */
+    .db-filter-bar { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+    .db-search { flex:1; min-width:260px; padding:.75rem 1.2rem; border-radius:12px; border:1.5px solid #cbd5e1; font-size:1rem; font-family:inherit; outline:none; }
+    .db-search:focus { border-color:var(--color-aqua); }
+    .db-cat-select { padding:.75rem 1.2rem; border-radius:12px; border:1.5px solid #cbd5e1; font-size:.95rem; font-family:inherit; background:#fff; outline:none; }
+    .db-table th { background:var(--color-ocean-blue); color:#fff; padding:.8rem; }
+    .db-badge { display:inline-block; padding:.2rem .6rem; border-radius:20px; font-size:.75rem; font-weight:700; }
+    .db-badge.energy { background:#fef3c7; color:#92400e; }
+    .db-badge.protein { background:#dcfce7; color:#166534; }
+    .db-badge.byproduct { background:#e0f2fe; color:#0369a1; }
+    .db-badge.roughage { background:#f3e8ff; color:#6b21a8; }
+    .db-badge.mineral { background:#fee2e2; color:#991b1b; }
+    .db-badge.marine { background:#ccfbf1; color:#115e59; }
+
+    /* Modal for choosing ingredient */
+    .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.6); z-index:9999; display:none; align-items:center; justify-content:center; padding:1rem; }
+    .modal-overlay.open { display:flex; animation:fadeIn .25s ease; }
+    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+    .modal-box { background:#fff; border-radius:20px; max-width:850px; width:100%; max-height:90vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:var(--shadow-lg); }
+    .modal-header { padding:1.2rem 1.8rem; background:var(--gradient-primary); color:#fff; display:flex; justify-content:space-between; align-items:center; }
+    .modal-header h3 { font-size:1.2rem; color:#fff; }
+    .modal-close { background:transparent; border:none; color:#fff; font-size:1.4rem; cursor:pointer; }
+    .modal-body { padding:1.5rem; overflow-y:auto; }
+    .modal-ing-item { display:flex; justify-content:space-between; align-items:center; padding:.9rem 1rem; border-bottom:1px solid #f1f5f9; cursor:pointer; transition:var(--transition); border-radius:10px; }
+    .modal-ing-item:hover { background:#f8fafc; transform:translateX(-4px); }
+    body.ltr .modal-ing-item:hover { transform:translateX(4px); }
+    .modal-ing-specs { font-size:.85rem; color:#64748b; }
+    .modal-btn-select { background:var(--gradient-accent); color:var(--color-ocean-blue); border:none; padding:.4rem .9rem; border-radius:8px; font-weight:700; font-size:.85rem; cursor:pointer; }
+
+    /* Custom ingredient form */
+    .custom-form-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:1rem; margin-top:1rem; }
+    .custom-group label { display:block; font-size:.8rem; font-weight:700; color:var(--color-ocean-blue); margin-bottom:.3rem; }
+    .custom-group input, .custom-group select { width:100%; padding:.5rem .7rem; border-radius:8px; border:1px solid #cbd5e1; font-size:.9rem; }
+
+    /* Print styling */
+    @media print {
+      .navbar, .page-hero, .tabs-wrapper, .controls-bar, .preset-section, .btn-add-ing, .actions-row, .modal-overlay { display:none !important; }
+      .main-content { padding:0; }
+      .formulation-grid { display:block; }
+      .card { box-shadow:none; border:1px solid #ccc; page-break-inside:avoid; }
+      .print-header { display:block !important; text-align:center; margin-bottom:2rem; }
+    }
+    .print-header { display:none; }
+
+    /* Footer */
+    .page-footer { background:var(--gradient-primary); color:rgba(255,255,255,.7); text-align:center; padding:1.5rem; font-size:.85rem; }
+    .page-footer a { color:var(--color-aqua); }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="logo"><img src="../images/in ob.png" alt="AQUASoft Logo"></a>
+      <div class="nav-right">
+        <a href="../index.html" class="back-btn">
+          <i class="fa-solid fa-arrow-right" id="back-icon"></i>
+          <span data-i18n="nav_home">الصفحة الرئيسية</span>
+        </a>
+        <button id="lang-toggle">English</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="page-hero">
+    <div class="hero-badge"><i class="fa-solid fa-calculator"></i> <span data-i18n="hero_badge">أداة احترافية عامة لجميع قطاعات الإنتاج والتغذية</span></div>
+    <h1 data-i18n="hero_title">أداة تركيب وموازنة <span>علائق الأعلاف العامة</span></h1>
+    <p data-i18n="hero_desc">النظام الشامل لتركيب وموازنة الأعلاف الحيوانية (عجول وماشية، أغنام، أبقار حلاب، دواجن تسمين وبياض، أرانب، وأسماك) وفق التحليلات المعملية وموسوعات NRC و Feedipedia مع حساب تكلفة الطن.</p>
+    
+    <div class="sector-icons">
+      <span class="sector-tag"><i class="fa-solid fa-cow"></i> الأبقار والعجول</span>
+      <span class="sector-tag"><i class="fa-solid fa-sheep"></i> الأغنام والماعز</span>
+      <span class="sector-tag"><i class="fa-solid fa-drumstick-bite"></i> دواجن وبياض</span>
+      <span class="sector-tag"><i class="fa-solid fa-paw"></i> الأرانب</span>
+      <span class="sector-tag"><i class="fa-solid fa-fish"></i> الأسماك والمائيات</span>
+    </div>
+
+    <div class="tabs-wrapper">
+      <button class="tab-btn active" onclick="switchTab('formulation')"><i class="fa-solid fa-blender"></i> <span data-i18n="tab_formulation">مصمم الخلطات الذكي</span></button>
+      <button class="tab-btn" onclick="switchTab('pearson')"><i class="fa-solid fa-shapes"></i> <span data-i18n="tab_pearson">مربع بيرسون (الخلط الثنائي السريع)</span></button>
+      <button class="tab-btn" onclick="switchTab('database')"><i class="fa-solid fa-book-bookmark"></i> <span data-i18n="tab_database">مكتبة وتحليل الخامات (70+ مادة)</span></button>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="main-content">
+    
+    <!-- Printable Header for export -->
+    <div class="print-header">
+      <h2>AQUASoft &mdash; تقرير تركيبة علف مخصصة</h2>
+      <p id="print-meta"></p>
+    </div>
+
+    <!-- TAB 1: FORMULATION BUILDER -->
+    <div id="tab-formulation" class="tab-pane active">
+      <div class="formulation-grid">
+        
+        <!-- Left: Ingredients Table & Builder -->
+        <div class="formulation-main">
+          
+          <div class="card">
+            <div class="card-title-bar">
+              <h2 data-i18n="builder_title"><i class="fa-solid fa-layer-group"></i> مكونات وتناسب الخلطة العلفية</h2>
+              <button class="btn-action btn-outline-action" onclick="openCustomModal()"><i class="fa-solid fa-plus-circle"></i> <span data-i18n="btn_custom_ing">إضافة خامة مخصصة</span></button>
+            </div>
+
+            <!-- Animal Sector Selector -->
+            <div class="sector-selector-bar">
+              <div class="sector-group">
+                <label><i class="fa-solid fa-paw"></i> نوع وقطاع الإنتاج:</label>
+                <select id="targetSpecies" onchange="onSectorChanged()">
+                  <optgroup label="🐄 المجترات وتسمين العجول والأبقار">
+                    <option value="beef_grower">عجول تسمين - مرحلة أولى ونمو (14-16% بروتين)</option>
+                    <option value="beef_finisher">عجول تسمين - مرحلة نهائية (11-13% بروتين)</option>
+                    <option value="dairy_high">أبقار حلابة - إنتاج عالي (16-18% بروتين)</option>
+                    <option value="dairy_dry">أبقار حلابة - جافة / متوسطة (12-14% بروتين)</option>
+                  </optgroup>
+                  <optgroup label="🐑 الأغنام والماعز">
+                    <option value="sheep_fattening">خراف وجداء تسمين (14-16% بروتين)</option>
+                    <option value="sheep_lactating">أغنام وماعز حلابة وعشار (13-15% بروتين)</option>
+                  </optgroup>
+                  <optgroup label="🐔 الدواجن والطيور">
+                    <option value="broiler_starter">دواجن تسمين - بادي (0-10 أيام: 23% بروتين)</option>
+                    <option value="broiler_grower">دواجن تسمين - نامي (11-24 يوم: 21.5% بروتين)</option>
+                    <option value="broiler_finisher">دواجن تسمين - ناهي (25+ يوم: 19-20% بروتين)</option>
+                    <option value="layers_peak">دجاج بياض - إنتاج بيض (17-18% بروتين، 4% كالسيوم)</option>
+                  </optgroup>
+                  <optgroup label="🐇 الأرانب">
+                    <option value="rabbit_grower">أرانب تسمين وفطام (16-17% بروتين، 13% ألياف)</option>
+                    <option value="rabbit_lactating">أرانب أمهات مرضعة (18-19% بروتين)</option>
+                  </optgroup>
+                  <optgroup label="🐟 الأسماك والأحياء المائية">
+                    <option value="tilapia_growout">أسماك بلطي - تسمين (28-30% بروتين)</option>
+                    <option value="tilapia_fingerling">أسماك بلطي - زريعة وإصبعيات (32-35% بروتين)</option>
+                    <option value="marine_fish">أسماك بحرية (قاروص ودنيس: 42-45% بروتين)</option>
+                    <option value="shrimp">جمبري فانامي (35-38% بروتين)</option>
+                  </optgroup>
+                </select>
+              </div>
+
+              <div class="control-item">
+                <label data-i18n="lbl_mode">طريقة الحساب:</label>
+                <select id="calcMode" onchange="toggleCalcMode()">
+                  <option value="percent" data-i18n="opt_percent">نسب مئوية (100%)</option>
+                  <option value="weight" data-i18n="opt_weight">وزن تشغيلة (كجم / طن)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Preset templates for all sectors -->
+            <div class="preset-section">
+              <span class="preset-label"><i class="fa-solid fa-wand-magic-sparkles"></i> خلطات نموذجية جاهزة للتحميل الفوري:</span>
+              <div class="preset-pills">
+                <button class="preset-pill active" onclick="loadPreset('beef_grower')">🐄 تسمين عجول 14%</button>
+                <button class="preset-pill" onclick="loadPreset('dairy_high')">🥛 أبقار حلاب 16%</button>
+                <button class="preset-pill" onclick="loadPreset('sheep_fattening')">🐑 خراف تسمين 15%</button>
+                <button class="preset-pill" onclick="loadPreset('broiler_starter')">🐔 بادي دواجن 23%</button>
+                <button class="preset-pill" onclick="loadPreset('layers_peak')">🥚 بياض دواجن 17%</button>
+                <button class="preset-pill" onclick="loadPreset('rabbit_grower')">🐇 أرانب شاملة 17%</button>
+                <button class="preset-pill" onclick="loadPreset('tilapia_growout')">🐟 بلطي تسمين 30%</button>
+                <button class="preset-pill" onclick="loadPreset('marine_fish')">🌊 أسماك بحرية 42%</button>
+              </div>
+            </div>
+
+            <!-- Controls (Batch Size) -->
+            <div class="controls-bar" id="batchWeightBar" style="display:none;">
+              <div class="control-item">
+                <label data-i18n="lbl_batch_size">حجم التشغيلة الإجمالي (كجم):</label>
+                <input type="number" id="batchSize" value="1000" min="1" step="10" oninput="recalculate()" style="width:130px; font-weight:700;">
+              </div>
+              <span style="font-size:.85rem; color:#64748b;">(أدخل وزن كل خامة بالكيلوجرام، وسيقوم النظام تلقائياً بحساب النسب والتحليل الإجمالي)</span>
+            </div>
+
+            <!-- Table of selected ingredients -->
+            <div class="table-container">
+              <table class="recipe-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="th_ingredient">مادة العلف</th>
+                    <th id="th_amount_header" data-i18n="th_percentage">النسبة (%)</th>
+                    <th data-i18n="th_protein">البروتين CP%</th>
+                    <th data-i18n="th_energy">الطاقة TDN%</th>
+                    <th data-i18n="th_fat">الدهن EE%</th>
+                    <th data-i18n="th_fiber">الألياف CF%</th>
+                    <th data-i18n="th_price">سعر الطن (ج.م)</th>
+                    <th style="text-align:center;">إجراء</th>
+                  </tr>
+                </thead>
+                <tbody id="recipeRows">
+                  <!-- Dynamically populated rows -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Add Row Button -->
+            <button class="btn-add-ing" onclick="openIngModal()">
+              <i class="fa-solid fa-plus-circle"></i> <span data-i18n="btn_add_from_db">اختيار خامة من قاعدة البيانات الشاملة (70+ مادة)</span>
+            </button>
+
+            <!-- Bottom Action Row -->
+            <div class="actions-row">
+              <div style="display:flex; gap:.6rem; flex-wrap:wrap;">
+                <button class="btn-action btn-secondary-action" onclick="saveRecipeLocal()"><i class="fa-solid fa-floppy-disk"></i> <span data-i18n="btn_save">حفظ التركيبة</span></button>
+                <button class="btn-action btn-secondary-action" onclick="loadRecipePrompt()"><i class="fa-solid fa-folder-open"></i> <span data-i18n="btn_load">استرجاع تركيبة</span></button>
+                <button class="btn-action btn-secondary-action" onclick="clearRecipe()"><i class="fa-solid fa-trash"></i> <span data-i18n="btn_clear">تفريغ</span></button>
+              </div>
+              <button class="btn-action btn-primary-action" onclick="window.print()"><i class="fa-solid fa-print"></i> <span data-i18n="btn_print">طباعة التقرير / PDF</span></button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: Real-time Analysis Dashboard -->
+        <div class="formulation-sidebar">
+          <div class="summary-sticky">
+            
+            <div class="card">
+              <div class="card-title-bar" style="margin-bottom:1rem; padding-bottom:.6rem;">
+                <h3 data-i18n="summary_title"><i class="fa-solid fa-chart-pie"></i> التحليل الكيماوي والغذائي الشامل</h3>
+              </div>
+
+              <!-- Total percentage / weight badge -->
+              <div id="totalBadge" class="total-badge-bar perfect">
+                <span id="totalBadgeLabel">إجمالي النسبة:</span>
+                <span id="totalBadgeValue">100%</span>
+              </div>
+
+              <!-- Primary Nutrients Grid -->
+              <div class="nutrients-grid">
+                <div class="metric-card highlight">
+                  <span class="metric-name" data-i18n="metric_cp">البروتين الخام (CP)</span>
+                  <span class="metric-val" id="resCP">0.00</span>
+                  <span class="metric-unit">%</span>
+                </div>
+
+                <div class="metric-card highlight">
+                  <span class="metric-name" data-i18n="metric_tdn">المواد المهضومة (TDN)</span>
+                  <span class="metric-val" id="resTDN">0.00</span>
+                  <span class="metric-unit">%</span>
+                </div>
+
+                <div class="metric-card">
+                  <span class="metric-name" data-i18n="metric_de">الطاقة المهضومة (DE)</span>
+                  <span class="metric-val" id="resDE">0.00</span>
+                  <span class="metric-unit">Mcal/kg</span>
+                </div>
+
+                <div class="metric-card">
+                  <span class="metric-name" data-i18n="metric_me">الطاقة الممثلة (ME)</span>
+                  <span class="metric-val" id="resME">0.00</span>
+                  <span class="metric-unit">Mcal/kg</span>
+                  <span class="metric-subval" id="resMEKcal">0 kcal/kg</span>
+                </div>
+
+                <div class="metric-card">
+                  <span class="metric-name" data-i18n="metric_ee">الدهن الخام (EE)</span>
+                  <span class="metric-val" id="resEE">0.00</span>
+                  <span class="metric-unit">%</span>
+                </div>
+
+                <div class="metric-card">
+                  <span class="metric-name" data-i18n="metric_cf">الألياف الخام (CF)</span>
+                  <span class="metric-val" id="resCF">0.00</span>
+                  <span class="metric-unit">%</span>
+                </div>
+
+                <div class="metric-card">
+                  <span class="metric-name" data-i18n="metric_ca">الكالسيوم (Ca)</span>
+                  <span class="metric-val" id="resCa">0.00</span>
+                  <span class="metric-unit">%</span>
+                </div>
+
+                <div class="metric-card">
+                  <span class="metric-name" data-i18n="metric_p">الفوسفور (P)</span>
+                  <span class="metric-val" id="resP">0.00</span>
+                  <span class="metric-unit">%</span>
+                </div>
+              </div>
+
+              <!-- Ca:P Ratio -->
+              <div style="background:#f1f5f9; padding:.65rem 1rem; border-radius:10px; font-size:.85rem; font-weight:700; display:flex; justify-content:space-between; margin-bottom:1.2rem;">
+                <span data-i18n="lbl_cap_ratio">نسبة الكالسيوم للفوسفور (Ca:P):</span>
+                <span id="resCaPRatio" style="color:var(--color-ocean-blue); font-weight:800;">1 : 1</span>
+              </div>
+
+              <!-- Target Comparison Progress Bars -->
+              <div class="target-box">
+                <div class="target-header">
+                  <h4><i class="fa-solid fa-bullseye"></i> <span data-i18n="lbl_target_match">المقارنة مع الاحتياجات الموصى بها</span></h4>
+                  <span id="targetStatusText" style="font-size:.8rem; font-weight:700; color:#059669;">مطابق</span>
+                </div>
+
+                <div class="progress-group">
+                  <div class="progress-labels">
+                    <span data-i18n="metric_cp">البروتين الخام (CP)</span>
+                    <span id="targetProteinText">0% / 14%</span>
+                  </div>
+                  <div class="progress-bar-bg">
+                    <div class="progress-fill" id="progProtein" style="width:0%;"></div>
+                  </div>
+                </div>
+
+                <div class="progress-group">
+                  <div class="progress-labels">
+                    <span data-i18n="metric_tdn">المواد المهضومة (TDN)</span>
+                    <span id="targetTDNText">0% / 72%</span>
+                  </div>
+                  <div class="progress-bar-bg">
+                    <div class="progress-fill" id="progTDN" style="width:0%;"></div>
+                  </div>
+                </div>
+
+                <div class="progress-group">
+                  <div class="progress-labels">
+                    <span data-i18n="metric_cf">الألياف الخام (CF)</span>
+                    <span id="targetFiberText">0% / 12%</span>
+                  </div>
+                  <div class="progress-bar-bg">
+                    <div class="progress-fill" id="progFiber" style="width:0%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cost Box -->
+              <div class="cost-card">
+                <div>
+                  <span style="font-size:.85rem; opacity:.9; display:block;" data-i18n="lbl_cost_ton">التكلفة التقديرية للطن:</span>
+                  <span class="cost-val" id="resCostTon">0</span> <span style="font-size:.9rem; color:var(--color-aqua);">ج.م</span>
+                </div>
+                <div style="text-align:left;">
+                  <span style="font-size:.8rem; opacity:.8; display:block;" data-i18n="lbl_cost_kg">سعر الكيلو:</span>
+                  <span style="font-size:1.1rem; font-weight:700; color:#fff;" id="resCostKg">0.00 ج.م</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: PEARSON SQUARE -->
+    <div id="tab-pearson" class="tab-pane">
+      <div class="card pearson-card">
+        <div class="card-title-bar">
+          <h2><i class="fa-solid fa-shapes"></i> <span data-i18n="pearson_title">مربع بيرسون لموازنة خامتين علفيتين</span></h2>
+        </div>
+        <p style="color:#64748b; font-size:.95rem; margin-bottom:1.5rem;" data-i18n="pearson_desc">
+          طريقة علمية سريعة ومعتمدة لحساب نسبة الخلط الدقيقة بين مادتين (أو خليطين: مصدر طاقة منخفض البروتين كالذرة + مصدر بروتيني عالي كالصويا) للوصول إلى نسبة بروتين مستهدفة لأي حيوان أو قطاع إنتاج.
+        </p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+          <div class="control-item" style="display:block;">
+            <label style="display:block; margin-bottom:.4rem; font-weight:700;" data-i18n="lbl_pearson_batch">حجم الدفعة المطلوبة (كجم):</label>
+            <input type="number" id="pearsonBatch" value="1000" min="10" oninput="calcPearson()" style="width:100%; padding:.65rem 1rem; border-radius:10px; border:1.5px solid #cbd5e1; font-weight:700;">
+          </div>
+          <div class="control-item" style="display:block;">
+            <label style="display:block; margin-bottom:.4rem; font-weight:700;" data-i18n="lbl_pearson_target">البروتين المطلوب تحقيقه (%):</label>
+            <input type="number" id="pearsonTarget" value="16" min="1" max="70" step="0.5" oninput="calcPearson()" style="width:100%; padding:.65rem 1rem; border-radius:10px; border:1.5px solid #cbd5e1; font-weight:700; color:var(--color-ocean-blue); font-size:1.1rem;">
+          </div>
+        </div>
+
+        <div class="pearson-layout">
+          <!-- Feed 1 (High Protein) -->
+          <div class="pearson-source-box">
+            <span style="font-size:.8rem; font-weight:700; color:#64748b; display:block; margin-bottom:.4rem;">المصدر البروتيني (العالي)</span>
+            <select id="pearsonIng1" onchange="calcPearson()" style="width:100%; padding:.5rem; border-radius:8px; border:1px solid #cbd5e1; font-weight:700; font-family:inherit; margin-bottom:.6rem;"></select>
+            <div style="font-size:1.2rem; font-weight:800; color:var(--color-ocean-blue);"><span id="pIng1Val">44</span>% بروتين</div>
+          </div>
+
+          <!-- Center Target -->
+          <div class="pearson-center-box">
+            <span style="font-size:.85rem; letter-spacing:1px; text-transform:uppercase;">البروتين المستهدف</span>
+            <h3 id="pTargetDisplay">16%</h3>
+            <span style="font-size:.78rem; opacity:.85;">مربع بيرسون</span>
+          </div>
+
+          <!-- Feed 2 (Low Protein / Energy) -->
+          <div class="pearson-source-box">
+            <span style="font-size:.8rem; font-weight:700; color:#64748b; display:block; margin-bottom:.4rem;">مصدر الطاقة (المنخفض)</span>
+            <select id="pearsonIng2" onchange="calcPearson()" style="width:100%; padding:.5rem; border-radius:8px; border:1px solid #cbd5e1; font-weight:700; font-family:inherit; margin-bottom:.6rem;"></select>
+            <div style="font-size:1.2rem; font-weight:800; color:var(--color-ocean-blue);"><span id="pIng2Val">8</span>% بروتين</div>
+          </div>
+        </div>
+
+        <!-- Pearson Results Table -->
+        <div class="table-container">
+          <table class="recipe-table">
+            <thead>
+              <tr>
+                <th>مادة العلف</th>
+                <th>الأجزاء النسبية</th>
+                <th>النسبة المئوية (%)</th>
+                <th>الوزن المطلوب (كجم)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td id="pResName1" style="font-weight:700; color:var(--color-ocean-blue);">كسب صويا 44%</td>
+                <td id="pResParts1" style="font-weight:800;">8 أجزاء</td>
+                <td id="pResPct1" style="font-weight:800; color:#059669; font-size:1.1rem;">22.2%</td>
+                <td id="pResWeight1" style="font-weight:800; font-size:1.1rem;">222 كجم</td>
+              </tr>
+              <tr>
+                <td id="pResName2" style="font-weight:700; color:var(--color-ocean-blue);">الذرة الصفراء (مجروشة)</td>
+                <td id="pResParts2" style="font-weight:800;">28 جزء</td>
+                <td id="pResPct2" style="font-weight:800; color:#059669; font-size:1.1rem;">77.8%</td>
+                <td id="pResWeight2" style="font-weight:800; font-size:1.1rem;">778 كجم</td>
+              </tr>
+              <tr style="background:#f1f5f9; font-weight:800;">
+                <td>الإجمالي</td>
+                <td id="pResTotalParts">36 جزء</td>
+                <td>100%</td>
+                <td id="pResTotalWeight">1000 كجم</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top:1.5rem; text-align:center;">
+          <button class="btn-action btn-primary-action" onclick="applyPearsonToFormulation()">
+            <i class="fa-solid fa-arrow-left"></i> تطبيق هذه النسب في مصمم الخلتات الرئيسي
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: INGREDIENTS DATABASE -->
+    <div id="tab-database" class="tab-pane">
+      <div class="card">
+        <div class="card-title-bar">
+          <h2><i class="fa-solid fa-book-bookmark"></i> <span data-i18n="db_title">مكتبة وتحليل الخامات العلفية المعتمدة (70+ خامة)</span></h2>
+          <button class="btn-action btn-outline-action" onclick="openCustomModal()"><i class="fa-solid fa-plus"></i> إضافة خامة خاصة</button>
+        </div>
+        <p style="color:#64748b; font-size:.95rem; margin-bottom:1.5rem;" data-i18n="db_desc">
+          بيانات تحليل الأعلاف المركزة والمالئة والمخلفات وفق الجداول المعملية المعتمدة وموسوعة الأعلاف العالمية Feedipedia ومقررات NRC لتغذية المجترات والدواجن والأرانب والأسماك:
+        </p>
+
+        <!-- Search & Filter Bar -->
+        <div class="db-filter-bar">
+          <input type="text" id="dbSearch" class="db-search" placeholder="ابحث باسم الخامة (مثلاً: ذرة، صويا، جلوتين، سمسم، دريس، ردة، تبن، خميرة، يوريا...)" oninput="filterDatabase()">
+          <select id="dbCategory" class="db-cat-select" onchange="filterDatabase()">
+            <option value="all">كل التصنيفات</option>
+            <option value="energy">حبوب ومصادر طاقة</option>
+            <option value="protein_plant">أكساب وبروتينات نباتية</option>
+            <option value="byproduct">مخلفات مطاحن ومضارب وتصنيع</option>
+            <option value="roughage">أعلاف مالئة وأتبان وقشور</option>
+            <option value="marine">أعلاف ومساحيق مائية وحيوانية</option>
+            <option value="mineral">إضافات وأملاح ومصادر معدنية</option>
+          </select>
+        </div>
+
+        <!-- Database Table -->
+        <div class="table-container">
+          <table class="recipe-table db-table">
+            <thead>
+              <tr>
+                <th>مادة العلف</th>
+                <th>التصنيف</th>
+                <th>البروتين CP%</th>
+                <th>المواد المهضومة TDN%</th>
+                <th>الطاقة DE</th>
+                <th>الطاقة ME</th>
+                <th>الدهن EE%</th>
+                <th>الألياف CF%</th>
+                <th>الكالسيوم Ca%</th>
+                <th>الفوسفور P%</th>
+                <th>إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="databaseTableBody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: CHOOSE INGREDIENT FROM DB -->
+  <div class="modal-overlay" id="ingModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 data-i18n="modal_title"><i class="fa-solid fa-layer-group"></i> اختيار خامة لإضافتها للخلطة</h3>
+        <button class="modal-close" onclick="closeIngModal()">&times;</button>
+      </div>
+      <div style="padding:1rem 1.5rem; background:#f8fafc; border-bottom:1px solid #e2e8f0;">
+        <input type="text" id="modalSearch" class="db-search" placeholder="ابحث في الخامات..." oninput="filterModalList()" style="width:100%;">
+      </div>
+      <div class="modal-body" id="modalIngList">
+        <!-- List of items -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD CUSTOM INGREDIENT -->
+  <div class="modal-overlay" id="customModal">
+    <div class="modal-box" style="max-width:650px;">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-plus-circle"></i> إضافة خامة جديدة مخصصة</h3>
+        <button class="modal-close" onclick="closeCustomModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:1rem;">
+          <div class="custom-group">
+            <label>اسم الخامة (عربي):</label>
+            <input type="text" id="custNameAr" placeholder="مثال: مسحوق سمك مستورد 65%">
+          </div>
+          <div class="custom-group">
+            <label>اسم الخامة (English):</label>
+            <input type="text" id="custNameEn" placeholder="e.g. Fish Meal 65%">
+          </div>
+        </div>
+
+        <div class="custom-group" style="margin-top:1rem;">
+          <label>التصنيف:</label>
+          <select id="custCategory">
+            <option value="protein_plant">أكساب وبروتينات نباتية</option>
+            <option value="energy">حبوب ومصادر طاقة</option>
+            <option value="roughage">أعلاف مالئة وخشنة</option>
+            <option value="byproduct">مخلفات تصنيع ومضارب</option>
+            <option value="marine">أعلاف ومساحيق مائية وحيوانية</option>
+            <option value="mineral">إضافات وأملاح ومصادر معدنية</option>
+          </select>
+        </div>
+
+        <div class="custom-form-grid">
+          <div class="custom-group">
+            <label>البروتين CP%:</label>
+            <input type="number" id="custCP" step="0.1" value="0">
+          </div>
+          <div class="custom-group">
+            <label>المواد المهضومة TDN%:</label>
+            <input type="number" id="custTDN" step="0.1" value="0">
+          </div>
+          <div class="custom-group">
+            <label>الدهن EE%:</label>
+            <input type="number" id="custEE" step="0.1" value="0">
+          </div>
+          <div class="custom-group">
+            <label>الألياف CF%:</label>
+            <input type="number" id="custCF" step="0.1" value="0">
+          </div>
+          <div class="custom-group">
+            <label>طاقة مهضومة DE:</label>
+            <input type="number" id="custDE" step="0.05" value="0">
+          </div>
+          <div class="custom-group">
+            <label>طاقة ممثلة ME:</label>
+            <input type="number" id="custME" step="0.05" value="0">
+          </div>
+          <div class="custom-group">
+            <label>الكالسيوم Ca%:</label>
+            <input type="number" id="custCa" step="0.01" value="0">
+          </div>
+          <div class="custom-group">
+            <label>الفوسفور P%:</label>
+            <input type="number" id="custP" step="0.01" value="0">
+          </div>
+          <div class="custom-group">
+            <label>سعر الطن التقديري (ج.م):</label>
+            <input type="number" id="custPrice" step="100" value="0">
+          </div>
+        </div>
+
+        <div style="margin-top:1.5rem; display:flex; justify-content:flex-end; gap:.8rem;">
+          <button class="btn-action btn-secondary-action" onclick="closeCustomModal()">إلغاء</button>
+          <button class="btn-action btn-primary-action" onclick="saveCustomIngredient()">حفظ الخامة في المكتبة</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="page-footer">
+    <p>&copy; 2024 AQUASoft &mdash; <a href="../index.html">الصفحة الرئيسية</a></p>
+  </footer>
+
+  <!-- CORE JAVASCRIPT & UNIVERSAL NUTRITIONAL DATABASE -->
+  <script>
+    // ==========================================
+    // COMPLETE INGREDIENTS DATABASE (From Images + Standards)
+    // ==========================================
+    const BASE_INGREDIENTS = [
+      // جدول الأعلاف المركزة
+      { id: "corn_yellow", name_ar: "الذرة الصفراء (مجروشة)", name_en: "Yellow Corn (ground)", category: "energy", tdn: 82, de: 3.8, me: 3.3, cp: 8.0, ee: 4.3, cf: 2.6, ca: 0.03, p: 0.29, default_price: 13500 },
+      { id: "corn_white", name_ar: "الذرة البيضاء (مجروشة)", name_en: "White Corn (ground)", category: "energy", tdn: 82, de: 3.8, me: 3.3, cp: 8.5, ee: 4.2, cf: 2.6, ca: 0.03, p: 0.29, default_price: 13200 },
+      { id: "sorghum", name_ar: "الذرة الرفيعة (سورجم)", name_en: "Sorghum", category: "energy", tdn: 80, de: 3.7, me: 3.2, cp: 11.0, ee: 3.4, cf: 2.8, ca: 0.03, p: 0.33, default_price: 13000 },
+      { id: "barley", name_ar: "الشعير", name_en: "Barley", category: "energy", tdn: 84, de: 3.6, me: 3.1, cp: 11.0, ee: 2.1, cf: 5.7, ca: 0.05, p: 0.40, default_price: 12500 },
+      { id: "wheat", name_ar: "القمح", name_en: "Wheat Grain", category: "energy", tdn: 85, de: 3.7, me: 3.25, cp: 10.0, ee: 2.0, cf: 2.9, ca: 0.04, p: 0.40, default_price: 14000 },
+      { id: "broken_rice", name_ar: "كسر الأرز", name_en: "Broken Rice", category: "energy", tdn: 80, de: 3.7, me: 3.2, cp: 8.0, ee: 1.9, cf: 1.8, ca: 0.05, p: 0.28, default_price: 14500 },
+      { id: "rice_germ", name_ar: "جرمة الأرز", name_en: "Rice Germ", category: "energy", tdn: 80, de: 3.7, me: 3.2, cp: 10.0, ee: 0.5, cf: 0.4, ca: 0.05, p: 0.32, default_price: 13500 },
+      { id: "rice_bran_defatted", name_ar: "رجيع الكون (رجيع الأرز)", name_en: "Rice Bran (Polishing)", category: "byproduct", tdn: 70, de: 3.8, me: 2.67, cp: 12.7, ee: 11.0, cf: 12.8, ca: 0.07, p: 1.37, default_price: 11000 },
+      { id: "glutofeed", name_ar: "الجلوتوفيد 16%", name_en: "Corn Gluten Feed 16%", category: "byproduct", tdn: 78, de: 3.3, me: 3.02, cp: 16.0, ee: 2.4, cf: 12.0, ca: 0.15, p: 1.10, default_price: 12000 },
+      { id: "gluten_60", name_ar: "جلوتين الذرة 60%", name_en: "Corn Gluten Meal 60%", category: "protein_plant", tdn: 89, de: 4.25, me: 3.6, cp: 60.0, ee: 5.6, cf: 1.5, ca: 0.01, p: 0.50, default_price: 36000 },
+      { id: "ddgs", name_ar: "دي دي جي إس (DDGS ذرة)", name_en: "Corn DDGS", category: "byproduct", tdn: 86, de: 3.9, me: 3.4, cp: 27.0, ee: 11.0, cf: 8.5, ca: 0.24, p: 0.96, default_price: 17000 },
+      { id: "megalac", name_ar: "الميجالاك (دهن محمي للحلاب)", name_en: "Megalac (Protected Fat)", category: "energy", tdn: 177, de: 8.6, me: 8.23, cp: 0.0, ee: 84.0, cf: 0.0, ca: 10.0, p: 0.0, default_price: 45000 },
+      { id: "full_fat_soya", name_ar: "فول فات صويا (معامل بالبثق)", name_en: "Full-fat Extruded Soya", category: "protein_plant", tdn: 90, de: 3.95, me: 3.7, cp: 35.0, ee: 18.0, cf: 6.0, ca: 0.25, p: 0.35, default_price: 27000 },
+      { id: "wheat_bran_fine", name_ar: "الردة الناعمة (نخالة قمح)", name_en: "Wheat Bran (Fine)", category: "byproduct", tdn: 70, de: 3.1, me: 2.6, cp: 12.0, ee: 4.1, cf: 10.0, ca: 0.13, p: 1.40, default_price: 10500 },
+      { id: "wheat_bran_coarse", name_ar: "الردة الخشنة (نخالة خشنة)", name_en: "Wheat Bran (Coarse)", category: "byproduct", tdn: 67, de: 3.0, me: 2.5, cp: 14.0, ee: 3.1, cf: 11.0, ca: 0.14, p: 1.60, default_price: 10000 },
+      { id: "brewers_grain", name_ar: "تفل الشعير (مخلفات بيرة)", name_en: "Brewer's Grains", category: "byproduct", tdn: 73, de: 2.65, me: 2.2, cp: 14.0, ee: 8.0, cf: 20.0, ca: 0.12, p: 0.33, default_price: 8500 },
+      { id: "sugar_beet_pulp", name_ar: "تفل بنجر السكر (مجفف)", name_en: "Sugar Beet Pulp (Dry)", category: "byproduct", tdn: 76, de: 3.44, me: 3.03, cp: 9.0, ee: 0.6, cf: 20.0, ca: 0.69, p: 0.10, default_price: 9000 },
+      { id: "soya_meal_44", name_ar: "كسب صويا 44%", name_en: "Soybean Meal 44%", category: "protein_plant", tdn: 80, de: 3.35, me: 3.1, cp: 44.0, ee: 1.4, cf: 6.5, ca: 0.28, p: 0.60, default_price: 24000 },
+      { id: "soya_meal_48", name_ar: "كسب صويا 48% (منزوع القشر)", name_en: "Soybean Meal 48% (Hi-Pro)", category: "protein_plant", tdn: 85, de: 3.6, me: 3.3, cp: 48.0, ee: 1.2, cf: 3.5, ca: 0.28, p: 0.65, default_price: 26000 },
+      { id: "sunflower_28", name_ar: "كسب عباد الشمس 28%", name_en: "Sunflower Meal 28%", category: "protein_plant", tdn: 72, de: 2.85, me: 2.35, cp: 28.0, ee: 1.5, cf: 23.0, ca: 0.40, p: 1.10, default_price: 13500 },
+      { id: "sunflower_32", name_ar: "كسب عباد الشمس 32%", name_en: "Sunflower Meal 32%", category: "protein_plant", tdn: 78, de: 3.2, me: 3.06, cp: 32.0, ee: 1.7, cf: 20.0, ca: 0.42, p: 1.14, default_price: 15500 },
+      { id: "linseed_meal", name_ar: "كسب الكتان", name_en: "Linseed Meal", category: "protein_plant", tdn: 76, de: 3.25, me: 3.1, cp: 33.0, ee: 8.0, cf: 9.0, ca: 0.40, p: 0.10, default_price: 16500 },
+      { id: "sesame_meal_solvent", name_ar: "كسب السمسم (استخلاص مذيب)", name_en: "Sesame Meal (Solvent)", category: "protein_plant", tdn: 78, de: 3.4, me: 2.98, cp: 44.0, ee: 2.6, cf: 10.0, ca: 0.92, p: 0.46, default_price: 19000 },
+      { id: "sesame_meal_mech", name_ar: "كسب السمسم (عصر ميكانيكي)", name_en: "Sesame Meal (Mechanical)", category: "protein_plant", tdn: 78, de: 3.9, me: 3.2, cp: 40.0, ee: 11.3, cf: 7.3, ca: 1.70, p: 1.26, default_price: 21000 },
+      { id: "sesame_whole", name_ar: "سمسم (حبوب كاملة)", name_en: "Sesame Seeds (Whole)", category: "protein_plant", tdn: 94, de: 4.0, me: 3.3, cp: 20.0, ee: 40.0, cf: 8.9, ca: 1.70, p: 0.62, default_price: 45000 },
+      { id: "cottonseed_meal", name_ar: "مستخلص بذرة القطن بالقشر", name_en: "Cottonseed Meal (with hulls)", category: "protein_plant", tdn: 70, de: 3.4, me: 3.02, cp: 24.0, ee: 5.4, cf: 26.5, ca: 0.21, p: 1.16, default_price: 12000 },
+      { id: "peanut_meal", name_ar: "كسب الفول السوداني", name_en: "Peanut Meal", category: "protein_plant", tdn: 82, de: 3.45, me: 3.21, cp: 42.0, ee: 2.1, cf: 7.0, ca: 0.26, p: 0.63, default_price: 21000 },
+      { id: "faba_beans", name_ar: "الفول البلدي (مجروش)", name_en: "Faba Beans", category: "protein_plant", tdn: 82, de: 3.75, me: 3.2, cp: 25.0, ee: 1.5, cf: 9.0, ca: 0.15, p: 0.50, default_price: 18000 },
+      { id: "broken_lentils", name_ar: "كسر العدس", name_en: "Broken Lentils", category: "protein_plant", tdn: 80, de: 3.45, me: 3.1, cp: 25.0, ee: 1.6, cf: 6.0, ca: 0.11, p: 0.40, default_price: 17500 },
+      { id: "broken_chickpeas", name_ar: "كسر الحمص", name_en: "Broken Chickpeas", category: "protein_plant", tdn: 80, de: 3.5, me: 3.1, cp: 22.0, ee: 3.5, cf: 10.0, ca: 0.17, p: 0.39, default_price: 16500 },
+      { id: "broken_lupine", name_ar: "كسر الترمس", name_en: "Broken Lupine", category: "protein_plant", tdn: 79, de: 3.5, me: 3.0, cp: 25.0, ee: 6.0, cf: 11.0, ca: 0.30, p: 0.43, default_price: 16000 },
+      { id: "fenugreek", name_ar: "حبوب الحلبة", name_en: "Fenugreek Seeds", category: "protein_plant", tdn: 82, de: 3.8, me: 3.3, cp: 26.0, ee: 6.0, cf: 1.0, ca: 0.88, p: 0.30, default_price: 22000 },
+      { id: "dry_bread", name_ar: "الخبز المجفف (العيش الناشف)", name_en: "Dried Bakery Waste", category: "energy", tdn: 82, de: 3.5, me: 3.1, cp: 10.0, ee: 1.1, cf: 4.0, ca: 0.18, p: 0.30, default_price: 11500 },
+      { id: "wheat_flour", name_ar: "دقيق القمح (طحين)", name_en: "Wheat Flour", category: "energy", tdn: 88, de: 3.8, me: 3.3, cp: 8.0, ee: 2.0, cf: 4.0, ca: 0.18, p: 0.30, default_price: 15500 },
+
+      // جدول الأعلاف المالئة والإضافات العلفية
+      { id: "peanut_hulls", name_ar: "قشر الفول السوداني", name_en: "Peanut Hulls", category: "roughage", tdn: 22, de: 0.8, me: 0.6, cp: 6.5, ee: 1.5, cf: 60.0, ca: 0.24, p: 0.70, default_price: 3500 },
+      { id: "soy_hulls", name_ar: "قشر الصويا", name_en: "Soybean Hulls", category: "roughage", tdn: 76, de: 2.9, me: 2.2, cp: 12.0, ee: 2.2, cf: 35.0, ca: 0.55, p: 0.16, default_price: 9500 },
+      { id: "alfalfa_hay", name_ar: "دريس حجازي (برسيم حجازي)", name_en: "Alfalfa Hay", category: "roughage", tdn: 60, de: 2.1, me: 2.1, cp: 16.0, ee: 2.6, cf: 27.0, ca: 1.40, p: 0.20, default_price: 11000 },
+      { id: "dry_clover", name_ar: "برسيم بلدي مجفف", name_en: "Dried Egyptian Clover", category: "roughage", tdn: 58, de: 2.5, me: 2.0, cp: 13.0, ee: 2.25, cf: 25.0, ca: 2.19, p: 0.26, default_price: 9000 },
+      { id: "rice_hulls", name_ar: "سرسة الأرز", name_en: "Rice Hulls", category: "roughage", tdn: 14, de: 0.8, me: 0.7, cp: 3.0, ee: 1.1, cf: 43.0, ca: 0.09, p: 0.11, default_price: 2500 },
+      { id: "rice_straw", name_ar: "قش الأرز", name_en: "Rice Straw", category: "roughage", tdn: 45, de: 1.6, me: 1.3, cp: 3.0, ee: 1.4, cf: 35.0, ca: 0.29, p: 0.09, default_price: 3000 },
+      { id: "wheat_straw", name_ar: "تبن القمح", name_en: "Wheat Straw", category: "roughage", tdn: 45, de: 1.7, me: 1.2, cp: 3.0, ee: 1.4, cf: 41.0, ca: 0.18, p: 0.07, default_price: 4500 },
+      { id: "ammoniated_straw", name_ar: "تبن معالج بالأمونيا (يوريا)", name_en: "Ammoniated Straw", category: "roughage", tdn: 52, de: 1.95, me: 1.75, cp: 8.0, ee: 1.4, cf: 40.0, ca: 0.18, p: 0.07, default_price: 5200 },
+      { id: "barley_straw", name_ar: "تبن الشعير", name_en: "Barley Straw", category: "roughage", tdn: 50, de: 1.6, me: 1.45, cp: 3.5, ee: 1.2, cf: 40.0, ca: 0.46, p: 0.10, default_price: 4000 },
+      { id: "bean_straw", name_ar: "تبن الفول", name_en: "Bean Straw", category: "roughage", tdn: 48, de: 1.85, me: 1.4, cp: 5.5, ee: 0.5, cf: 39.0, ca: 0.11, p: 0.11, default_price: 4200 },
+      { id: "chickpea_straw", name_ar: "تبن الحمص", name_en: "Chickpea Straw", category: "roughage", tdn: 48, de: 1.7, me: 1.45, cp: 5.4, ee: 1.0, cf: 40.0, ca: 0.10, p: 0.16, default_price: 4000 },
+      { id: "lentil_straw", name_ar: "تبن العدس", name_en: "Lentil Straw", category: "roughage", tdn: 50, de: 2.0, me: 1.7, cp: 6.5, ee: 1.0, cf: 34.5, ca: 0.19, p: 0.14, default_price: 4500 },
+      { id: "clover_straw", name_ar: "تبن البرسيم البلدي", name_en: "Clover Straw", category: "roughage", tdn: 50, de: 1.7, me: 1.4, cp: 6.5, ee: 1.0, cf: 45.0, ca: 1.40, p: 0.12, default_price: 4500 },
+      { id: "corn_stover", name_ar: "أعواد ذرة خضراء بدون كوز", name_en: "Corn Stover (Green)", category: "roughage", tdn: 62, de: 2.5, me: 2.1, cp: 6.0, ee: 1.9, cf: 32.0, ca: 0.36, p: 0.21, default_price: 3200 },
+      { id: "legume_straw", name_ar: "تبن فاصوليا ولوبيا وبسلة", name_en: "Legume Straw (Pea/Bean)", category: "roughage", tdn: 52, de: 1.7, me: 1.57, cp: 8.0, ee: 1.0, cf: 34.0, ca: 1.40, p: 0.17, default_price: 4200 },
+      { id: "peanut_vines", name_ar: "عروش الفول السوداني", name_en: "Peanut Vines", category: "roughage", tdn: 68, de: 2.3, me: 1.9, cp: 11.0, ee: 1.7, cf: 33.0, ca: 1.10, p: 0.15, default_price: 5500 },
+      { id: "carrot_tops", name_ar: "عروش الجزر", name_en: "Carrot Tops", category: "roughage", tdn: 68, de: 2.8, me: 2.1, cp: 11.0, ee: 3.0, cf: 18.0, ca: 1.80, p: 0.45, default_price: 3500 },
+      { id: "beet_tops", name_ar: "عروش بنجر السكر الأخضر", name_en: "Sugar Beet Tops", category: "roughage", tdn: 52, de: 2.5, me: 2.36, cp: 11.0, ee: 0.5, cf: 16.0, ca: 1.56, p: 0.20, default_price: 3000 },
+      { id: "date_pits", name_ar: "نوى البلح (مطحون)", name_en: "Date Pits (Ground)", category: "byproduct", tdn: 70, de: 2.8, me: 2.25, cp: 7.5, ee: 3.2, cf: 12.0, ca: 0.12, p: 0.15, default_price: 6500 },
+      { id: "sweet_potato", name_ar: "البطاطا (درنات مجففة)", name_en: "Sweet Potato (Dry)", category: "energy", tdn: 80, de: 3.52, me: 3.0, cp: 7.0, ee: 0.5, cf: 8.0, ca: 0.08, p: 0.24, default_price: 7500 },
+      { id: "potato", name_ar: "البطاطس (درنات مجففة)", name_en: "Potatoes (Dry)", category: "energy", tdn: 80, de: 3.5, me: 2.85, cp: 8.0, ee: 0.5, cf: 7.0, ca: 0.06, p: 0.22, default_price: 7500 },
+      { id: "orange_pulp", name_ar: "قشر البرتقال (مجفف)", name_en: "Citrus / Orange Pulp (Dry)", category: "byproduct", tdn: 74, de: 2.8, me: 2.6, cp: 6.0, ee: 3.4, cf: 11.0, ca: 0.77, p: 0.16, default_price: 6000 },
+      { id: "olive_pomace", name_ar: "تفل الزيتون", name_en: "Olive Pomace", category: "byproduct", tdn: 40, de: 1.1, me: 0.9, cp: 5.0, ee: 8.0, cf: 40.0, ca: 1.20, p: 0.13, default_price: 3500 },
+      { id: "corn_silage", name_ar: "سيلاج الذرة (أساس مادة جافة)", name_en: "Corn Silage (DM)", category: "roughage", tdn: 68, de: 2.58, me: 2.5, cp: 8.0, ee: 3.0, cf: 32.0, ca: 0.28, p: 0.20, default_price: 3800 },
+      { id: "corn_cobs", name_ar: "كوالح الذرة (القوالح)", name_en: "Corn Cobs", category: "roughage", tdn: 50, de: 2.0, me: 1.6, cp: 2.5, ee: 0.4, cf: 36.2, ca: 0.12, p: 0.04, default_price: 2500 },
+      { id: "bagasse", name_ar: "باجاس القصب (مصاصة)", name_en: "Sugarcane Bagasse", category: "roughage", tdn: 36, de: 1.5, me: 1.1, cp: 2.0, ee: 1.0, cf: 43.0, ca: 0.10, p: 0.05, default_price: 2000 },
+      { id: "cane_molasses", name_ar: "مولاس القصب", name_en: "Cane Molasses", category: "energy", tdn: 70, de: 2.9, me: 2.4, cp: 3.0, ee: 0.1, cf: 0.0, ca: 0.70, p: 0.10, default_price: 7000 },
+      { id: "cane_vinasse", name_ar: "فيناس القصب", name_en: "Cane Vinasse", category: "byproduct", tdn: 67, de: 2.8, me: 2.2, cp: 4.0, ee: 0.5, cf: 0.0, ca: 0.20, p: 0.18, default_price: 4500 },
+      { id: "beet_molasses", name_ar: "مولاس البنجر", name_en: "Beet Molasses", category: "energy", tdn: 72, de: 3.0, me: 2.5, cp: 5.0, ee: 0.2, cf: 0.1, ca: 0.11, p: 0.03, default_price: 7200 },
+      { id: "fodder_yeast", name_ar: "خميرة الأعلاف (مجففة)", name_en: "Fodder / Brewer's Yeast", category: "protein_plant", tdn: 79, de: 3.48, me: 3.07, cp: 46.9, ee: 1.0, cf: 2.9, ca: 0.16, p: 1.50, default_price: 28000 },
+      { id: "urea", name_ar: "يوريا (نيتروجين غير بروتيني للمجترات فقط)", name_en: "Feed Urea (Ruminants NPN)", category: "mineral", tdn: 0, de: 0.0, me: 0.0, cp: 285.0, ee: 0.0, cf: 0.0, ca: 0.0, p: 0.0, default_price: 18000 },
+      { id: "dcp", name_ar: "ثنائي فوسفات الكالسيوم (دايكالسيوم)", name_en: "Dicalcium Phosphate (DCP)", category: "mineral", tdn: 0, de: 0.0, me: 0.0, cp: 0.0, ee: 0.0, cf: 0.0, ca: 22.0, p: 19.3, default_price: 32000 },
+      { id: "limestone", name_ar: "كربونات الكالسيوم (حجر جيري / بودرة بلاط)", name_en: "Calcium Carbonate (Limestone)", category: "mineral", tdn: 0, de: 0.0, me: 0.0, cp: 0.0, ee: 0.0, cf: 0.0, ca: 38.0, p: 0.0, default_price: 1500 },
+      { id: "salt", name_ar: "ملح طعام نقي (كلوريد صوديوم)", name_en: "Common Salt (NaCl)", category: "mineral", tdn: 0, de: 0.0, me: 0.0, cp: 0.0, ee: 0.0, cf: 0.0, ca: 0.0, p: 0.0, default_price: 2000 },
+      { id: "sodium_bicarb", name_ar: "بيكربونات صوديوم (كربونات للمجترات)", name_en: "Sodium Bicarbonate", category: "mineral", tdn: 0, de: 0.0, me: 0.0, cp: 0.0, ee: 0.0, cf: 0.0, ca: 0.0, p: 0.0, default_price: 18000 },
+
+      // إضافات متخصصة للأعلاف المائية والدواجن
+      { id: "fishmeal_local", name_ar: "مسحوق سمك محلي 60%", name_en: "Fish Meal (Local 60%)", category: "marine", tdn: 85, de: 4.2, me: 3.6, cp: 60.0, ee: 9.0, cf: 1.0, ca: 5.5, p: 3.2, default_price: 48000 },
+      { id: "fishmeal_imported", name_ar: "مسحوق سمك مستورد 72%", name_en: "Fish Meal (Imported 72%)", category: "marine", tdn: 92, de: 4.6, me: 4.1, cp: 72.0, ee: 10.5, cf: 0.8, ca: 4.2, p: 2.8, default_price: 72000 },
+      { id: "fish_oil", name_ar: "زيت سمك نقي", name_en: "Fish Oil", category: "energy", tdn: 180, de: 8.8, me: 8.4, cp: 0.0, ee: 99.0, cf: 0.0, ca: 0.0, p: 0.0, default_price: 65000 },
+      { id: "veg_oil", name_ar: "زيت نباتي (صويا/ذرة)", name_en: "Vegetable Oil (Soy/Corn)", category: "energy", tdn: 175, de: 8.6, me: 8.2, cp: 0.0, ee: 99.0, cf: 0.0, ca: 0.0, p: 0.0, default_price: 52000 },
+      { id: "premix_general", name_ar: "بريمكس فيتامينات ومعادن (ماشية ودواجن)", name_en: "Livestock/Poultry Vitamin Premix", category: "mineral", tdn: 0, de: 0.0, me: 0.0, cp: 0.0, ee: 0.0, cf: 0.0, ca: 12.0, p: 4.0, default_price: 65000 },
+      { id: "premix_fish", name_ar: "بريمكس فيتامينات ومعادن أسماك", name_en: "Fish Vitamin & Mineral Premix", category: "mineral", tdn: 0, de: 0.0, me: 0.0, cp: 0.0, ee: 0.0, cf: 0.0, ca: 10.0, p: 5.0, default_price: 80000 },
+      { id: "shrimp_meal", name_ar: "مسحوق جمبري", name_en: "Shrimp Meal", category: "marine", tdn: 75, de: 3.6, me: 3.1, cp: 45.0, ee: 6.0, cf: 13.0, ca: 6.5, p: 1.8, default_price: 34000 }
+    ];
+
+    // Load custom ingredients from LocalStorage
+    let customIngredients = JSON.parse(localStorage.getItem('aquasoft_custom_ingredients') || '[]');
+    function getAllIngredients() {
+      return [...BASE_INGREDIENTS, ...customIngredients];
+    }
+
+    // ==========================================
+    // COMPREHENSIVE MULTI-SPECIES TARGET STANDARDS
+    // ==========================================
+    const SPECIES_TARGETS = {
+      // 🐄 Beef & Dairy Ruminants
+      beef_grower: {
+        name_ar: "عجول تسمين - مرحلة أولى ونمو",
+        sector: "ruminant",
+        cp_min: 14, cp_max: 16, cp_target: 15,
+        tdn_min: 68, tdn_max: 75, tdn_target: 72,
+        cf_min: 10, cf_max: 15, cf_target: 12,
+        ee_max: 5, de_target: 3.1
+      },
+      beef_finisher: {
+        name_ar: "عجول تسمين - مرحلة نهائية",
+        sector: "ruminant",
+        cp_min: 11.5, cp_max: 13.5, cp_target: 12.5,
+        tdn_min: 72, tdn_max: 78, tdn_target: 75,
+        cf_min: 8, cf_max: 12, cf_target: 10,
+        ee_max: 6, de_target: 3.3
+      },
+      dairy_high: {
+        name_ar: "أبقار حلاب - إنتاج عالي",
+        sector: "ruminant",
+        cp_min: 16, cp_max: 18, cp_target: 17,
+        tdn_min: 72, tdn_max: 76, tdn_target: 74,
+        cf_min: 14, cf_max: 18, cf_target: 16,
+        ee_max: 6, de_target: 3.3
+      },
+      dairy_dry: {
+        name_ar: "أبقار حلاب - جافة / متوسطة",
+        sector: "ruminant",
+        cp_min: 12, cp_max: 14, cp_target: 13,
+        tdn_min: 64, tdn_max: 70, tdn_target: 67,
+        cf_min: 16, cf_max: 22, cf_target: 18,
+        ee_max: 4, de_target: 2.8
+      },
+      // 🐑 Sheep & Goats
+      sheep_fattening: {
+        name_ar: "خراف وجداء تسمين",
+        sector: "sheep",
+        cp_min: 14, cp_max: 16, cp_target: 15,
+        tdn_min: 70, tdn_max: 76, tdn_target: 73,
+        cf_min: 10, cf_max: 14, cf_target: 12,
+        ee_max: 5, de_target: 3.2
+      },
+      sheep_lactating: {
+        name_ar: "أغنام وماعز حلابة وعشار",
+        sector: "sheep",
+        cp_min: 13, cp_max: 15, cp_target: 14,
+        tdn_min: 65, tdn_max: 72, tdn_target: 68,
+        cf_min: 12, cf_max: 18, cf_target: 15,
+        ee_max: 4, de_target: 2.9
+      },
+      // 🐔 Poultry
+      broiler_starter: {
+        name_ar: "دواجن تسمين - بادي (0-10 أيام)",
+        sector: "poultry",
+        cp_min: 22.5, cp_max: 24, cp_target: 23,
+        tdn_min: 78, tdn_max: 85, tdn_target: 82,
+        cf_min: 2, cf_max: 4, cf_target: 3.2,
+        ee_max: 6, me_kcal_target: 3020
+      },
+      broiler_grower: {
+        name_ar: "دواجن تسمين - نامي (11-24 يوم)",
+        sector: "poultry",
+        cp_min: 21, cp_max: 22.5, cp_target: 21.5,
+        tdn_min: 80, tdn_max: 86, tdn_target: 83,
+        cf_min: 2.5, cf_max: 4.5, cf_target: 3.5,
+        ee_max: 7, me_kcal_target: 3120
+      },
+      broiler_finisher: {
+        name_ar: "دواجن تسمين - ناهي (25+ يوم)",
+        sector: "poultry",
+        cp_min: 19, cp_max: 20.5, cp_target: 19.5,
+        tdn_min: 82, tdn_max: 88, tdn_target: 84,
+        cf_min: 2.5, cf_max: 4.5, cf_target: 3.5,
+        ee_max: 8, me_kcal_target: 3200
+      },
+      layers_peak: {
+        name_ar: "دجاج بياض - قمة الإنتاج",
+        sector: "poultry",
+        cp_min: 17, cp_max: 18.5, cp_target: 17.5,
+        tdn_min: 75, tdn_max: 80, tdn_target: 78,
+        cf_min: 3, cf_max: 5, cf_target: 4,
+        ee_max: 5, ca_target: 3.8, p_target: 0.45
+      },
+      // 🐇 Rabbits
+      rabbit_grower: {
+        name_ar: "أرانب تسمين وفطام",
+        sector: "rabbit",
+        cp_min: 16, cp_max: 17.5, cp_target: 16.5,
+        tdn_min: 65, tdn_max: 72, tdn_target: 68,
+        cf_min: 12, cf_max: 15, cf_target: 13.5,
+        ee_max: 4, de_target: 2.6
+      },
+      rabbit_lactating: {
+        name_ar: "أرانب أمهات مرضعة",
+        sector: "rabbit",
+        cp_min: 18, cp_max: 19.5, cp_target: 18.5,
+        tdn_min: 68, tdn_max: 74, tdn_target: 70,
+        cf_min: 10, cf_max: 14, cf_target: 12,
+        ee_max: 5, de_target: 2.75
+      },
+      // 🐟 Aquaculture
+      tilapia_growout: {
+        name_ar: "أسماك بلطي - تسمين",
+        sector: "fish",
+        cp_min: 28, cp_max: 30.5, cp_target: 30,
+        tdn_min: 75, tdn_max: 82, tdn_target: 78,
+        cf_min: 3, cf_max: 6, cf_target: 5,
+        ee_max: 6, de_target: 3.0
+      },
+      tilapia_fingerling: {
+        name_ar: "أسماك بلطي - إصبعيات",
+        sector: "fish",
+        cp_min: 32, cp_max: 35, cp_target: 34,
+        tdn_min: 78, tdn_max: 85, tdn_target: 80,
+        cf_min: 2.5, cf_max: 5, cf_target: 4,
+        ee_max: 7, de_target: 3.2
+      },
+      marine_fish: {
+        name_ar: "أسماك بحرية (قاروص/دنيس)",
+        sector: "fish",
+        cp_min: 42, cp_max: 45, cp_target: 43,
+        tdn_min: 82, tdn_max: 90, tdn_target: 86,
+        cf_min: 1, cf_max: 4, cf_target: 2.5,
+        ee_max: 14, de_target: 3.8
+      },
+      shrimp: {
+        name_ar: "جمبري فانامي",
+        sector: "fish",
+        cp_min: 35, cp_max: 38, cp_target: 36,
+        tdn_min: 78, tdn_max: 86, tdn_target: 82,
+        cf_min: 2, cf_max: 4, cf_target: 3,
+        ee_max: 8, de_target: 3.4
+      }
+    };
+
+    // ==========================================
+    // PRESET FORMULATIONS FOR ALL ANIMAL SECTORS
+    // ==========================================
+    const PRESETS = {
+      // 🐄 Beef Grow-out 14% CP (عجول تسمين)
+      beef_grower: [
+        { id: "corn_yellow", amount: 50, price: 13500 },
+        { id: "soya_meal_44", amount: 16, price: 24000 },
+        { id: "wheat_bran_coarse", amount: 20, price: 10000 },
+        { id: "cane_molasses", amount: 6, price: 7000 },
+        { id: "alfalfa_hay", amount: 5, price: 11000 },
+        { id: "limestone", amount: 1.5, price: 1500 },
+        { id: "salt", amount: 1.0, price: 2000 },
+        { id: "premix_general", amount: 0.5, price: 65000 }
+      ],
+      // 🥛 Dairy High Yield 16-17% CP (أبقار حلاب)
+      dairy_high: [
+        { id: "corn_yellow", amount: 42, price: 13500 },
+        { id: "soya_meal_44", amount: 22, price: 24000 },
+        { id: "wheat_bran_fine", amount: 14, price: 10500 },
+        { id: "ddgs", amount: 8, price: 17000 },
+        { id: "cottonseed_meal", amount: 6, price: 12000 },
+        { id: "cane_molasses", amount: 4, price: 7000 },
+        { id: "sodium_bicarb", amount: 1.5, price: 18000 },
+        { id: "limestone", amount: 1.5, price: 1500 },
+        { id: "premix_general", amount: 1.0, price: 65000 }
+      ],
+      // 🐑 Sheep Fattening 15% CP (خراف تسمين)
+      sheep_fattening: [
+        { id: "corn_yellow", amount: 48, price: 13500 },
+        { id: "barley", amount: 15, price: 12500 },
+        { id: "soya_meal_44", amount: 18, price: 24000 },
+        { id: "wheat_bran_fine", amount: 12, price: 10500 },
+        { id: "cane_molasses", amount: 4, price: 7000 },
+        { id: "limestone", amount: 1.5, price: 1500 },
+        { id: "salt", amount: 1.0, price: 2000 },
+        { id: "premix_general", amount: 0.5, price: 65000 }
+      ],
+      // 🐔 Broiler Starter 23% CP (دواجن بادي)
+      broiler_starter: [
+        { id: "corn_yellow", amount: 55, price: 13500 },
+        { id: "soya_meal_48", amount: 36, price: 26000 },
+        { id: "gluten_60", amount: 3, price: 36000 },
+        { id: "veg_oil", amount: 2.5, price: 52000 },
+        { id: "dcp", amount: 1.8, price: 32000 },
+        { id: "limestone", amount: 1.2, price: 1500 },
+        { id: "salt", amount: 0.3, price: 2000 },
+        { id: "premix_general", amount: 0.2, price: 65000 }
+      ],
+      // 🥚 Layer Peak 17.5% CP, 4% Ca (دجاج بياض)
+      layers_peak: [
+        { id: "corn_yellow", amount: 58, price: 13500 },
+        { id: "soya_meal_44", amount: 25, price: 24000 },
+        { id: "wheat_bran_fine", amount: 5, price: 10500 },
+        { id: "limestone", amount: 8.5, price: 1500 },
+        { id: "dcp", amount: 1.8, price: 32000 },
+        { id: "veg_oil", amount: 1.2, price: 52000 },
+        { id: "salt", amount: 0.3, price: 2000 },
+        { id: "premix_general", amount: 0.2, price: 65000 }
+      ],
+      // 🐇 Rabbit Grower 17% CP, 13% CF (أرانب شاملة)
+      rabbit_grower: [
+        { id: "alfalfa_hay", amount: 35, price: 11000 },
+        { id: "barley", amount: 22, price: 12500 },
+        { id: "wheat_bran_coarse", amount: 20, price: 10000 },
+        { id: "soya_meal_44", amount: 16, price: 24000 },
+        { id: "cane_molasses", amount: 4, price: 7000 },
+        { id: "dcp", amount: 1.5, price: 32000 },
+        { id: "salt", amount: 0.8, price: 2000 },
+        { id: "premix_general", amount: 0.7, price: 65000 }
+      ],
+      // 🐟 Tilapia Grow-out 30% CP (بلطي تسمين)
+      tilapia_growout: [
+        { id: "corn_yellow", amount: 28, price: 13500 },
+        { id: "soya_meal_44", amount: 42, price: 24000 },
+        { id: "wheat_bran_fine", amount: 15, price: 10500 },
+        { id: "gluten_60", amount: 6, price: 36000 },
+        { id: "fishmeal_local", amount: 4, price: 48000 },
+        { id: "veg_oil", amount: 2.5, price: 52000 },
+        { id: "dcp", amount: 1.5, price: 32000 },
+        { id: "premix_fish", amount: 1.0, price: 80000 }
+      ],
+      // 🌊 Marine Fish 42% CP (قاروص ودنيس)
+      marine_fish: [
+        { id: "fishmeal_imported", amount: 30, price: 72000 },
+        { id: "soya_meal_48", amount: 30, price: 26000 },
+        { id: "wheat_flour", amount: 15, price: 15500 },
+        { id: "gluten_60", amount: 10, price: 36000 },
+        { id: "fish_oil", amount: 9, price: 65000 },
+        { id: "premix_fish", amount: 2, price: 80000 },
+        { id: "dcp", amount: 2, price: 32000 },
+        { id: "fodder_yeast", amount: 2, price: 28000 }
+      ]
+    };
+
+    // State
+    let currentRecipe = [];
+    let currentLang = localStorage.getItem('aqasoft_lang') || 'ar';
+
+    // ==========================================
+    // INITIALIZATION & TAB SWITCHING
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      initPearsonDropdowns();
+      renderDatabaseTable();
+      loadPreset('beef_grower');
+      setupLanguage(currentLang);
+    });
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+
+      if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+      } else {
+        const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+        if (btn) btn.classList.add('active');
+      }
+
+      const pane = document.getElementById('tab-' + tabId);
+      if (pane) pane.classList.add('active');
+    }
+
+    function onSectorChanged() {
+      const speciesKey = document.getElementById('targetSpecies').value;
+      if (PRESETS[speciesKey]) {
+        loadPreset(speciesKey);
+      } else {
+        recalculate();
+      }
+    }
+
+    // ==========================================
+    // RECIPE BUILDER & CALCULATION LOGIC
+    // ==========================================
+    function loadPreset(key) {
+      document.querySelectorAll('.preset-pill').forEach(p => p.classList.remove('active'));
+      if (event && event.currentTarget && event.currentTarget.classList) {
+        event.currentTarget.classList.add('active');
+      }
+      
+      const preset = PRESETS[key];
+      if (!preset) return;
+
+      currentRecipe = JSON.parse(JSON.stringify(preset));
+      const sel = document.getElementById('targetSpecies');
+      if (sel && SPECIES_TARGETS[key]) sel.value = key;
+
+      renderRecipeTable();
+      recalculate();
+    }
+
+    function toggleCalcMode() {
+      const mode = document.getElementById('calcMode').value;
+      const batchBar = document.getElementById('batchWeightBar');
+      const thHeader = document.getElementById('th_amount_header');
+
+      if (mode === 'weight') {
+        batchBar.style.display = 'flex';
+        thHeader.textContent = (currentLang === 'ar') ? 'الوزن (كجم)' : 'Weight (kg)';
+      } else {
+        batchBar.style.display = 'none';
+        thHeader.textContent = (currentLang === 'ar') ? 'النسبة (%)' : 'Percentage (%)';
+      }
+      recalculate();
+    }
+
+    function renderRecipeTable() {
+      const tbody = document.getElementById('recipeRows');
+      tbody.innerHTML = '';
+
+      const all = getAllIngredients();
+
+      currentRecipe.forEach((item, index) => {
+        const ing = all.find(x => x.id === item.id) || {
+          name_ar: item.name_ar || 'خامة',
+          name_en: item.name_en || 'Ingredient',
+          category: 'energy', cp: item.cp || 0, de: item.de || 0,
+          ee: item.ee || 0, cf: item.cf || 0, tdn: item.tdn || 0,
+          ca: item.ca || 0, p: item.p || 0
+        };
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <div class="ing-name-cell">
+              <span>${currentLang === 'ar' ? ing.name_ar : ing.name_en}</span>
+              <span class="ing-category-tag">${getCategoryName(ing.category)}</span>
+            </div>
+          </td>
+          <td>
+            <input type="number" min="0" max="100000" step="0.1" value="${item.amount}" oninput="updateItemAmount(${index}, this.value)">
+          </td>
+          <td style="font-weight:700; color:var(--color-ocean-blue);">${ing.cp}%</td>
+          <td>${ing.tdn || '-'}%</td>
+          <td>${ing.ee}%</td>
+          <td>${ing.cf}%</td>
+          <td>
+            <input type="number" min="0" step="100" value="${item.price || 0}" style="width:95px;" oninput="updateItemPrice(${index}, this.value)">
+          </td>
+          <td style="text-align:center;">
+            <button class="delete-btn" onclick="removeIngredient(${index})" title="حذف الخامة"><i class="fa-solid fa-trash-can"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateItemAmount(index, val) {
+      currentRecipe[index].amount = parseFloat(val) || 0;
+      recalculate();
+    }
+
+    function updateItemPrice(index, val) {
+      currentRecipe[index].price = parseFloat(val) || 0;
+      recalculate();
+    }
+
+    function removeIngredient(index) {
+      currentRecipe.splice(index, 1);
+      renderRecipeTable();
+      recalculate();
+    }
+
+    function clearRecipe() {
+      if (confirm(currentLang === 'ar' ? 'هل تريد بالتأكيد تفريغ مكونات الخلطة؟' : 'Clear all ingredients?')) {
+        currentRecipe = [];
+        renderRecipeTable();
+        recalculate();
+      }
+    }
+
+    function recalculate() {
+      const mode = document.getElementById('calcMode').value;
+      const batchSize = parseFloat(document.getElementById('batchSize').value) || 1000;
+      const all = getAllIngredients();
+
+      let totalInput = 0;
+      currentRecipe.forEach(item => totalInput += (item.amount || 0));
+
+      let effectivePercents = [];
+      if (mode === 'weight') {
+        effectivePercents = currentRecipe.map(item => {
+          return { item, pct: totalInput > 0 ? (item.amount / totalInput) * 100 : 0 };
+        });
+      } else {
+        effectivePercents = currentRecipe.map(item => {
+          return { item, pct: item.amount || 0 };
+        });
+      }
+
+      // Compute weighted nutritional metrics
+      let sumCP = 0, sumDE = 0, sumME = 0, sumTDN = 0, sumEE = 0, sumCF = 0, sumCa = 0, sumP = 0;
+      let totalBatchCost = 0;
+
+      effectivePercents.forEach(({ item, pct }) => {
+        const ing = all.find(x => x.id === item.id) || {
+          cp: item.cp || 0, de: item.de || 0, me: item.me || 0,
+          tdn: item.tdn || 0, ee: item.ee || 0, cf: item.cf || 0,
+          ca: item.ca || 0, p: item.p || 0
+        };
+
+        const frac = pct / 100;
+        sumCP += (ing.cp || 0) * frac;
+        sumDE += (ing.de || 0) * frac;
+        sumME += (ing.me || 0) * frac;
+        sumTDN += (ing.tdn || 0) * frac;
+        sumEE += (ing.ee || 0) * frac;
+        sumCF += (ing.cf || 0) * frac;
+        sumCa += (ing.ca || 0) * frac;
+        sumP += (ing.p || 0) * frac;
+
+        // Cost computation
+        const pricePerKg = (item.price || 0) / 1000;
+        const itemKg = mode === 'weight' ? item.amount : (pct / 100) * batchSize;
+        totalBatchCost += itemKg * pricePerKg;
+      });
+
+      // Normalize if percent mode != 100
+      let displayCP = sumCP;
+      let displayDE = sumDE;
+      let displayME = sumME;
+      let displayTDN = sumTDN;
+      let displayEE = sumEE;
+      let displayCF = sumCF;
+      let displayCa = sumCa;
+      let displayP = sumP;
+
+      if (mode === 'percent' && totalInput > 0 && Math.abs(totalInput - 100) > 0.05) {
+        const factor = 100 / totalInput;
+        displayCP = sumCP * factor;
+        displayDE = sumDE * factor;
+        displayME = sumME * factor;
+        displayTDN = sumTDN * factor;
+        displayEE = sumEE * factor;
+        displayCF = sumCF * factor;
+        displayCa = sumCa * factor;
+        displayP = sumP * factor;
+      }
+
+      // Update DOM
+      document.getElementById('resCP').textContent = displayCP.toFixed(2);
+      document.getElementById('resTDN').textContent = displayTDN.toFixed(1);
+      document.getElementById('resDE').textContent = displayDE.toFixed(2);
+      document.getElementById('resME').textContent = displayME.toFixed(2);
+      document.getElementById('resMEKcal').textContent = Math.round(displayME * 1000) + ' kcal/kg';
+      document.getElementById('resEE').textContent = displayEE.toFixed(2);
+      document.getElementById('resCF').textContent = displayCF.toFixed(2);
+      document.getElementById('resCa').textContent = displayCa.toFixed(2);
+      document.getElementById('resP').textContent = displayP.toFixed(2);
+
+      // Ca:P Ratio
+      if (displayP > 0) {
+        const ratio = (displayCa / displayP).toFixed(2);
+        document.getElementById('resCaPRatio').textContent = `${ratio} : 1`;
+      } else {
+        document.getElementById('resCaPRatio').textContent = '-';
+      }
+
+      // Total badge
+      const badge = document.getElementById('totalBadge');
+      const badgeLbl = document.getElementById('totalBadgeLabel');
+      const badgeVal = document.getElementById('totalBadgeValue');
+
+      if (mode === 'percent') {
+        badgeLbl.textContent = (currentLang === 'ar') ? 'إجمالي النسبة:' : 'Total Percentage:';
+        badgeVal.textContent = totalInput.toFixed(1) + '%';
+
+        if (Math.abs(totalInput - 100) < 0.1) {
+          badge.className = 'total-badge-bar perfect';
+        } else if (totalInput < 100) {
+          badge.className = 'total-badge-bar warning';
+          badgeVal.textContent += (currentLang === 'ar' ? ` (متبقي ${(100 - totalInput).toFixed(1)}%)` : ` (left: ${(100 - totalInput).toFixed(1)}%)`);
+        } else {
+          badge.className = 'total-badge-bar danger';
+          badgeVal.textContent += (currentLang === 'ar' ? ` (تجاوزت بـ ${(totalInput - 100).toFixed(1)}%)` : ` (+${(totalInput - 100).toFixed(1)}%)`);
+        }
+      } else {
+        badgeLbl.textContent = (currentLang === 'ar') ? 'إجمالي وزن الخلطة:' : 'Total Batch Weight:';
+        badgeVal.textContent = totalInput.toFixed(1) + ' كجم';
+        badge.className = 'total-badge-bar perfect';
+      }
+
+      // Cost Calculation
+      const effectiveBatchWeight = mode === 'weight' ? totalInput : batchSize;
+      const costPerKg = effectiveBatchWeight > 0 ? (totalBatchCost / effectiveBatchWeight) : 0;
+      const costPerTon = costPerKg * 1000;
+
+      document.getElementById('resCostTon').textContent = Math.round(costPerTon).toLocaleString();
+      document.getElementById('resCostKg').textContent = costPerKg.toFixed(2) + ' ' + (currentLang === 'ar' ? 'ج.م' : 'EGP');
+
+      updateTargetComparison(displayCP, displayTDN, displayCF);
+    }
+
+    function updateTargetComparison(cp, tdn, cf) {
+      const speciesKey = document.getElementById('targetSpecies').value;
+      const target = SPECIES_TARGETS[speciesKey];
+      if (!target) return;
+
+      if (cp === undefined) {
+        cp = parseFloat(document.getElementById('resCP').textContent) || 0;
+        tdn = parseFloat(document.getElementById('resTDN').textContent) || 0;
+        cf = parseFloat(document.getElementById('resCF').textContent) || 0;
+      }
+
+      // Protein progress
+      const pPct = Math.min(100, Math.max(0, (cp / (target.cp_target * 1.25)) * 100));
+      const progP = document.getElementById('progProtein');
+      progP.style.width = pPct + '%';
+      document.getElementById('targetProteinText').textContent = `${cp.toFixed(1)}% / ${target.cp_target}%`;
+
+      if (cp >= target.cp_min && cp <= target.cp_max) {
+        progP.className = 'progress-fill match';
+      } else if (cp < target.cp_min) {
+        progP.className = 'progress-fill low';
+      } else {
+        progP.className = 'progress-fill high';
+      }
+
+      // TDN progress
+      const tdnTarget = target.tdn_target || 75;
+      const tdnPct = Math.min(100, Math.max(0, (tdn / (tdnTarget * 1.2)) * 100));
+      const progTDN = document.getElementById('progTDN');
+      progTDN.style.width = tdnPct + '%';
+      document.getElementById('targetTDNText').textContent = `${tdn.toFixed(1)}% / ${tdnTarget}%`;
+
+      if (tdn >= (target.tdn_min || 68) && tdn <= (target.tdn_max || 85)) {
+        progTDN.className = 'progress-fill match';
+      } else {
+        progTDN.className = 'progress-fill low';
+      }
+
+      // Fiber progress
+      const cfTarget = target.cf_target || target.cf_max || 12;
+      const cfPct = Math.min(100, Math.max(0, (cf / (cfTarget * 1.5)) * 100));
+      const progCF = document.getElementById('progFiber');
+      progCF.style.width = cfPct + '%';
+      document.getElementById('targetFiberText').textContent = `${cf.toFixed(1)}% / ${cfTarget}%`;
+
+      if (target.cf_min && cf < target.cf_min) {
+        progCF.className = 'progress-fill low'; // Ruminants & rabbits need minimum fiber!
+      } else if (cf <= (target.cf_max || 15)) {
+        progCF.className = 'progress-fill match';
+      } else {
+        progCF.className = 'progress-fill high';
+      }
+
+      // Overall status text
+      const statusEl = document.getElementById('targetStatusText');
+      if (cp >= target.cp_min && cp <= target.cp_max && cf <= (target.cf_max || 25)) {
+        statusEl.textContent = (currentLang === 'ar') ? 'مطابقة للمعيار تماماً' : 'Optimal Match';
+        statusEl.style.color = '#059669';
+      } else if (cp < target.cp_min) {
+        statusEl.textContent = (currentLang === 'ar') ? `البروتين أقل من الموصى به (${target.cp_min}%)` : `Protein low (<${target.cp_min}%)`;
+        statusEl.style.color = '#d97706';
+      } else if (cf > (target.cf_max || 25)) {
+        statusEl.textContent = (currentLang === 'ar') ? `نسبة الألياف مرتفعة (> ${target.cf_max}%)` : `Fiber high (> ${target.cf_max}%)`;
+        statusEl.style.color = '#dc2626';
+      } else {
+        statusEl.textContent = (currentLang === 'ar') ? 'مقبول' : 'Acceptable';
+        statusEl.style.color = '#0284c7';
+      }
+    }
+
+    // ==========================================
+    // MODAL INGREDIENT PICKER
+    // ==========================================
+    function openIngModal() {
+      document.getElementById('ingModal').classList.add('open');
+      document.getElementById('modalSearch').value = '';
+      filterModalList();
+    }
+
+    function closeIngModal() {
+      document.getElementById('ingModal').classList.remove('open');
+    }
+
+    function filterModalList() {
+      const q = document.getElementById('modalSearch').value.toLowerCase().trim();
+      const list = document.getElementById('modalIngList');
+      list.innerHTML = '';
+
+      const all = getAllIngredients();
+      const filtered = all.filter(item => {
+        return item.name_ar.toLowerCase().includes(q) || item.name_en.toLowerCase().includes(q);
+      });
+
+      filtered.forEach(ing => {
+        const isAlreadyAdded = currentRecipe.some(x => x.id === ing.id);
+        const div = document.createElement('div');
+        div.className = 'modal-ing-item';
+        div.innerHTML = `
+          <div>
+            <div style="font-weight:700; color:var(--color-ocean-blue); font-size:1rem;">
+              ${currentLang === 'ar' ? ing.name_ar : ing.name_en}
+              ${isAlreadyAdded ? '<span style="font-size:.75rem; color:#059669; margin-right:.4rem;">(مضافة بالفعل)</span>' : ''}
+            </div>
+            <div class="modal-ing-specs">
+              ${getCategoryName(ing.category)} &bull; بروتين: <strong>${ing.cp}%</strong> &bull; TDN: <strong>${ing.tdn}%</strong> &bull; ألياف: ${ing.cf}% &bull; دهن: ${ing.ee}%
+            </div>
+          </div>
+          <button class="modal-btn-select" onclick="addIngredientToRecipe('${ing.id}')">
+            <i class="fa-solid fa-plus"></i> إضافة
+          </button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function addIngredientToRecipe(id) {
+      const all = getAllIngredients();
+      const ing = all.find(x => x.id === id);
+      if (!ing) return;
+
+      const existing = currentRecipe.find(x => x.id === id);
+      if (existing) {
+        existing.amount += 5;
+      } else {
+        currentRecipe.push({
+          id: ing.id,
+          amount: 5,
+          price: ing.default_price || 15000
+        });
+      }
+
+      closeIngModal();
+      renderRecipeTable();
+      recalculate();
+    }
+
+    // ==========================================
+    // CUSTOM INGREDIENT MODAL
+    // ==========================================
+    function openCustomModal() {
+      document.getElementById('customModal').classList.add('open');
+    }
+
+    function closeCustomModal() {
+      document.getElementById('customModal').classList.remove('open');
+    }
+
+    function saveCustomIngredient() {
+      const nameAr = document.getElementById('custNameAr').value.trim();
+      const nameEn = document.getElementById('custNameEn').value.trim() || nameAr;
+      if (!nameAr) {
+        alert(currentLang === 'ar' ? 'يرجى كتابة اسم الخامة.' : 'Please enter ingredient name.');
+        return;
+      }
+
+      const id = 'custom_' + Date.now();
+      const item = {
+        id: id,
+        name_ar: nameAr,
+        name_en: nameEn,
+        category: document.getElementById('custCategory').value,
+        cp: parseFloat(document.getElementById('custCP').value) || 0,
+        tdn: parseFloat(document.getElementById('custTDN').value) || 0,
+        ee: parseFloat(document.getElementById('custEE').value) || 0,
+        cf: parseFloat(document.getElementById('custCF').value) || 0,
+        de: parseFloat(document.getElementById('custDE').value) || 0,
+        me: parseFloat(document.getElementById('custME').value) || 0,
+        ca: parseFloat(document.getElementById('custCa').value) || 0,
+        p: parseFloat(document.getElementById('custP').value) || 0,
+        default_price: parseFloat(document.getElementById('custPrice').value) || 0,
+        isCustom: true
+      };
+
+      customIngredients.push(item);
+      localStorage.setItem('aquasoft_custom_ingredients', JSON.stringify(customIngredients));
+
+      alert(currentLang === 'ar' ? 'تمت إضافة الخامة بنجاح إلى قاعدة البيانات!' : 'Ingredient added successfully!');
+      closeCustomModal();
+      renderDatabaseTable();
+
+      // Automatically add to current recipe
+      currentRecipe.push({ id: item.id, amount: 5, price: item.default_price });
+      renderRecipeTable();
+      recalculate();
+    }
+
+    // ==========================================
+    // PEARSON SQUARE CALCULATOR
+    // ==========================================
+    function initPearsonDropdowns() {
+      const sel1 = document.getElementById('pearsonIng1');
+      const sel2 = document.getElementById('pearsonIng2');
+      sel1.innerHTML = '';
+      sel2.innerHTML = '';
+
+      const all = getAllIngredients();
+
+      all.forEach(ing => {
+        const opt1 = document.createElement('option');
+        opt1.value = ing.id;
+        opt1.textContent = `${ing.name_ar} (${ing.cp}% بروتين)`;
+        if (ing.id === 'soya_meal_44') opt1.selected = true;
+        sel1.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = ing.id;
+        opt2.textContent = `${ing.name_ar} (${ing.cp}% بروتين)`;
+        if (ing.id === 'corn_yellow') opt2.selected = true;
+        sel2.appendChild(opt2);
+      });
+
+      calcPearson();
+    }
+
+    function calcPearson() {
+      const id1 = document.getElementById('pearsonIng1').value;
+      const id2 = document.getElementById('pearsonIng2').value;
+      const target = parseFloat(document.getElementById('pearsonTarget').value) || 16;
+      const batchWeight = parseFloat(document.getElementById('pearsonBatch').value) || 1000;
+
+      const all = getAllIngredients();
+      const ing1 = all.find(x => x.id === id1) || { name_ar: 'خامة 1', cp: 44 };
+      const ing2 = all.find(x => x.id === id2) || { name_ar: 'خامة 2', cp: 8 };
+
+      document.getElementById('pIng1Val').textContent = ing1.cp;
+      document.getElementById('pIng2Val').textContent = ing2.cp;
+      document.getElementById('pTargetDisplay').textContent = target + '%';
+
+      const cp1 = ing1.cp;
+      const cp2 = ing2.cp;
+
+      if ((target > cp1 && target > cp2) || (target < cp1 && target < cp2)) {
+        alert(currentLang === 'ar' ? 'تنبيه: يجب أن تكون نسبة البروتين المستهدفة بين نسبتي الخامتين المختارتين.' : 'Target protein must be between the two selected ingredients.');
+        return;
+      }
+
+      const parts1 = Math.abs(target - cp2);
+      const parts2 = Math.abs(cp1 - target);
+      const totalParts = parts1 + parts2;
+
+      let pct1 = 0, pct2 = 0;
+      if (totalParts > 0) {
+        pct1 = (parts1 / totalParts) * 100;
+        pct2 = (parts2 / totalParts) * 100;
+      }
+
+      const w1 = (pct1 / 100) * batchWeight;
+      const w2 = (pct2 / 100) * batchWeight;
+
+      document.getElementById('pResName1').textContent = ing1.name_ar;
+      document.getElementById('pResParts1').textContent = parts1.toFixed(1) + ' جزء';
+      document.getElementById('pResPct1').textContent = pct1.toFixed(1) + '%';
+      document.getElementById('pResWeight1').textContent = Math.round(w1) + ' كجم';
+
+      document.getElementById('pResName2').textContent = ing2.name_ar;
+      document.getElementById('pResParts2').textContent = parts2.toFixed(1) + ' جزء';
+      document.getElementById('pResPct2').textContent = pct2.toFixed(1) + '%';
+      document.getElementById('pResWeight2').textContent = Math.round(w2) + ' كجم';
+
+      document.getElementById('pResTotalParts').textContent = totalParts.toFixed(1) + ' جزء';
+      document.getElementById('pResTotalWeight').textContent = batchWeight + ' كجم';
+    }
+
+    function applyPearsonToFormulation() {
+      const id1 = document.getElementById('pearsonIng1').value;
+      const id2 = document.getElementById('pearsonIng2').value;
+      const all = getAllIngredients();
+      const ing1 = all.find(x => x.id === id1);
+      const ing2 = all.find(x => x.id === id2);
+
+      const pct1Text = document.getElementById('pResPct1').textContent;
+      const pct2Text = document.getElementById('pResPct2').textContent;
+      const pct1 = parseFloat(pct1Text) || 50;
+      const pct2 = parseFloat(pct2Text) || 50;
+
+      currentRecipe = [
+        { id: id1, amount: parseFloat(pct1.toFixed(1)), price: ing1.default_price || 15000 },
+        { id: id2, amount: parseFloat(pct2.toFixed(1)), price: ing2.default_price || 15000 }
+      ];
+
+      switchTab('formulation');
+      renderRecipeTable();
+      recalculate();
+    }
+
+    // ==========================================
+    // DATABASE TABLE RENDERING
+    // ==========================================
+    function renderDatabaseTable() {
+      filterDatabase();
+    }
+
+    function filterDatabase() {
+      const q = document.getElementById('dbSearch').value.toLowerCase().trim();
+      const cat = document.getElementById('dbCategory').value;
+      const tbody = document.getElementById('databaseTableBody');
+      tbody.innerHTML = '';
+
+      const all = getAllIngredients();
+      const filtered = all.filter(ing => {
+        const matchName = ing.name_ar.toLowerCase().includes(q) || ing.name_en.toLowerCase().includes(q);
+        const matchCat = (cat === 'all' || ing.category === cat);
+        return matchName && matchCat;
+      });
+
+      filtered.forEach(ing => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight:700; color:var(--color-ocean-blue);">${currentLang === 'ar' ? ing.name_ar : ing.name_en}</td>
+          <td><span class="db-badge ${ing.category}">${getCategoryName(ing.category)}</span></td>
+          <td style="font-weight:800; color:var(--color-ocean-blue);">${ing.cp}%</td>
+          <td style="font-weight:700;">${ing.tdn || '-'}%</td>
+          <td>${ing.de || '-'}</td>
+          <td>${ing.me || '-'}</td>
+          <td>${ing.ee}%</td>
+          <td>${ing.cf}%</td>
+          <td>${ing.ca}%</td>
+          <td>${ing.p}%</td>
+          <td>
+            <button class="modal-btn-select" onclick="addIngredientToRecipe('${ing.id}'); switchTab('formulation');" title="إضافة للخلطة">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function getCategoryName(cat) {
+      const mapAr = {
+        energy: "حبوب وطاقة",
+        protein_plant: "بروتين نباتي",
+        byproduct: "مخلفات ومضارب",
+        roughage: "أعلاف مالئة وأتبان",
+        marine: "مساحيق وأعلاف مائية",
+        mineral: "أملاح ومصادر معدنية"
+      };
+      const mapEn = {
+        energy: "Grains & Energy",
+        protein_plant: "Plant Protein",
+        byproduct: "By-products",
+        roughage: "Roughage & Straw",
+        marine: "Marine & Fishmeal",
+        mineral: "Minerals & Premix"
+      };
+      return currentLang === 'ar' ? (mapAr[cat] || cat) : (mapEn[cat] || cat);
+    }
+
+    // ==========================================
+    // SAVE / LOAD / EXPORT
+    // ==========================================
+    function saveRecipeLocal() {
+      const name = prompt(currentLang === 'ar' ? 'أدخل اسماً لحفظ هذه التركيبة:' : 'Enter a name for this recipe:', 'تركيبة علف ' + new Date().toLocaleDateString('ar-EG'));
+      if (!name) return;
+
+      const saved = JSON.parse(localStorage.getItem('aquasoft_saved_recipes') || '{}');
+      saved[name] = {
+        date: new Date().toISOString(),
+        recipe: currentRecipe,
+        mode: document.getElementById('calcMode').value,
+        batchSize: document.getElementById('batchSize').value,
+        species: document.getElementById('targetSpecies').value
+      };
+      localStorage.setItem('aquasoft_saved_recipes', JSON.stringify(saved));
+      alert(currentLang === 'ar' ? `تم حفظ التركيبة "${name}" بنجاح!` : `Recipe "${name}" saved!`);
+    }
+
+    function loadRecipePrompt() {
+      const saved = JSON.parse(localStorage.getItem('aquasoft_saved_recipes') || '{}');
+      const keys = Object.keys(saved);
+      if (keys.length === 0) {
+        alert(currentLang === 'ar' ? 'لا توجد تركيبات محفوظة بعد.' : 'No saved recipes found.');
+        return;
+      }
+
+      let msg = (currentLang === 'ar' ? 'اختر رقم التركيبة المراد استرجاعها:\n' : 'Select recipe index:\n');
+      keys.forEach((k, idx) => {
+        msg += `${idx + 1}. ${k}\n`;
+      });
+
+      const choice = prompt(msg, "1");
+      if (!choice) return;
+      const idx = parseInt(choice) - 1;
+      if (idx >= 0 && idx < keys.length) {
+        const item = saved[keys[idx]];
+        currentRecipe = item.recipe;
+        if (item.mode) document.getElementById('calcMode').value = item.mode;
+        if (item.batchSize) document.getElementById('batchSize').value = item.batchSize;
+        if (item.species) document.getElementById('targetSpecies').value = item.species;
+        toggleCalcMode();
+        renderRecipeTable();
+        recalculate();
+      }
+    }
+
+    // ==========================================
+    // LOCALIZATION
+    // ==========================================
+    const I18N = {
+      ar: {
+        nav_home: "الصفحة الرئيسية",
+        hero_badge: "أداة احترافية عامة لجميع قطاعات الإنتاج والتغذية",
+        hero_title: "أداة تركيب وموازنة <span>علائق الأعلاف العامة</span>",
+        hero_desc: "النظام الشامل لتركيب وموازنة الأعلاف الحيوانية (عجول وماشية، أغنام، أبقار حلاب، دواجن تسمين وبياض، أرانب، وأسماك) وفق التحليلات المعملية وموسوعات NRC و Feedipedia مع حساب تكلفة الطن.",
+        tab_formulation: "مصمم الخلطات الذكي",
+        tab_pearson: "مربع بيرسون (الخلط الثنائي السريع)",
+        tab_database: "مكتبة وتحليل الخامات (70+ مادة)",
+        builder_title: "مكونات وتناسب الخلطة العلفية",
+        btn_custom_ing: "إضافة خامة مخصصة",
+        lbl_mode: "طريقة الحساب:",
+        opt_percent: "نسب مئوية (100%)",
+        opt_weight: "وزن تشغيلة (كجم / طن)",
+        lbl_batch_size: "حجم التشغيلة الإجمالي (كجم):",
+        th_ingredient: "مادة العلف",
+        th_percentage: "النسبة (%)",
+        th_protein: "البروتين CP%",
+        th_energy: "المواد المهضومة TDN%",
+        th_fat: "الدهن EE%",
+        th_fiber: "الألياف CF%",
+        th_price: "سعر الطن (ج.م)",
+        btn_add_from_db: "اختيار خامة من قاعدة البيانات الشاملة (70+ مادة)",
+        btn_save: "حفظ التركيبة",
+        btn_load: "استرجاع تركيبة",
+        btn_clear: "تفريغ",
+        btn_print: "طباعة التقرير / PDF",
+        summary_title: "التحليل الكيماوي والغذائي الشامل",
+        metric_cp: "البروتين الخام (CP)",
+        metric_tdn: "المواد المهضومة (TDN)",
+        metric_de: "الطاقة المهضومة (DE)",
+        metric_me: "الطاقة الممثلة (ME)",
+        metric_ee: "الدهن الخام (EE)",
+        metric_cf: "الألياف الخام (CF)",
+        metric_ca: "الكالسيوم (Ca)",
+        metric_p: "الفوسفور (P)",
+        lbl_cap_ratio: "نسبة الكالسيوم للفوسفور (Ca:P):",
+        lbl_target_match: "المقارنة مع الاحتياجات الموصى بها",
+        lbl_cost_ton: "التكلفة التقديرية للطن:",
+        lbl_cost_kg: "سعر الكيلو:",
+        pearson_title: "مربع بيرسون لموازنة خامتين علفيتين",
+        pearson_desc: "طريقة علمية سريعة ومعتمدة لحساب نسبة الخلط الدقيقة بين مادتين (أو خليطين: مصدر طاقة منخفض البروتين كالذرة + مصدر بروتيني عالي كالصويا) للوصول إلى نسبة بروتين مستهدفة لأي حيوان أو قطاع إنتاج.",
+        lbl_pearson_batch: "حجم الدفعة المطلوبة (كجم):",
+        lbl_pearson_target: "البروتين المطلوب تحقيقه (%):",
+        db_title: "مكتبة وتحليل الخامات العلفية المعتمدة (70+ خامة)",
+        db_desc: "بيانات تحليل الأعلاف المركزة والمالئة والمخلفات وفق الجداول المعملية المعتمدة وموسوعة الأعلاف العالمية Feedipedia ومقررات NRC لتغذية المجترات والدواجن والأرانب والأسماك:",
+        modal_title: "اختيار خامة لإضافتها للخلطة"
+      },
+      en: {
+        nav_home: "Home",
+        hero_badge: "Universal Nutrition & Feed Formulation Engine",
+        hero_title: "Universal Feed <span>Formulation Tool</span>",
+        hero_desc: "Comprehensive feed formulation and balancing system for all animal sectors (beef cattle, dairy cows, sheep, poultry broilers & layers, rabbits, and aquaculture) based on NRC & Feedipedia standards with live batch cost calculation.",
+        tab_formulation: "Formulation Builder",
+        tab_pearson: "Pearson Square (Binary Mix)",
+        tab_database: "Ingredients Library (70+ Feeds)",
+        builder_title: "Feed Ingredients & Proportions",
+        btn_custom_ing: "Add Custom Ingredient",
+        lbl_mode: "Calculation Mode:",
+        opt_percent: "Percentage (100%)",
+        opt_weight: "Batch Weight (kg / ton)",
+        lbl_batch_size: "Batch Weight (kg):",
+        th_ingredient: "Ingredient",
+        th_percentage: "Percentage (%)",
+        th_protein: "Crude Protein CP%",
+        th_energy: "Total Dig. Nutrients TDN%",
+        th_fat: "Crude Fat EE%",
+        th_fiber: "Crude Fiber CF%",
+        th_price: "Price/Ton (EGP)",
+        btn_add_from_db: "Add Ingredient from Database (70+ items)",
+        btn_save: "Save Recipe",
+        btn_load: "Load Recipe",
+        btn_clear: "Clear All",
+        btn_print: "Print / Export PDF",
+        summary_title: "Comprehensive Nutritional Analysis",
+        metric_cp: "Crude Protein (CP)",
+        metric_tdn: "Total Dig. Nutrients (TDN)",
+        metric_de: "Digestible Energy (DE)",
+        metric_me: "Metabolizable Energy (ME)",
+        metric_ee: "Crude Fat (EE)",
+        metric_cf: "Crude Fiber (CF)",
+        metric_ca: "Calcium (Ca)",
+        metric_p: "Phosphorus (P)",
+        lbl_cap_ratio: "Calcium to Phosphorus Ratio (Ca:P):",
+        lbl_target_match: "Recommended Benchmark Comparison",
+        lbl_cost_ton: "Estimated Cost per Ton:",
+        lbl_cost_kg: "Cost per 1 Kg:",
+        pearson_title: "Pearson Square Two-Ingredient Balancer",
+        pearson_desc: "A rapid scientific method to balance two feedstuffs (e.g. low-protein corn + high-protein soybean meal) to achieve an exact target protein percentage for any animal sector.",
+        lbl_pearson_batch: "Batch Weight (kg):",
+        lbl_pearson_target: "Desired Target Protein (%):",
+        db_title: "Certified Feed Ingredients Database (70+ items)",
+        db_desc: "Comprehensive nutritional values from official laboratory analysis, Feedipedia, and NRC standards for ruminants, poultry, rabbits, and fish:",
+        modal_title: "Select Ingredient to Add"
+      }
+    };
+
+    function setupLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('aqasoft_lang', lang);
+
+      const html = document.documentElement;
+      const toggle = document.getElementById('lang-toggle');
+
+      if (lang === 'ar') {
+        html.setAttribute('dir', 'rtl');
+        html.setAttribute('lang', 'ar');
+        document.body.classList.remove('ltr');
+        toggle.textContent = 'English';
+      } else {
+        html.setAttribute('dir', 'ltr');
+        html.setAttribute('lang', 'en');
+        document.body.classList.add('ltr');
+        toggle.textContent = 'عربي';
+      }
+
+      // Translate tagged data-i18n elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (I18N[lang] && I18N[lang][key] !== undefined) {
+          el.innerHTML = I18N[lang][key];
+        }
+      });
+
+      renderRecipeTable();
+      renderDatabaseTable();
+      recalculate();
+    }
+
+    document.getElementById('lang-toggle').addEventListener('click', () => {
+      setupLanguage(currentLang === 'ar' ? 'en' : 'ar');
+    });
+
+  </script>
+</body>
+</html>

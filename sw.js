@@ -1,5 +1,5 @@
 // AQUASoft PWA Service Worker
-const CACHE_NAME = 'aquasoft-pwa-v2.0';
+const CACHE_NAME = 'aquasoft-pwa-v3.0';
 
 const PRECACHE_ASSETS = [
   './',
@@ -13,6 +13,7 @@ const PRECACHE_ASSETS = [
   './images/in ob.png',
   './images/in white.png',
   './tools/feed.html',
+  './tools/feed-formulation.html',
   './tools/oxygen.html',
   './tools/ammonia.html',
   './tools/disinfectans.html',
