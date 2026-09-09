@@ -195,6 +195,29 @@
     .db-badge.mineral { background:#fee2e2; color:#991b1b; }
     .db-badge.marine { background:#ccfbf1; color:#115e59; }
 
+    /* Optimizer Styles */
+    .optimizer-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:1.8rem; }
+    @media (max-width: 992px) {
+      .optimizer-grid { grid-template-columns:1fr; }
+    }
+    .opt-target-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:1rem; margin-bottom:1rem; }
+    .opt-target-item { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:.9rem; }
+    .opt-target-item label { display:block; font-size:.8rem; font-weight:700; color:var(--color-ocean-blue); margin-bottom:.4rem; }
+    .opt-target-item input { width:100%; padding:.5rem .7rem; border-radius:8px; border:1.5px solid #cbd5e1; font-weight:700; font-size:1rem; color:var(--color-ocean-blue); text-align:center; outline:none; }
+    .opt-target-item input:focus { border-color:var(--color-aqua); }
+    .opt-ing-select-list { max-height:360px; overflow-y:auto; border:1px solid #e2e8f0; border-radius:12px; padding:.5rem; background:#fff; margin-bottom:1rem; }
+    .opt-ing-row { display:flex; align-items:center; justify-content:space-between; padding:.6rem .8rem; border-bottom:1px solid #f1f5f9; border-radius:8px; transition:var(--transition); gap:.6rem; }
+    .opt-ing-row:hover { background:#f8fafc; }
+    .opt-ing-label { display:flex; align-items:center; gap:.6rem; flex:1; cursor:pointer; font-weight:600; font-size:.88rem; color:var(--color-charcoal); }
+    .opt-ing-limits { display:flex; align-items:center; gap:.4rem; font-size:.78rem; color:#64748b; }
+    .opt-ing-limits input { width:55px; padding:.25rem .4rem; border-radius:6px; border:1px solid #cbd5e1; font-size:.8rem; text-align:center; font-weight:700; }
+    .opt-run-btn { width:100%; padding:1rem; border-radius:14px; background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:#fff; border:none; font-size:1.1rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:.6rem; transition:var(--transition); box-shadow:0 4px 12px rgba(16,185,129,.25); }
+    .opt-run-btn:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(16,185,129,.35); filter:brightness(1.05); }
+    .opt-status-box { padding:1rem; border-radius:12px; margin-top:1rem; font-weight:700; font-size:.9rem; display:none; }
+    .opt-status-box.success { background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; display:flex; align-items:center; gap:.6rem; }
+    .opt-status-box.warn { background:#fffbeb; border:1px solid #fde68a; color:#92400e; display:flex; align-items:center; gap:.6rem; }
+    .opt-status-box.error { background:#fef2f2; border:1px solid #fecaca; color:#991b1b; display:flex; align-items:center; gap:.6rem; }
+
     /* Modal for choosing ingredient */
     .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.6); z-index:9999; display:none; align-items:center; justify-content:center; padding:1rem; }
     .modal-overlay.open { display:flex; animation:fadeIn .25s ease; }
@@ -262,6 +285,7 @@
 
     <div class="tabs-wrapper">
       <button class="tab-btn active" onclick="switchTab('formulation')"><i class="fa-solid fa-blender"></i> <span data-i18n="tab_formulation">مصمم الخلطات الذكي</span></button>
+      <button class="tab-btn" onclick="switchTab('optimizer')"><i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="tab_optimizer">المُحسِّن الذكي للعلائق (Least-Cost)</span></button>
       <button class="tab-btn" onclick="switchTab('pearson')"><i class="fa-solid fa-shapes"></i> <span data-i18n="tab_pearson">مربع بيرسون (الخلط الثنائي السريع)</span></button>
       <button class="tab-btn" onclick="switchTab('database')"><i class="fa-solid fa-book-bookmark"></i> <span data-i18n="tab_database">مكتبة وتحليل الخامات (70+ مادة)</span></button>
     </div>
@@ -327,8 +351,13 @@
                 <label data-i18n="lbl_mode">طريقة الحساب:</label>
                 <select id="calcMode" onchange="toggleCalcMode()">
                   <option value="percent" data-i18n="opt_percent">نسب مئوية (100%)</option>
-                  <option value="weight" data-i18n="opt_weight">وزن تشغيلة (كجم / طن)</option>
+                  <option value="weight" data-i18n="opt_weight">أوزان تشغيلة (كجم / طن)</option>
                 </select>
+              </div>
+
+              <div class="control-item" id="batchSizeContainer">
+                <label id="lbl_batch_size_text" data-i18n="lbl_batch_size">حجم التشغيلة لحساب التكلفة (كجم):</label>
+                <input type="number" id="batchSize" value="1000" min="1" step="50" oninput="recalculate()" style="width:130px; font-weight:700;">
               </div>
             </div>
 
@@ -345,15 +374,6 @@
                 <button class="preset-pill" onclick="loadPreset('tilapia_growout')">🐟 بلطي تسمين 30%</button>
                 <button class="preset-pill" onclick="loadPreset('marine_fish')">🌊 أسماك بحرية 42%</button>
               </div>
-            </div>
-
-            <!-- Controls (Batch Size) -->
-            <div class="controls-bar" id="batchWeightBar" style="display:none;">
-              <div class="control-item">
-                <label data-i18n="lbl_batch_size">حجم التشغيلة الإجمالي (كجم):</label>
-                <input type="number" id="batchSize" value="1000" min="1" step="10" oninput="recalculate()" style="width:130px; font-weight:700;">
-              </div>
-              <span style="font-size:.85rem; color:#64748b;">(أدخل وزن كل خامة بالكيلوجرام، وسيقوم النظام تلقائياً بحساب النسب والتحليل الإجمالي)</span>
             </div>
 
             <!-- Table of selected ingredients -->
@@ -612,7 +632,191 @@
       </div>
     </div>
 
-    <!-- TAB 3: INGREDIENTS DATABASE -->
+    <!-- TAB 2: SMART LEAST-COST OPTIMIZER -->
+    <div id="tab-optimizer" class="tab-pane">
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="card-title-bar">
+          <h2><i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="opt_title">المُحسِّن الذكي للعلائق وأقل تكلفة (Least-Cost Feed Solver)</span></h2>
+          <span style="font-size:.85rem; color:#64748b; font-weight:600;"><i class="fa-solid fa-microchip"></i> خوارزمية ذكية لموازنة النسب الغذائية بنسبة 100% وبأقل تكلفة للطن</span>
+        </div>
+        <p style="color:#64748b; font-size:.95rem; margin-bottom:1.5rem;" data-i18n="opt_desc">
+          حدد مواصفات ونسب المواد الغذائية المطلوبة بدقة (بروتين، طاقة، ألياف، دهن، معادن)، وحدد الخامات المتوفرة لديك في المستودع بأسعارها، لتقوم الأداة بحساب <strong>أفضل توليفة علفية متوازنة تماماً 100% وبأقل تكلفة مالية ممكنة</strong>.
+        </p>
+
+        <!-- Quick Load Sector Standard -->
+        <div class="sector-selector-bar" style="margin-bottom:1.5rem;">
+          <div class="sector-group" style="width:100%;">
+            <label><i class="fa-solid fa-bolt"></i> تحميل الاحتياجات القياسية لقطاع محدد تلقائياً:</label>
+            <div style="display:flex; gap:.8rem; flex-wrap:wrap; margin-top:.4rem;">
+              <select id="optSpeciesPreset" style="flex:1; min-width:260px;" onchange="loadOptimizerTargetsFromSpecies()">
+                <option value="">-- اختر نوع الحيوان لجلب المعايير الموصى بها --</option>
+                <optgroup label="🐄 تسمين وأبقار حلابة">
+                  <option value="beef_grower">عجول تسمين - مرحلة أولى ونمو (14-16% بروتين)</option>
+                  <option value="beef_finisher">عجول تسمين - مرحلة نهائية (11.5-13.5% بروتين)</option>
+                  <option value="dairy_high">أبقار حلابة عالية الإدرار (16-18% بروتين)</option>
+                  <option value="dairy_dry">أبقار حلابة جافة (12-14% بروتين)</option>
+                </optgroup>
+                <optgroup label="🐑 أغنام وماعز">
+                  <option value="sheep_fattening">خراف وجداء تسمين (14-16% بروتين)</option>
+                  <option value="sheep_lactating">أغنام وماعز حلابة (13-15% بروتين)</option>
+                </optgroup>
+                <optgroup label="🐔 دواجن وطيور">
+                  <option value="broiler_starter">دواجن تسمين بادي (23% بروتين)</option>
+                  <option value="broiler_grower">دواجن تسمين نامي (21.5% بروتين)</option>
+                  <option value="broiler_finisher">دواجن تسمين ناهي (19.5% بروتين)</option>
+                  <option value="layers_peak">دجاج بياض إنتاج بيض (17.5% بروتين)</option>
+                </optgroup>
+                <optgroup label="🐇 أرانب">
+                  <option value="rabbit_grower">أرانب تسمين وفطام (16.5% بروتين، 13% ألياف)</option>
+                  <option value="rabbit_lactating">أرانب أمهات مرضعة (18.5% بروتين)</option>
+                </optgroup>
+                <optgroup label="🐟 أسماك ومائيات">
+                  <option value="tilapia_growout">بلطي نيلي تسمين (30% بروتين)</option>
+                  <option value="tilapia_fingerling">بلطي نيلي إصبعيات (34% بروتين)</option>
+                  <option value="marine_fish">أسماك بحرية قاروص ودنيس (43% بروتين)</option>
+                  <option value="shrimp">جمبري فانامي (36% بروتين)</option>
+                </optgroup>
+              </select>
+              <button class="btn-action btn-outline-action" onclick="loadOptimizerTargetsFromSpecies()"><i class="fa-solid fa-arrows-rotate"></i> تطبيق الاحتياجات القياسية</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="optimizer-grid">
+          <!-- Left: Nutrient Targets & Settings -->
+          <div>
+            <h3 style="font-size:1.05rem; color:var(--color-ocean-blue); margin-bottom:.8rem;"><i class="fa-solid fa-bullseye"></i> 1. تحديد نسب المواد الغذائية المستهدفة للخلطة (%):</h3>
+            
+            <div class="opt-target-row">
+              <div class="opt-target-item">
+                <label>البروتين الخام الأدنى (CP%):</label>
+                <input type="number" id="opt_cp_min" value="14.0" step="0.5" min="5" max="60">
+              </div>
+              <div class="opt-target-item">
+                <label>البروتين الخام الأقصى (CP%):</label>
+                <input type="number" id="opt_cp_max" value="16.0" step="0.5" min="5" max="60">
+              </div>
+              <div class="opt-target-item">
+                <label>الطاقة الأدنى (TDN%):</label>
+                <input type="number" id="opt_tdn_min" value="70.0" step="1" min="40" max="95">
+              </div>
+            </div>
+
+            <div class="opt-target-row">
+              <div class="opt-target-item">
+                <label>الألياف الخام القصوى (CF%):</label>
+                <input type="number" id="opt_cf_max" value="12.0" step="0.5" min="1" max="40">
+              </div>
+              <div class="opt-target-item">
+                <label>الدهن الخام الأقصى (EE%):</label>
+                <input type="number" id="opt_ee_max" value="6.0" step="0.5" min="1" max="25">
+              </div>
+              <div class="opt-target-item">
+                <label>الكالسيوم الأدنى (Ca%):</label>
+                <input type="number" id="opt_ca_min" value="0.70" step="0.05" min="0" max="5">
+              </div>
+              <div class="opt-target-item">
+                <label>الفوسفور الأدنى (P%):</label>
+                <input type="number" id="opt_p_min" value="0.45" step="0.05" min="0" max="5">
+              </div>
+            </div>
+
+            <!-- Ingredients Selection for Solver -->
+            <div style="margin-top:1.5rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.6rem;">
+                <h3 style="font-size:1.05rem; color:var(--color-ocean-blue);"><i class="fa-solid fa-boxes-stacked"></i> 2. الخامات المتاحة والحد الأدنى/الأقصى لكل خامة (%):</h3>
+                <div style="display:flex; gap:.4rem;">
+                  <button class="btn-action btn-secondary-action" style="padding:.3rem .7rem; font-size:.78rem;" onclick="selectAllOptIngs(true)">تحديد الكل</button>
+                  <button class="btn-action btn-secondary-action" style="padding:.3rem .7rem; font-size:.78rem;" onclick="selectAllOptIngs(false)">إلغاء الكل</button>
+                </div>
+              </div>
+
+              <div class="opt-ing-select-list" id="optIngList">
+                <!-- Dynamically populated candidate ingredients -->
+              </div>
+            </div>
+
+            <button class="opt-run-btn" onclick="runLeastCostOptimizer()">
+              <i class="fa-solid fa-calculator"></i> حساب أفضل تركيبة متوازنة بأقل تكلفة للطن
+            </button>
+
+            <div id="optStatusBox" class="opt-status-box"></div>
+          </div>
+
+          <!-- Right: Solver Output and Recommended Formulation -->
+          <div>
+            <h3 style="font-size:1.05rem; color:var(--color-ocean-blue); margin-bottom:.8rem;"><i class="fa-solid fa-clipboard-check"></i> 3. نتيجة التركيبة المثلى المُقترحة:</h3>
+            
+            <div id="optResultsContainer" style="display:none;">
+              <!-- Cost and Overview Card -->
+              <div class="cost-card" style="margin-bottom:1.2rem;">
+                <div>
+                  <span style="font-size:.85rem; opacity:.9; display:block;">التكلفة التقديرية للطن:</span>
+                  <span class="cost-val" id="optResCostTon">0</span> <span style="font-size:.9rem; color:var(--color-aqua);">ج.م</span>
+                </div>
+                <div style="text-align:left;">
+                  <span style="font-size:.8rem; opacity:.8; display:block;">سعر الكيلو:</span>
+                  <span style="font-size:1.1rem; font-weight:700; color:#fff;" id="optResCostKg">0.00 ج.م</span>
+                </div>
+              </div>
+
+              <!-- Nutrients Comparison Table -->
+              <div class="table-container" style="margin-bottom:1rem;">
+                <table class="recipe-table" style="font-size:.85rem;">
+                  <thead>
+                    <tr>
+                      <th>العنصر الغذائي</th>
+                      <th>المستهدف</th>
+                      <th>المُحقق في الخلطة</th>
+                      <th>الحالة</th>
+                    </tr>
+                  </thead>
+                  <tbody id="optNutrientsComparisonBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Recommended Ingredients Table -->
+              <h4 style="font-size:.95rem; color:var(--color-ocean-blue); margin-bottom:.5rem;"><i class="fa-solid fa-list-ol"></i> نسب مكونات الخلطة (المجموع 100%):</h4>
+              <div class="table-container" style="margin-bottom:1.2rem;">
+                <table class="recipe-table">
+                  <thead>
+                    <tr>
+                      <th>مادة العلف</th>
+                      <th>النسبة المقترحة (%)</th>
+                      <th>كمية الطن (كجم)</th>
+                      <th>سعر الطن (ج.م)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="optIngredientsResultBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div style="text-align:center;">
+                <button class="btn-action btn-primary-action" style="width:100%; justify-content:center; padding:.85rem;" onclick="applyOptimizerToFormulation()">
+                  <i class="fa-solid fa-arrow-left"></i> تطبيق هذه التركيبة فوراً في مصمم الخلطات الرئيسي
+                </button>
+              </div>
+            </div>
+
+            <!-- Empty State before running -->
+            <div id="optEmptyState" style="text-align:center; padding:3rem 1.5rem; background:#f8fafc; border-radius:14px; border:1.5px dashed #cbd5e1;">
+              <i class="fa-solid fa-wand-magic-sparkles" style="font-size:3rem; color:var(--color-aqua); margin-bottom:1rem;"></i>
+              <h4 style="color:var(--color-ocean-blue); margin-bottom:.5rem;">لم يتم تشغيل المحسن بعد</h4>
+              <p style="color:#64748b; font-size:.9rem; max-width:340px; margin:0 auto;">
+                اضبط نسب المواد الغذائية المستهدفة على اليسار، ثم اضغط على زر <strong>"حساب أفضل تركيبة متوازنة بأقل تكلفة"</strong> لعرض النتائج هنا.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 4: INGREDIENTS DATABASE -->
     <div id="tab-database" class="tab-pane">
       <div class="card">
         <div class="card-title-bar">
@@ -1095,12 +1299,14 @@
     // State
     let currentRecipe = [];
     let currentLang = localStorage.getItem('aqasoft_lang') || 'ar';
+    let previousCalcMode = 'percent';
 
     // ==========================================
     // INITIALIZATION & TAB SWITCHING
     // ==========================================
     window.addEventListener('DOMContentLoaded', () => {
       initPearsonDropdowns();
+      initOptimizer();
       renderDatabaseTable();
       loadPreset('beef_grower');
       setupLanguage(currentLang);
@@ -1146,22 +1352,55 @@
       const sel = document.getElementById('targetSpecies');
       if (sel && SPECIES_TARGETS[key]) sel.value = key;
 
+      const mode = document.getElementById('calcMode') ? document.getElementById('calcMode').value : 'percent';
+      if (mode === 'weight') {
+        const batchSize = parseFloat(document.getElementById('batchSize').value) || 1000;
+        currentRecipe.forEach(item => {
+          item.amount = parseFloat((( (item.amount || 0) / 100 ) * batchSize).toFixed(1));
+        });
+      }
+
       renderRecipeTable();
       recalculate();
     }
 
     function toggleCalcMode() {
       const mode = document.getElementById('calcMode').value;
-      const batchBar = document.getElementById('batchWeightBar');
       const thHeader = document.getElementById('th_amount_header');
+      const batchLbl = document.getElementById('lbl_batch_size_text');
+      const batchSizeInput = parseFloat(document.getElementById('batchSize').value) || 1000;
 
       if (mode === 'weight') {
-        batchBar.style.display = 'flex';
-        thHeader.textContent = (currentLang === 'ar') ? 'الوزن (كجم)' : 'Weight (kg)';
+        if (thHeader) thHeader.textContent = (currentLang === 'ar') ? 'الوزن (كجم)' : 'Weight (kg)';
+        if (batchLbl) batchLbl.textContent = (currentLang === 'ar') ? 'إجمالي وزن التشغيلة (كجم):' : 'Total Batch Weight (kg):';
+
+        // When switching from percent to weight mode:
+        // convert each percentage into actual kilograms based on batchSize
+        if (previousCalcMode === 'percent') {
+          currentRecipe.forEach(item => {
+            item.amount = parseFloat((( (item.amount || 0) / 100 ) * batchSizeInput).toFixed(1));
+          });
+          renderRecipeTable();
+        }
       } else {
-        batchBar.style.display = 'none';
-        thHeader.textContent = (currentLang === 'ar') ? 'النسبة (%)' : 'Percentage (%)';
+        if (thHeader) thHeader.textContent = (currentLang === 'ar') ? 'النسبة (%)' : 'Percentage (%)';
+        if (batchLbl) batchLbl.textContent = (currentLang === 'ar') ? 'حجم التشغيلة لحساب التكلفة (كجم):' : 'Batch Size for Cost Calc (kg):';
+
+        // When switching from weight to percent mode:
+        // convert kilograms into percentages based on total entered weight
+        if (previousCalcMode === 'weight') {
+          let totalWeight = 0;
+          currentRecipe.forEach(item => totalWeight += (item.amount || 0));
+          if (totalWeight > 0) {
+            currentRecipe.forEach(item => {
+              item.amount = parseFloat((( (item.amount || 0) / totalWeight ) * 100).toFixed(1));
+            });
+            renderRecipeTable();
+          }
+        }
       }
+
+      previousCalcMode = mode;
       recalculate();
     }
 
@@ -1232,21 +1471,34 @@
 
     function recalculate() {
       const mode = document.getElementById('calcMode').value;
-      const batchSize = parseFloat(document.getElementById('batchSize').value) || 1000;
+      const batchSizeInput = parseFloat(document.getElementById('batchSize').value) || 1000;
       const all = getAllIngredients();
 
       let totalInput = 0;
       currentRecipe.forEach(item => totalInput += (item.amount || 0));
 
       let effectivePercents = [];
+      let effectiveBatchWeight = batchSizeInput;
+
       if (mode === 'weight') {
-        effectivePercents = currentRecipe.map(item => {
-          return { item, pct: totalInput > 0 ? (item.amount / totalInput) * 100 : 0 };
-        });
+        // In weight mode: item.amount is in kg.
+        // Total entered weight is totalInput.
+        effectiveBatchWeight = totalInput > 0 ? totalInput : batchSizeInput;
+        
+        // Update batch size input only if not actively focused so user typing isn't interrupted
+        const batchEl = document.getElementById('batchSize');
+        if (totalInput > 0 && document.activeElement !== batchEl) {
+          batchEl.value = Math.round(totalInput);
+        }
+
+        effectivePercents = currentRecipe.map(item => ({
+          item,
+          pct: effectiveBatchWeight > 0 ? ((item.amount || 0) / effectiveBatchWeight) * 100 : 0
+        }));
       } else {
-        effectivePercents = currentRecipe.map(item => {
-          return { item, pct: item.amount || 0 };
-        });
+        // In percent mode: item.amount is directly the percentage
+        effectiveBatchWeight = batchSizeInput;
+        effectivePercents = currentRecipe.map(item => ({ item, pct: item.amount || 0 }));
       }
 
       // Compute weighted nutritional metrics
@@ -1272,7 +1524,7 @@
 
         // Cost computation
         const pricePerKg = (item.price || 0) / 1000;
-        const itemKg = mode === 'weight' ? item.amount : (pct / 100) * batchSize;
+        const itemKg = mode === 'weight' ? (item.amount || 0) : ((pct / 100) * effectiveBatchWeight);
         totalBatchCost += itemKg * pricePerKg;
       });
 
@@ -1322,7 +1574,11 @@
       const badgeLbl = document.getElementById('totalBadgeLabel');
       const badgeVal = document.getElementById('totalBadgeValue');
 
-      if (mode === 'percent') {
+      if (mode === 'weight') {
+        badgeLbl.textContent = (currentLang === 'ar') ? 'إجمالي وزن الخلطة:' : 'Total Batch Weight:';
+        badgeVal.textContent = totalInput.toFixed(1) + ' ' + (currentLang === 'ar' ? 'كجم' : 'kg');
+        badge.className = 'total-badge-bar perfect';
+      } else {
         badgeLbl.textContent = (currentLang === 'ar') ? 'إجمالي النسبة:' : 'Total Percentage:';
         badgeVal.textContent = totalInput.toFixed(1) + '%';
 
@@ -1335,14 +1591,9 @@
           badge.className = 'total-badge-bar danger';
           badgeVal.textContent += (currentLang === 'ar' ? ` (تجاوزت بـ ${(totalInput - 100).toFixed(1)}%)` : ` (+${(totalInput - 100).toFixed(1)}%)`);
         }
-      } else {
-        badgeLbl.textContent = (currentLang === 'ar') ? 'إجمالي وزن الخلطة:' : 'Total Batch Weight:';
-        badgeVal.textContent = totalInput.toFixed(1) + ' كجم';
-        badge.className = 'total-badge-bar perfect';
       }
 
       // Cost Calculation
-      const effectiveBatchWeight = mode === 'weight' ? totalInput : batchSize;
       const costPerKg = effectiveBatchWeight > 0 ? (totalBatchCost / effectiveBatchWeight) : 0;
       const costPerTon = costPerKg * 1000;
 
@@ -1472,13 +1723,16 @@
       const ing = all.find(x => x.id === id);
       if (!ing) return;
 
+      const mode = document.getElementById('calcMode') ? document.getElementById('calcMode').value : 'percent';
+      const defaultIncrement = (mode === 'weight') ? 50 : 5;
+
       const existing = currentRecipe.find(x => x.id === id);
       if (existing) {
-        existing.amount += 5;
+        existing.amount += defaultIncrement;
       } else {
         currentRecipe.push({
           id: ing.id,
-          amount: 5,
+          amount: defaultIncrement,
           price: ing.default_price || 15000
         });
       }
@@ -1638,6 +1892,335 @@
     }
 
     // ==========================================
+    // SMART LEAST-COST FEED OPTIMIZER (SOLVER)
+    // ==========================================
+    let lastOptimizedRecipe = [];
+
+    function initOptimizer() {
+      renderOptimizerCandidateList();
+      loadOptimizerTargetsFromSpecies();
+    }
+
+    function loadOptimizerTargetsFromSpecies() {
+      const sel = document.getElementById('optSpeciesPreset');
+      const val = sel.value || 'beef_grower';
+      const target = SPECIES_TARGETS[val];
+      if (!target) return;
+
+      document.getElementById('opt_cp_min').value = target.cp_min !== undefined ? target.cp_min : 14;
+      document.getElementById('opt_cp_max').value = target.cp_max !== undefined ? target.cp_max : 16;
+      document.getElementById('opt_tdn_min').value = target.tdn_min !== undefined ? target.tdn_min : 70;
+      document.getElementById('opt_cf_max').value = target.cf_max !== undefined ? target.cf_max : 12;
+      document.getElementById('opt_ee_max').value = target.ee_max !== undefined ? target.ee_max : 6;
+      document.getElementById('opt_ca_min').value = target.ca_target !== undefined ? (target.ca_target * 0.8).toFixed(2) : 0.7;
+      document.getElementById('opt_p_min').value = target.p_target !== undefined ? (target.p_target * 0.8).toFixed(2) : 0.45;
+    }
+
+    function renderOptimizerCandidateList() {
+      const container = document.getElementById('optIngList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const all = getAllIngredients();
+      
+      // Default common ingredients selected
+      const defaultSelected = [
+        'corn_yellow', 'soya_meal_44', 'soya_meal_48', 'wheat_bran_fine', 'wheat_bran_coarse',
+        'gluten_60', 'alfalfa_hay', 'barley', 'cane_molasses', 'limestone', 'dcp', 'salt', 'premix_general'
+      ];
+
+      all.forEach((ing) => {
+        const isChecked = defaultSelected.includes(ing.id);
+        const row = document.createElement('div');
+        row.className = 'opt-ing-row';
+        row.innerHTML = `
+          <label class="opt-ing-label">
+            <input type="checkbox" id="opt_check_${ing.id}" ${isChecked ? 'checked' : ''} onchange="updateOptRowState('${ing.id}')">
+            <span>
+              <strong>${currentLang === 'ar' ? ing.name_ar : ing.name_en}</strong>
+              <span style="font-size:.75rem; color:#64748b; margin-right:.4rem;">(${ing.cp}% بروتين &bull; ${ing.tdn}% TDN &bull; ${(ing.default_price || 0).toLocaleString()} ج.م/طن)</span>
+            </span>
+          </label>
+          <div class="opt-ing-limits" id="opt_limits_${ing.id}">
+            <span>حد أدنى%:</span>
+            <input type="number" id="opt_min_${ing.id}" value="${ing.id === 'premix_general' || ing.id === 'salt' ? 0.3 : 0}" min="0" max="100" step="0.5">
+            <span>حد أقصى%:</span>
+            <input type="number" id="opt_max_${ing.id}" value="${ing.id === 'salt' || ing.id === 'premix_general' ? 2 : (ing.id.includes('soya') ? 40 : (ing.id.includes('corn') ? 75 : 50))}" min="0" max="100" step="1">
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function selectAllOptIngs(select) {
+      const all = getAllIngredients();
+      all.forEach(ing => {
+        const chk = document.getElementById(`opt_check_${ing.id}`);
+        if (chk) chk.checked = select;
+      });
+    }
+
+    function updateOptRowState(id) {
+      const chk = document.getElementById(`opt_check_${id}`);
+      const limits = document.getElementById(`opt_limits_${id}`);
+      if (limits) limits.style.opacity = chk && chk.checked ? '1' : '0.4';
+    }
+
+    // Mathematical Optimization Engine (Multi-Constraint Least-Cost Solver)
+    function runLeastCostOptimizer() {
+      const statusBox = document.getElementById('optStatusBox');
+      const resultsContainer = document.getElementById('optResultsContainer');
+      const emptyState = document.getElementById('optEmptyState');
+
+      const targetCPMin = parseFloat(document.getElementById('opt_cp_min').value) || 0;
+      const targetCPMax = parseFloat(document.getElementById('opt_cp_max').value) || 999;
+      const targetTDNMin = parseFloat(document.getElementById('opt_tdn_min').value) || 0;
+      const targetCFMax = parseFloat(document.getElementById('opt_cf_max').value) || 999;
+      const targetEEMax = parseFloat(document.getElementById('opt_ee_max').value) || 999;
+      const targetCaMin = parseFloat(document.getElementById('opt_ca_min').value) || 0;
+      const targetPMin = parseFloat(document.getElementById('opt_p_min').value) || 0;
+
+      const all = getAllIngredients();
+      const candidates = [];
+
+      all.forEach(ing => {
+        const chk = document.getElementById(`opt_check_${ing.id}`);
+        if (chk && chk.checked) {
+          const minVal = parseFloat(document.getElementById(`opt_min_${ing.id}`).value) || 0;
+          const maxVal = parseFloat(document.getElementById(`opt_max_${ing.id}`).value) || 100;
+          candidates.push({
+            ing,
+            min: Math.max(0, minVal),
+            max: Math.min(100, Math.max(minVal, maxVal)),
+            price: ing.default_price || 15000
+          });
+        }
+      });
+
+      if (candidates.length < 2) {
+        statusBox.className = 'opt-status-box error';
+        statusBox.style.display = 'flex';
+        statusBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> يرجى تحديد خامتَين على الأقل لتشغيل خوارزمية التحسين!';
+        return;
+      }
+
+      // Optimization Algorithm: Iterative Gradient Projection & Penalized Simplex Search
+      let bestWeights = null;
+      let bestCost = Infinity;
+      let bestPenalty = Infinity;
+      let bestNutrients = null;
+
+      const n = candidates.length;
+      const iterations = 8000;
+
+      // Ensure minimum requirements sum <= 100
+      let totalMin = candidates.reduce((s, c) => s + c.min, 0);
+      if (totalMin > 100) {
+        statusBox.className = 'opt-status-box error';
+        statusBox.style.display = 'flex';
+        statusBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> مجموع الحدود الدنيا للخامات (${totalMin.toFixed(1)}%) يتجاوز 100%! يرجى تقليل الحدود الدنيا.`;
+        return;
+      }
+
+      function evaluateCandidate(weights) {
+        let cp = 0, tdn = 0, cf = 0, ee = 0, ca = 0, p = 0, cost = 0;
+        for (let i = 0; i < n; i++) {
+          const w = weights[i];
+          const ing = candidates[i].ing;
+          const frac = w / 100;
+          cp += (ing.cp || 0) * frac;
+          tdn += (ing.tdn || 0) * frac;
+          cf += (ing.cf || 0) * frac;
+          ee += (ing.ee || 0) * frac;
+          ca += (ing.ca || 0) * frac;
+          p += (ing.p || 0) * frac;
+          cost += frac * candidates[i].price;
+        }
+
+        let penalty = 0;
+        // Protein constraint (crucial)
+        if (cp < targetCPMin) penalty += (targetCPMin - cp) * 60000;
+        if (cp > targetCPMax) penalty += (cp - targetCPMax) * 20000;
+        // Energy TDN constraint
+        if (tdn < targetTDNMin) penalty += (targetTDNMin - tdn) * 35000;
+        // Fiber constraint
+        if (cf > targetCFMax) penalty += (cf - targetCFMax) * 25000;
+        // Fat constraint
+        if (ee > targetEEMax) penalty += (ee - targetEEMax) * 15000;
+        // Minerals
+        if (ca < targetCaMin) penalty += (targetCaMin - ca) * 40000;
+        if (p < targetPMin) penalty += (targetPMin - p) * 40000;
+
+        return {
+          penalty,
+          score: cost + penalty,
+          cost,
+          nutrients: { cp, tdn, cf, ee, ca, p }
+        };
+      }
+
+      // Initial heuristic distribution starting from normalized midpoints
+      let currentWeights = candidates.map(c => c.min + (c.max - c.min) * 0.25);
+      let curSum = currentWeights.reduce((a, b) => a + b, 0);
+      if (curSum > 0) currentWeights = currentWeights.map(w => (w / curSum) * 100);
+
+      // Clamp to bounds and rebalance
+      function normalizeWeights(wArr) {
+        let clamped = wArr.map((w, i) => Math.max(candidates[i].min, Math.min(candidates[i].max, w)));
+        let sum = clamped.reduce((a, b) => a + b, 0);
+        if (sum === 0) return clamped;
+        return clamped.map(w => (w / sum) * 100);
+      }
+
+      currentWeights = normalizeWeights(currentWeights);
+      let currentEval = evaluateCandidate(currentWeights);
+
+      bestWeights = [...currentWeights];
+      bestCost = currentEval.cost;
+      bestPenalty = currentEval.penalty;
+      bestNutrients = currentEval.nutrients;
+
+      // Simulated Annealing / Adaptive Search
+      let temp = 10.0;
+      const coolingRate = 0.9985;
+
+      for (let iter = 0; iter < iterations; iter++) {
+        temp *= coolingRate;
+        const testWeights = [...currentWeights];
+
+        // Randomly pick two or three ingredients to exchange proportions
+        const i1 = Math.floor(Math.random() * n);
+        let i2 = Math.floor(Math.random() * n);
+        while (i2 === i1 && n > 1) {
+          i2 = Math.floor(Math.random() * n);
+        }
+
+        const delta = (Math.random() * 2 - 1) * Math.max(0.5, temp * 3);
+        const prev1 = testWeights[i1];
+        const prev2 = testWeights[i2];
+
+        testWeights[i1] = Math.max(candidates[i1].min, Math.min(candidates[i1].max, prev1 + delta));
+        testWeights[i2] = Math.max(candidates[i2].min, Math.min(candidates[i2].max, prev2 - delta));
+
+        // Ensure sum is exactly 100
+        const normalized = normalizeWeights(testWeights);
+        const evalRes = evaluateCandidate(normalized);
+
+        const currentScore = currentEval.score;
+        const newScore = evalRes.score;
+
+        if (newScore < currentScore || Math.random() < Math.exp((currentScore - newScore) / (temp * 1000 + 1))) {
+          currentWeights = normalized;
+          currentEval = evalRes;
+
+          if (evalRes.score < (bestCost + bestPenalty)) {
+            bestWeights = [...normalized];
+            bestCost = evalRes.cost;
+            bestPenalty = evalRes.penalty;
+            bestNutrients = evalRes.nutrients;
+          }
+        }
+      }
+
+      // Prepare Results Table & Comparison
+      lastOptimizedRecipe = [];
+      const resIngredientsTbody = document.getElementById('optIngredientsResultBody');
+      resIngredientsTbody.innerHTML = '';
+
+      let finalSumPct = 0;
+      bestWeights.forEach((pct, idx) => {
+        const roundedPct = parseFloat(pct.toFixed(1));
+        if (roundedPct > 0.05) {
+          finalSumPct += roundedPct;
+          const cand = candidates[idx];
+          const kgAmount = (roundedPct / 100) * 1000;
+          lastOptimizedRecipe.push({
+            id: cand.ing.id,
+            amount: roundedPct,
+            price: cand.price
+          });
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="font-weight:700; color:var(--color-ocean-blue);">${currentLang === 'ar' ? cand.ing.name_ar : cand.ing.name_en}</td>
+            <td style="font-weight:800; color:#059669; font-size:1.05rem;">${roundedPct.toFixed(1)}%</td>
+            <td style="font-weight:700;">${Math.round(kgAmount)} كجم</td>
+            <td>${cand.price.toLocaleString()} ج.م</td>
+          `;
+          resIngredientsTbody.appendChild(tr);
+        }
+      });
+
+      // Total row
+      const trTotal = document.createElement('tr');
+      trTotal.style.background = '#f1f5f9';
+      trTotal.style.fontWeight = '800';
+      trTotal.innerHTML = `
+        <td>الإجمالي المتوازن</td>
+        <td style="color:#059669; font-size:1.1rem;">${finalSumPct.toFixed(1)}%</td>
+        <td>1000 كجم</td>
+        <td>-</td>
+      `;
+      resIngredientsTbody.appendChild(trTotal);
+
+      // Comparison Table
+      const compBody = document.getElementById('optNutrientsComparisonBody');
+      compBody.innerHTML = '';
+
+      function addNutrientCompRow(name, targetText, achievedVal, unit, isMet) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight:700;">${name}</td>
+          <td>${targetText}</td>
+          <td style="font-weight:800; color:var(--color-ocean-blue);">${achievedVal.toFixed(2)}${unit}</td>
+          <td>
+            <span style="font-size:.8rem; font-weight:800; color:${isMet ? '#059669' : '#d97706'}; background:${isMet ? 'rgba(16,185,129,.12)' : 'rgba(217,119,6,.12)'}; padding:.2rem .5rem; border-radius:20px;">
+              <i class="fa-solid ${isMet ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> ${isMet ? 'مطابق ومثالي' : 'قريب جداً'}
+            </span>
+          </td>
+        `;
+        compBody.appendChild(tr);
+      }
+
+      addNutrientCompRow('البروتين الخام (CP)', `${targetCPMin}% - ${targetCPMax}%`, bestNutrients.cp, '%', bestNutrients.cp >= (targetCPMin - 0.3) && bestNutrients.cp <= (targetCPMax + 0.5));
+      addNutrientCompRow('الطاقة المهضومة (TDN)', `≥ ${targetTDNMin}%`, bestNutrients.tdn, '%', bestNutrients.tdn >= (targetTDNMin - 1.0));
+      addNutrientCompRow('الألياف الخام (CF)', `≤ ${targetCFMax}%`, bestNutrients.cf, '%', bestNutrients.cf <= (targetCFMax + 1.0));
+      addNutrientCompRow('الدهن الخام (EE)', `≤ ${targetEEMax}%`, bestNutrients.ee, '%', bestNutrients.ee <= (targetEEMax + 1.0));
+      addNutrientCompRow('الكالسيوم (Ca)', `≥ ${targetCaMin}%`, bestNutrients.ca, '%', bestNutrients.ca >= (targetCaMin - 0.1));
+      addNutrientCompRow('الفوسفور (P)', `≥ ${targetPMin}%`, bestNutrients.p, '%', bestNutrients.p >= (targetPMin - 0.1));
+
+      // Cost card update
+      document.getElementById('optResCostTon').textContent = Math.round(bestCost).toLocaleString();
+      document.getElementById('optResCostKg').textContent = (bestCost / 1000).toFixed(2) + ' ' + (currentLang === 'ar' ? 'ج.م' : 'EGP');
+
+      // Status box
+      if (bestPenalty < 5000) {
+        statusBox.className = 'opt-status-box success';
+        statusBox.style.display = 'flex';
+        statusBox.innerHTML = '<i class="fa-solid fa-circle-check"></i> تم التوصل إلى التركيبة المثالية بنجاح تام! محققة لجميع النسب الغذائية بأقل تكلفة ممكنة.';
+      } else {
+        statusBox.className = 'opt-status-box warn';
+        statusBox.style.display = 'flex';
+        statusBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> تم إيجاد أقرب تركيبة ممكنة، يرجى توسيع نطاق الخامات المتاحة أو تعديل حدود الألياف/البروتين للحصول على تطابق 100%.';
+      }
+
+      emptyState.style.display = 'none';
+      resultsContainer.style.display = 'block';
+    }
+
+    function applyOptimizerToFormulation() {
+      if (!lastOptimizedRecipe || lastOptimizedRecipe.length === 0) {
+        alert(currentLang === 'ar' ? 'يرجى تشغيل المحسن أولاً لإيجاد التركيبة!' : 'Please run the optimizer first!');
+        return;
+      }
+
+      currentRecipe = JSON.parse(JSON.stringify(lastOptimizedRecipe));
+      switchTab('formulation');
+      renderRecipeTable();
+      recalculate();
+    }
+
+    // ==========================================
     // DATABASE TABLE RENDERING
     // ==========================================
     function renderDatabaseTable() {
@@ -1757,14 +2340,17 @@
         hero_title: "أداة تركيب وموازنة <span>علائق الأعلاف العامة</span>",
         hero_desc: "النظام الشامل لتركيب وموازنة الأعلاف الحيوانية (عجول وماشية، أغنام، أبقار حلاب، دواجن تسمين وبياض، أرانب، وأسماك) وفق التحليلات المعملية وموسوعات NRC و Feedipedia مع حساب تكلفة الطن.",
         tab_formulation: "مصمم الخلطات الذكي",
+        tab_optimizer: "المُحسِّن الذكي للعلائق (Least-Cost)",
         tab_pearson: "مربع بيرسون (الخلط الثنائي السريع)",
         tab_database: "مكتبة وتحليل الخامات (70+ مادة)",
+        opt_title: "المُحسِّن الذكي للعلائق وأقل تكلفة (Least-Cost Feed Solver)",
+        opt_desc: "حدد مواصفات ونسب المواد الغذائية المطلوبة بدقة، وحدد الخامات المتوفرة لديك بأسعارها، لتقوم الأداة بحساب أفضل توليفة علفية متوازنة 100% وبأقل تكلفة مالية ممكنة للطن.",
         builder_title: "مكونات وتناسب الخلطة العلفية",
         btn_custom_ing: "إضافة خامة مخصصة",
         lbl_mode: "طريقة الحساب:",
         opt_percent: "نسب مئوية (100%)",
         opt_weight: "وزن تشغيلة (كجم / طن)",
-        lbl_batch_size: "حجم التشغيلة الإجمالي (كجم):",
+        lbl_batch_size: "حجم التشغيلة لحساب التكلفة (كجم):",
         th_ingredient: "مادة العلف",
         th_percentage: "النسبة (%)",
         th_protein: "البروتين CP%",
@@ -1804,14 +2390,17 @@
         hero_title: "Universal Feed <span>Formulation Tool</span>",
         hero_desc: "Comprehensive feed formulation and balancing system for all animal sectors (beef cattle, dairy cows, sheep, poultry broilers & layers, rabbits, and aquaculture) based on NRC & Feedipedia standards with live batch cost calculation.",
         tab_formulation: "Formulation Builder",
+        tab_optimizer: "Smart Optimizer (Least-Cost)",
         tab_pearson: "Pearson Square (Binary Mix)",
         tab_database: "Ingredients Library (70+ Feeds)",
+        opt_title: "Smart Least-Cost Feed Formulation Solver",
+        opt_desc: "Set exact nutritional target percentages and specify available ingredients with market prices to calculate the optimal 100% balanced least-cost feed mix.",
         builder_title: "Feed Ingredients & Proportions",
         btn_custom_ing: "Add Custom Ingredient",
         lbl_mode: "Calculation Mode:",
         opt_percent: "Percentage (100%)",
         opt_weight: "Batch Weight (kg / ton)",
-        lbl_batch_size: "Batch Weight (kg):",
+        lbl_batch_size: "Batch Size for Cost Calc (kg):",
         th_ingredient: "Ingredient",
         th_percentage: "Percentage (%)",
         th_protein: "Crude Protein CP%",
