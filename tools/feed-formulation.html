@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
   <link rel="manifest" href="../manifest.json">
   <meta name="theme-color" content="#1F4B5D">
@@ -9,7 +10,8 @@
   <title>AQUASoft | أداة تركيب وموازنة علائق الأعلاف العامة (ماشية، دواجن، أرانب، أسماك)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -20,240 +22,2589 @@
       --color-charcoal: #1F1E19;
       --gradient-primary: linear-gradient(135deg, #1F4B5D 0%, #153644 100%);
       --gradient-accent: linear-gradient(135deg, #68CFEB 0%, #4cb8d6 100%);
-      --shadow-sm: 0 4px 6px rgba(31,75,93,0.05);
-      --shadow-md: 0 10px 20px rgba(31,75,93,0.08);
-      --shadow-lg: 0 20px 40px rgba(31,75,93,0.12);
-      --shadow-glow: 0 0 20px rgba(104,207,235,0.4);
-      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+      --shadow-sm: 0 4px 6px rgba(31, 75, 93, 0.05);
+      --shadow-md: 0 10px 20px rgba(31, 75, 93, 0.08);
+      --shadow-lg: 0 20px 40px rgba(31, 75, 93, 0.12);
+      --shadow-glow: 0 0 20px rgba(104, 207, 235, 0.4);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       --color-danger: #e53e3e;
       --color-warning: #d97706;
       --color-safe: #059669;
       --color-info: #0284c7;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { font-family:'Tajawal',sans-serif; background:var(--color-soft-white); color:var(--color-charcoal); line-height:1.6; min-height:100vh; overflow-x:hidden; }
-    body.ltr { font-family:'Outfit',sans-serif; }
-    a { text-decoration:none; color:inherit; transition:var(--transition); }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--color-soft-white);
+      color: var(--color-charcoal);
+      line-height: 1.6;
+      min-height: 100vh;
+      min-height: 100dvh;
+      max-width: 100%;
+      overflow-x: clip;
+      position: relative;
+    }
+
+    body.ltr {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+    }
 
     /* Navbar */
-    .navbar { position:fixed; top:0; left:0; right:0; z-index:1000; padding:1rem 0; transition:var(--transition); background:rgba(250,250,250,0.95); backdrop-filter:blur(10px); box-shadow:var(--shadow-sm); }
-    .nav-container { max-width:1320px; margin:0 auto; padding:0 4%; display:flex; align-items:center; justify-content:space-between; }
-    .logo img { height:40px; width:auto; }
-    .nav-right { display:flex; align-items:center; gap:1.2rem; }
-    .back-btn { display:flex; align-items:center; gap:.5rem; color:var(--color-ocean-blue); font-weight:600; font-size:.95rem; }
-    .back-btn:hover { color:var(--color-aqua); }
-    #lang-toggle { padding:6px 18px; font-size:13px; font-weight:700; border:1.5px solid var(--color-ocean-blue); background:transparent; color:var(--color-ocean-blue); border-radius:50px; cursor:pointer; transition:var(--transition); font-family:inherit; }
-    #lang-toggle:hover { background:var(--color-ocean-blue); color:#fff; }
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1rem 0;
+      transition: var(--transition);
+      background: rgba(250, 250, 250, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 4%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      color: var(--color-ocean-blue);
+      font-weight: 600;
+      font-size: .95rem;
+    }
+
+    .back-btn:hover {
+      color: var(--color-aqua);
+    }
+
+    #lang-toggle {
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1.5px solid var(--color-ocean-blue);
+      background: transparent;
+      color: var(--color-ocean-blue);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    #lang-toggle:hover {
+      background: var(--color-ocean-blue);
+      color: #fff;
+    }
 
     /* Page Hero */
-    .page-hero { background:var(--gradient-primary); padding:7.5rem 5% 3.5rem; text-align:center; position:relative; overflow:hidden; color:#fff; }
-    .page-hero::before { content:''; position:absolute; top:-50%; left:-20%; width:60%; height:200%; background:radial-gradient(ellipse,rgba(104,207,235,.18) 0%,transparent 60%); pointer-events:none; }
-    .page-hero::after  { content:''; position:absolute; bottom:-30%; right:-10%; width:50%; height:150%; background:radial-gradient(ellipse,rgba(104,207,235,.12) 0%,transparent 60%); pointer-events:none; }
-    .hero-badge { display:inline-flex; align-items:center; gap:.5rem; background:rgba(104,207,235,.15); border:1px solid rgba(104,207,235,.3); color:var(--color-aqua); padding:.4rem 1.2rem; border-radius:50px; font-size:.85rem; font-weight:700; letter-spacing:1px; margin-bottom:1rem; }
-    .page-hero h1 { font-size:clamp(1.9rem,4.5vw,2.8rem); font-weight:800; margin-bottom:.8rem; }
-    .page-hero h1 span { background:var(--gradient-accent); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-    .page-hero p { color:rgba(255,255,255,.8); font-size:1.05rem; max-width:760px; margin:0 auto 1.5rem; }
+    .page-hero {
+      background: var(--gradient-primary);
+      padding: 7.5rem 5% 3.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+    }
+
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -20%;
+      width: 60%;
+      height: 200%;
+      background: radial-gradient(ellipse, rgba(104, 207, 235, .18) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      right: -10%;
+      width: 50%;
+      height: 150%;
+      background: radial-gradient(ellipse, rgba(104, 207, 235, .12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(104, 207, 235, .15);
+      border: 1px solid rgba(104, 207, 235, .3);
+      color: var(--color-aqua);
+      padding: .4rem 1.2rem;
+      border-radius: 50px;
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+    }
+
+    .page-hero h1 {
+      font-size: clamp(1.9rem, 4.5vw, 2.8rem);
+      font-weight: 800;
+      margin-bottom: .8rem;
+    }
+
+    .page-hero h1 span {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-hero p {
+      color: rgba(255, 255, 255, .8);
+      font-size: 1.05rem;
+      max-width: 760px;
+      margin: 0 auto 1.5rem;
+    }
 
     /* Sector Badges Row in Hero */
-    .sector-icons { display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap; margin-bottom:1.5rem; }
-    .sector-tag { display:inline-flex; align-items:center; gap:.4rem; background:rgba(255,255,255,.12); padding:.4rem .9rem; border-radius:30px; font-size:.85rem; font-weight:700; color:#fff; border:1px solid rgba(255,255,255,.2); }
+    .sector-icons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .sector-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: rgba(255, 255, 255, .12);
+      padding: .4rem .9rem;
+      border-radius: 30px;
+      font-size: .85rem;
+      font-weight: 700;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, .2);
+    }
 
     /* Tab Navigation */
-    .tabs-wrapper { display:flex; justify-content:center; gap:.8rem; flex-wrap:wrap; margin-top:1.2rem; }
-    .tab-btn { padding:.75rem 1.6rem; border-radius:50px; font-weight:700; font-size:.95rem; border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.1); color:#fff; cursor:pointer; transition:var(--transition); display:flex; align-items:center; gap:.5rem; }
-    .tab-btn:hover { background:rgba(255,255,255,.2); }
-    .tab-btn.active { background:var(--color-aqua); color:var(--color-ocean-blue); border-color:var(--color-aqua); box-shadow:var(--shadow-glow); }
+    .tabs-wrapper {
+      display: flex;
+      justify-content: center;
+      gap: .8rem;
+      flex-wrap: wrap;
+      margin-top: 1.2rem;
+    }
+
+    .tab-btn {
+      padding: .75rem 1.6rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: .95rem;
+      border: 1px solid rgba(255, 255, 255, .25);
+      background: rgba(255, 255, 255, .1);
+      color: #fff;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, .2);
+    }
+
+    .tab-btn.active {
+      background: var(--color-aqua);
+      color: var(--color-ocean-blue);
+      border-color: var(--color-aqua);
+      box-shadow: var(--shadow-glow);
+    }
 
     /* Main Container */
-    .main-content { max-width:1320px; margin:0 auto; padding:2.5rem 4% 5rem; }
-    .tab-pane { display:none; }
-    .tab-pane.active { display:block; animation:fadeUp .35s ease forwards; }
-    @keyframes fadeUp { from{opacity:0;transform:translateY(15px);} to{opacity:1;transform:translateY(0);} }
+    .main-content {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 2.5rem 4% 5rem;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+      animation: fadeUp .35s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
     /* Formulation Layout */
-    .formulation-grid { display:grid; grid-template-columns:1.55fr 1fr; gap:2rem; align-items:start; }
-    @media (max-width: 1024px) {
-      .formulation-grid { grid-template-columns:1fr; }
+    .formulation-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .formulation-main,
+    .formulation-sidebar,
+    .optimizer-grid>div {
+      min-width: 0;
+    }
+
+    @media (max-width: 1180px) {
+      .formulation-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
     }
 
     /* Cards */
-    .card { background:#fff; border-radius:20px; padding:2rem; box-shadow:var(--shadow-md); border:1px solid rgba(31,75,93,.07); margin-bottom:2rem; }
-    .card-title-bar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid #e2e8f0; }
-    .card-title-bar h2, .card-title-bar h3 { font-size:1.25rem; color:var(--color-ocean-blue); display:flex; align-items:center; gap:.6rem; }
-    .card-title-bar h2 i, .card-title-bar h3 i { color:var(--color-aqua); }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(31, 75, 93, .07);
+      margin-bottom: 2rem;
+    }
+
+    .card-title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .card-title-bar h2,
+    .card-title-bar h3 {
+      font-size: 1.25rem;
+      color: var(--color-ocean-blue);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .card-title-bar h2 i,
+    .card-title-bar h3 i {
+      color: var(--color-aqua);
+    }
 
     /* Animal Sector Selector Bar */
-    .sector-selector-bar { background:linear-gradient(135deg, #f1f5f9, #e2e8f0); padding:1rem 1.4rem; border-radius:16px; margin-bottom:1.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; border:1.5px solid #cbd5e1; }
-    .sector-group { display:flex; align-items:center; gap:.8rem; flex-wrap:wrap; }
-    .sector-group label { font-weight:800; color:var(--color-ocean-blue); font-size:1rem; }
-    .sector-group select { padding:.6rem 1.2rem; border-radius:12px; border:2px solid var(--color-ocean-blue); font-weight:700; font-size:1rem; font-family:inherit; background:#fff; color:var(--color-ocean-blue); outline:none; cursor:pointer; }
-    .sector-group select:focus { border-color:var(--color-aqua); box-shadow:0 0 0 3px rgba(104,207,235,.25); }
+    .sector-selector-bar {
+      background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+      padding: 1rem 1.4rem;
+      border-radius: 16px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border: 1.5px solid #cbd5e1;
+    }
+
+    .sector-selector-bar>* {
+      min-width: 0;
+    }
+
+    .sector-group {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      flex-wrap: wrap;
+      flex: 1 1 100%;
+    }
+
+    .sector-selector-bar>.control-item {
+      flex: 1 1 240px;
+    }
+
+    .sector-selector-bar>.control-item label {
+      white-space: normal;
+    }
+
+    .sector-selector-bar>.control-item input {
+      flex: 0 0 130px;
+      width: 130px;
+    }
+
+    .sector-selector-bar>.control-item select {
+      flex: 1 1 auto;
+    }
+
+    .sector-group label {
+      font-weight: 800;
+      color: var(--color-ocean-blue);
+      font-size: 1rem;
+    }
+
+    .sector-group select {
+      flex: 1 1 260px;
+      min-width: 0;
+      max-width: 100%;
+      padding: .6rem 1.2rem;
+      border-radius: 12px;
+      border: 2px solid var(--color-ocean-blue);
+      font-weight: 700;
+      font-size: 1rem;
+      font-family: inherit;
+      background: #fff;
+      color: var(--color-ocean-blue);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .sector-group select:focus {
+      border-color: var(--color-aqua);
+      box-shadow: 0 0 0 3px rgba(104, 207, 235, .25);
+    }
 
     /* Preset selector pills categorized */
-    .preset-section { margin-bottom:1.4rem; }
-    .preset-label { font-size:.85rem; font-weight:800; color:var(--color-ocean-blue); display:block; margin-bottom:.5rem; }
-    .preset-pills { display:flex; flex-wrap:wrap; gap:.5rem; }
-    .preset-pill { padding:.45rem 1rem; border-radius:30px; font-size:.85rem; font-weight:700; background:#f8fafc; color:var(--color-ocean-blue); border:1.5px solid #cbd5e1; cursor:pointer; transition:var(--transition); display:inline-flex; align-items:center; gap:.4rem; }
-    .preset-pill:hover { background:rgba(104,207,235,.2); border-color:var(--color-aqua); transform:translateY(-1px); }
-    .preset-pill.active { background:var(--color-ocean-blue); color:#fff; border-color:var(--color-ocean-blue); box-shadow:var(--shadow-sm); }
+    .preset-section {
+      margin-bottom: 1.4rem;
+    }
+
+    .preset-label {
+      font-size: .85rem;
+      font-weight: 800;
+      color: var(--color-ocean-blue);
+      display: block;
+      margin-bottom: .5rem;
+    }
+
+    .preset-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+
+    .preset-pill {
+      padding: .45rem 1rem;
+      border-radius: 30px;
+      font-size: .85rem;
+      font-weight: 700;
+      background: #f8fafc;
+      color: var(--color-ocean-blue);
+      border: 1.5px solid #cbd5e1;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .preset-pill:hover {
+      background: rgba(104, 207, 235, .2);
+      border-color: var(--color-aqua);
+      transform: translateY(-1px);
+    }
+
+    .preset-pill.active {
+      background: var(--color-ocean-blue);
+      color: #fff;
+      border-color: var(--color-ocean-blue);
+      box-shadow: var(--shadow-sm);
+    }
 
     /* Top Controls Bar */
-    .controls-bar { display:flex; flex-wrap:wrap; gap:1rem; align-items:center; justify-content:space-between; background:#f8fafc; padding:1.2rem; border-radius:16px; margin-bottom:1.5rem; border:1px solid #e2e8f0; }
-    .control-item { display:flex; align-items:center; gap:.6rem; }
-    .control-item label { font-size:.9rem; font-weight:700; color:var(--color-ocean-blue); white-space:nowrap; }
-    .control-item select, .control-item input { padding:.5rem .9rem; border-radius:10px; border:1.5px solid #cbd5e1; font-size:.95rem; font-family:inherit; background:#fff; color:var(--color-charcoal); outline:none; }
-    .control-item select:focus, .control-item input:focus { border-color:var(--color-aqua); box-shadow:0 0 0 3px rgba(104,207,235,.2); }
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      padding: 1.2rem;
+      border-radius: 16px;
+      margin-bottom: 1.5rem;
+      border: 1px solid #e2e8f0;
+    }
+
+    .control-item {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .control-item label {
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--color-ocean-blue);
+      white-space: nowrap;
+    }
+
+    .control-item select,
+    .control-item input {
+      min-width: 0;
+      max-width: 100%;
+      padding: .5rem .9rem;
+      border-radius: 10px;
+      border: 1.5px solid #cbd5e1;
+      font-size: .95rem;
+      font-family: inherit;
+      background: #fff;
+      color: var(--color-charcoal);
+      outline: none;
+    }
+
+    .control-item select:focus,
+    .control-item input:focus {
+      border-color: var(--color-aqua);
+      box-shadow: 0 0 0 3px rgba(104, 207, 235, .2);
+    }
 
     /* Ingredients Table */
-    .table-container { overflow-x:auto; margin-bottom:1.5rem; border-radius:14px; border:1px solid #e2e8f0; }
-    .recipe-table { width:100%; border-collapse:collapse; text-align:right; font-size:.9rem; }
-    body.ltr .recipe-table { text-align:left; }
-    .recipe-table th { background:#f1f5f9; color:var(--color-ocean-blue); padding:.9rem .8rem; font-weight:700; border-bottom:2px solid #cbd5e1; white-space:nowrap; }
-    .recipe-table td { padding:.75rem .8rem; border-bottom:1px solid #f1f5f9; vertical-align:middle; }
-    .recipe-table tr:hover { background:#f8fafc; }
-    .recipe-table input[type="number"] { width:80px; padding:.45rem .6rem; border-radius:8px; border:1.5px solid #cbd5e1; font-size:.9rem; text-align:center; font-family:inherit; outline:none; font-weight:700; }
-    .recipe-table input[type="number"]:focus { border-color:var(--color-aqua); box-shadow:0 0 0 2px rgba(104,207,235,.2); }
-    .ing-name-cell { font-weight:700; color:var(--color-ocean-blue); display:flex; flex-direction:column; }
-    .ing-category-tag { font-size:.72rem; color:#64748b; font-weight:500; }
-    .delete-btn { color:#ef4444; background:rgba(239,68,68,.1); border:none; width:32px; height:32px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:var(--transition); }
-    .delete-btn:hover { background:#ef4444; color:#fff; }
+    .table-scroll-hint {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      font-size: .78rem;
+      font-weight: 700;
+      color: #64748b;
+      background: #f1f5f9;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: .45rem .8rem;
+      margin-bottom: .6rem;
+      text-align: center;
+    }
+
+    .table-container {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      margin-bottom: 1.2rem;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-aqua) #f1f5f9;
+    }
+
+    .table-container::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .table-container::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb:hover {
+      background: var(--color-aqua);
+    }
+
+    .recipe-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+      font-size: .9rem;
+    }
+
+    body.ltr .recipe-table {
+      text-align: left;
+    }
+
+    .recipe-table th {
+      background: #f1f5f9;
+      color: var(--color-ocean-blue);
+      padding: .9rem .8rem;
+      font-weight: 700;
+      border-bottom: 2px solid #cbd5e1;
+      white-space: nowrap;
+    }
+
+    .recipe-table td {
+      padding: .75rem .8rem;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .recipe-table tr:hover {
+      background: #f8fafc;
+    }
+
+    .recipe-table input[type="number"] {
+      width: 80px;
+      padding: .45rem .6rem;
+      border-radius: 8px;
+      border: 1.5px solid #cbd5e1;
+      font-size: .9rem;
+      text-align: center;
+      font-family: inherit;
+      outline: none;
+      font-weight: 700;
+    }
+
+    .recipe-table input[type="number"]:focus {
+      border-color: var(--color-aqua);
+      box-shadow: 0 0 0 2px rgba(104, 207, 235, .2);
+    }
+
+    .recipe-table input.recipe-price-input {
+      width: 90px;
+    }
+
+    .pearson-inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .opt-preset-row {
+      display: flex;
+      gap: .8rem;
+      flex-wrap: wrap;
+      margin-top: .4rem;
+      width: 100%;
+    }
+
+    .opt-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin-bottom: .6rem;
+    }
+
+    .custom-name-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+      gap: 1rem;
+    }
+
+    .opt-btn-group {
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap;
+    }
+
+    .opt-preset-select {
+      flex: 1 1 260px;
+      min-width: 0;
+    }
+
+    .inline-warn {
+      display: none;
+      align-items: center;
+      gap: .6rem;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      padding: .8rem 1rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: .9rem;
+      margin-bottom: 1rem;
+    }
+
+    .inline-warn.show {
+      display: flex;
+    }
+
+    .pearson-results.dim {
+      opacity: .45;
+    }
+
+    .ing-name-cell {
+      font-weight: 700;
+      color: var(--color-ocean-blue);
+      display: flex;
+      flex-direction: column;
+      overflow-wrap: anywhere;
+    }
+
+    .ing-category-tag {
+      font-size: .72rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .delete-btn {
+      color: #ef4444;
+      background: rgba(239, 68, 68, .1);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .delete-btn:hover {
+      background: #ef4444;
+      color: #fff;
+    }
 
     /* Add ingredient row button */
-    .btn-add-ing { background:#f0fdf4; border:1.5px dashed #22c55e; color:#16a34a; padding:.85rem 1.4rem; border-radius:12px; font-size:1rem; font-weight:700; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:.5rem; transition:var(--transition); margin-bottom:1.5rem; font-family:inherit; }
-    .btn-add-ing:hover { background:#dcfce7; border-color:#16a34a; transform:translateY(-1px); }
+    .btn-add-ing {
+      background: #f0fdf4;
+      border: 1.5px dashed #22c55e;
+      color: #16a34a;
+      padding: .85rem 1.4rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      transition: var(--transition);
+      margin-bottom: 1.5rem;
+      font-family: inherit;
+    }
+
+    .btn-add-ing:hover {
+      background: #dcfce7;
+      border-color: #16a34a;
+      transform: translateY(-1px);
+    }
 
     /* Action Buttons Row */
-    .actions-row { display:flex; flex-wrap:wrap; gap:.8rem; justify-content:space-between; }
-    .btn-action { padding:.65rem 1.3rem; border-radius:10px; font-size:.9rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:.5rem; border:none; transition:var(--transition); font-family:inherit; }
-    .btn-primary-action { background:var(--gradient-primary); color:#fff; }
-    .btn-primary-action:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); }
-    .btn-secondary-action { background:#e2e8f0; color:var(--color-charcoal); }
-    .btn-secondary-action:hover { background:#cbd5e1; }
-    .btn-outline-action { background:transparent; border:1.5px solid var(--color-ocean-blue); color:var(--color-ocean-blue); }
-    .btn-outline-action:hover { background:var(--color-ocean-blue); color:#fff; }
+    .actions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .8rem;
+      justify-content: space-between;
+    }
+
+    .btn-action {
+      padding: .65rem 1.3rem;
+      border-radius: 10px;
+      font-size: .9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      border: none;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    .btn-primary-action {
+      background: var(--gradient-primary);
+      color: #fff;
+    }
+
+    .btn-primary-action:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-secondary-action {
+      background: #e2e8f0;
+      color: var(--color-charcoal);
+    }
+
+    .btn-secondary-action:hover {
+      background: #cbd5e1;
+    }
+
+    .btn-outline-action {
+      background: transparent;
+      border: 1.5px solid var(--color-ocean-blue);
+      color: var(--color-ocean-blue);
+    }
+
+    .btn-outline-action:hover {
+      background: var(--color-ocean-blue);
+      color: #fff;
+    }
 
     /* Results Dashboard (Sticky Sidebar) */
-    .summary-sticky { position:sticky; top:90px; }
-    .total-badge-bar { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.2rem; border-radius:14px; margin-bottom:1.5rem; font-weight:800; font-size:1.1rem; }
-    .total-badge-bar.perfect { background:rgba(5,150,105,.12); color:#059669; border:1.5px solid rgba(5,150,105,.3); }
-    .total-badge-bar.warning { background:rgba(217,119,6,.12); color:#d97706; border:1.5px solid rgba(217,119,6,.3); }
-    .total-badge-bar.danger { background:rgba(229,62,62,.12); color:#dc2626; border:1.5px solid rgba(229,62,62,.3); }
+    .summary-sticky {
+      position: static;
+    }
+
+    @media (min-width: 1181px) and (min-height: 760px) {
+      .summary-sticky {
+        position: sticky;
+        top: 90px;
+      }
+    }
+
+    .total-badge-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.2rem;
+      border-radius: 14px;
+      margin-bottom: 1.5rem;
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .total-badge-bar.perfect {
+      background: rgba(5, 150, 105, .12);
+      color: #059669;
+      border: 1.5px solid rgba(5, 150, 105, .3);
+    }
+
+    .total-badge-bar.warning {
+      background: rgba(217, 119, 6, .12);
+      color: #d97706;
+      border: 1.5px solid rgba(217, 119, 6, .3);
+    }
+
+    .total-badge-bar.danger {
+      background: rgba(229, 62, 62, .12);
+      color: #dc2626;
+      border: 1.5px solid rgba(229, 62, 62, .3);
+    }
 
     /* Nutrients Metric Cards */
-    .nutrients-grid { display:grid; grid-template-columns:1fr 1fr; gap:.9rem; margin-bottom:1.5rem; }
-    .metric-card { background:#f8fafc; border-radius:14px; padding:1rem; border:1px solid #e2e8f0; text-align:center; transition:var(--transition); position:relative; overflow:hidden; }
-    .metric-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-sm); border-color:var(--color-aqua); }
-    .metric-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--gradient-accent); }
-    .metric-card.highlight::before { background:var(--gradient-primary); height:4px; }
-    .metric-card.highlight { background:#eff6ff; border-color:#bfdbfe; }
-    .metric-name { font-size:.8rem; color:#64748b; font-weight:600; display:block; margin-bottom:.3rem; }
-    .metric-val { font-size:1.5rem; font-weight:800; color:var(--color-ocean-blue); line-height:1.1; }
-    .metric-unit { font-size:.75rem; color:#94a3b8; font-weight:600; }
-    .metric-subval { font-size:.72rem; color:#64748b; display:block; margin-top:.2rem; font-weight:600; }
+    .nutrients-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .metric-card {
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 1rem;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-sm);
+      border-color: var(--color-aqua);
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-accent);
+    }
+
+    .metric-card.highlight::before {
+      background: var(--gradient-primary);
+      height: 4px;
+    }
+
+    .metric-card.highlight {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+    }
+
+    .metric-name {
+      font-size: .8rem;
+      color: #64748b;
+      font-weight: 600;
+      display: block;
+      margin-bottom: .3rem;
+    }
+
+    .metric-val {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--color-ocean-blue);
+      line-height: 1.1;
+    }
+
+    .metric-unit {
+      font-size: .75rem;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    .metric-subval {
+      font-size: .72rem;
+      color: #64748b;
+      display: block;
+      margin-top: .2rem;
+      font-weight: 600;
+    }
 
     /* Target Comparison Progress Bars */
-    .target-box { background:#f8fafc; border-radius:14px; padding:1.2rem; border:1px solid #e2e8f0; margin-bottom:1.5rem; }
-    .target-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
-    .target-header h4 { font-size:.95rem; color:var(--color-ocean-blue); font-weight:700; display:flex; align-items:center; gap:.4rem; }
-    .progress-group { margin-bottom:1rem; }
-    .progress-group:last-child { margin-bottom:0; }
-    .progress-labels { display:flex; justify-content:space-between; font-size:.82rem; font-weight:600; margin-bottom:.3rem; }
-    .progress-bar-bg { background:#e2e8f0; height:10px; border-radius:20px; overflow:hidden; position:relative; }
-    .progress-fill { height:100%; border-radius:20px; transition:width .5s ease; background:var(--gradient-accent); }
-    .progress-fill.match { background:#10b981; }
-    .progress-fill.low { background:#f59e0b; }
-    .progress-fill.high { background:#3b82f6; }
+    .target-box {
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 1.2rem;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 1.5rem;
+    }
+
+    .target-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .4rem .8rem;
+      margin-bottom: 1rem;
+    }
+
+    .target-header h4 {
+      font-size: .95rem;
+      color: var(--color-ocean-blue);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .progress-group {
+      margin-bottom: 1rem;
+    }
+
+    .progress-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      gap: .5rem;
+      font-size: .82rem;
+      font-weight: 600;
+      margin-bottom: .3rem;
+    }
+
+    .progress-bar-bg {
+      background: #e2e8f0;
+      height: 10px;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 20px;
+      transition: width .5s ease;
+      background: var(--gradient-accent);
+    }
+
+    .progress-fill.match {
+      background: #10b981;
+    }
+
+    .progress-fill.low {
+      background: #f59e0b;
+    }
+
+    .progress-fill.high {
+      background: #3b82f6;
+    }
 
     /* Cost Box */
-    .cost-card { background:linear-gradient(135deg, #1F4B5D 0%, #153644 100%); color:#fff; border-radius:14px; padding:1.2rem; display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
-    .cost-val { font-size:1.4rem; font-weight:800; color:var(--color-aqua); }
+    .cost-card {
+      background: linear-gradient(135deg, #1F4B5D 0%, #153644 100%);
+      color: #fff;
+      border-radius: 14px;
+      padding: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .cost-val {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--color-aqua);
+    }
 
     /* Pearson Square View */
-    .pearson-card { max-width:850px; margin:0 auto; }
-    .pearson-layout { display:grid; grid-template-columns:1fr 1.2fr 1fr; gap:1.5rem; align-items:center; margin:2.5rem 0; position:relative; }
-    @media (max-width: 768px) {
-      .pearson-layout { grid-template-columns:1fr; gap:1rem; }
+    .pearson-card {
+      max-width: 850px;
+      margin: 0 auto;
     }
-    .pearson-source-box { background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:14px; padding:1.2rem; text-align:center; }
-    .pearson-center-box { background:var(--gradient-primary); color:#fff; border-radius:20px; padding:1.8rem 1.2rem; text-align:center; box-shadow:var(--shadow-glow); }
-    .pearson-center-box h3 { color:var(--color-aqua); font-size:1.8rem; font-weight:800; }
-    .pearson-result-box { background:#ecfdf5; border:1.5px solid #a7f3d0; border-radius:14px; padding:1.2rem; text-align:center; color:#065f46; font-weight:700; }
-    .pearson-result-val { font-size:1.8rem; font-weight:800; color:#059669; }
+
+    .pearson-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 1.5rem;
+      align-items: center;
+      margin: 2.5rem 0;
+      position: relative;
+    }
+
+    @media (max-width: 768px) {
+      .pearson-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1rem;
+      }
+    }
+
+    .pearson-source-box {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+
+    .pearson-center-box {
+      background: var(--gradient-primary);
+      color: #fff;
+      border-radius: 20px;
+      padding: 1.8rem 1.2rem;
+      text-align: center;
+      box-shadow: var(--shadow-glow);
+    }
+
+    .pearson-center-box h3 {
+      color: var(--color-aqua);
+      font-size: 1.8rem;
+      font-weight: 800;
+    }
+
+    .pearson-result-box {
+      background: #ecfdf5;
+      border: 1.5px solid #a7f3d0;
+      border-radius: 14px;
+      padding: 1.2rem;
+      text-align: center;
+      color: #065f46;
+      font-weight: 700;
+    }
+
+    .pearson-result-val {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #059669;
+    }
 
     /* Library / Database View */
-    .db-filter-bar { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem; }
-    .db-search { flex:1; min-width:260px; padding:.75rem 1.2rem; border-radius:12px; border:1.5px solid #cbd5e1; font-size:1rem; font-family:inherit; outline:none; }
-    .db-search:focus { border-color:var(--color-aqua); }
-    .db-cat-select { padding:.75rem 1.2rem; border-radius:12px; border:1.5px solid #cbd5e1; font-size:.95rem; font-family:inherit; background:#fff; outline:none; }
-    .db-table th { background:var(--color-ocean-blue); color:#fff; padding:.8rem; }
-    .db-badge { display:inline-block; padding:.2rem .6rem; border-radius:20px; font-size:.75rem; font-weight:700; }
-    .db-badge.energy { background:#fef3c7; color:#92400e; }
-    .db-badge.protein { background:#dcfce7; color:#166534; }
-    .db-badge.byproduct { background:#e0f2fe; color:#0369a1; }
-    .db-badge.roughage { background:#f3e8ff; color:#6b21a8; }
-    .db-badge.mineral { background:#fee2e2; color:#991b1b; }
-    .db-badge.marine { background:#ccfbf1; color:#115e59; }
+    .db-filter-bar {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .db-search {
+      flex: 1;
+      min-width: 260px;
+      padding: .75rem 1.2rem;
+      border-radius: 12px;
+      border: 1.5px solid #cbd5e1;
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .db-search:focus {
+      border-color: var(--color-aqua);
+    }
+
+    .db-cat-select {
+      padding: .75rem 1.2rem;
+      border-radius: 12px;
+      border: 1.5px solid #cbd5e1;
+      font-size: .95rem;
+      font-family: inherit;
+      background: #fff;
+      outline: none;
+    }
+
+    .db-table th {
+      background: var(--color-ocean-blue);
+      color: #fff;
+      padding: .8rem;
+    }
+
+    .db-badge {
+      display: inline-block;
+      padding: .2rem .6rem;
+      border-radius: 20px;
+      font-size: .75rem;
+      font-weight: 700;
+    }
+
+    .db-badge.energy {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .db-badge.protein {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .db-badge.byproduct {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .db-badge.roughage {
+      background: #f3e8ff;
+      color: #6b21a8;
+    }
+
+    .db-badge.mineral {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .db-badge.marine {
+      background: #ccfbf1;
+      color: #115e59;
+    }
 
     /* Optimizer Styles */
-    .optimizer-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:1.8rem; }
-    @media (max-width: 992px) {
-      .optimizer-grid { grid-template-columns:1fr; }
+    .optimizer-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 1.8rem;
     }
-    .opt-target-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:1rem; margin-bottom:1rem; }
-    .opt-target-item { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:.9rem; }
-    .opt-target-item label { display:block; font-size:.8rem; font-weight:700; color:var(--color-ocean-blue); margin-bottom:.4rem; }
-    .opt-target-item input { width:100%; padding:.5rem .7rem; border-radius:8px; border:1.5px solid #cbd5e1; font-weight:700; font-size:1rem; color:var(--color-ocean-blue); text-align:center; outline:none; }
-    .opt-target-item input:focus { border-color:var(--color-aqua); }
-    .opt-ing-select-list { max-height:360px; overflow-y:auto; border:1px solid #e2e8f0; border-radius:12px; padding:.5rem; background:#fff; margin-bottom:1rem; }
-    .opt-ing-row { display:flex; align-items:center; justify-content:space-between; padding:.6rem .8rem; border-bottom:1px solid #f1f5f9; border-radius:8px; transition:var(--transition); gap:.6rem; }
-    .opt-ing-row:hover { background:#f8fafc; }
-    .opt-ing-label { display:flex; align-items:center; gap:.6rem; flex:1; cursor:pointer; font-weight:600; font-size:.88rem; color:var(--color-charcoal); }
-    .opt-ing-limits { display:flex; align-items:center; gap:.4rem; font-size:.78rem; color:#64748b; }
-    .opt-ing-limits input { width:55px; padding:.25rem .4rem; border-radius:6px; border:1px solid #cbd5e1; font-size:.8rem; text-align:center; font-weight:700; }
-    .opt-run-btn { width:100%; padding:1rem; border-radius:14px; background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:#fff; border:none; font-size:1.1rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:.6rem; transition:var(--transition); box-shadow:0 4px 12px rgba(16,185,129,.25); }
-    .opt-run-btn:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(16,185,129,.35); filter:brightness(1.05); }
-    .opt-status-box { padding:1rem; border-radius:12px; margin-top:1rem; font-weight:700; font-size:.9rem; display:none; }
-    .opt-status-box.success { background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; display:flex; align-items:center; gap:.6rem; }
-    .opt-status-box.warn { background:#fffbeb; border:1px solid #fde68a; color:#92400e; display:flex; align-items:center; gap:.6rem; }
-    .opt-status-box.error { background:#fef2f2; border:1px solid #fecaca; color:#991b1b; display:flex; align-items:center; gap:.6rem; }
+
+    @media (max-width: 992px) {
+      .optimizer-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .opt-target-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .opt-target-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: .9rem;
+    }
+
+    .opt-target-item label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--color-ocean-blue);
+      margin-bottom: .4rem;
+    }
+
+    .opt-target-item input {
+      width: 100%;
+      padding: .5rem .7rem;
+      border-radius: 8px;
+      border: 1.5px solid #cbd5e1;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--color-ocean-blue);
+      text-align: center;
+      outline: none;
+    }
+
+    .opt-target-item input:focus {
+      border-color: var(--color-aqua);
+    }
+
+    .opt-ing-select-list {
+      max-height: 360px;
+      overflow-y: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: .5rem;
+      background: #fff;
+      margin-bottom: 1rem;
+    }
+
+    .opt-ing-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: .6rem .8rem;
+      border-bottom: 1px solid #f1f5f9;
+      border-radius: 8px;
+      transition: var(--transition);
+      gap: .6rem;
+    }
+
+    .opt-ing-row:hover {
+      background: #f8fafc;
+    }
+
+    .opt-ing-label {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      flex: 1 1 220px;
+      min-width: 0;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: .88rem;
+      color: var(--color-charcoal);
+    }
+
+    .opt-ing-label input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      flex: none;
+      accent-color: var(--color-ocean-blue);
+    }
+
+    .opt-ing-limits {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .4rem;
+      font-size: .78rem;
+      color: #64748b;
+    }
+
+    .opt-ing-limits input {
+      width: 55px;
+      padding: .25rem .4rem;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      font-size: .8rem;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .opt-run-btn {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .6rem;
+      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, .25);
+    }
+
+    .opt-run-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, .35);
+      filter: brightness(1.05);
+    }
+
+    .opt-status-box {
+      padding: 1rem;
+      border-radius: 12px;
+      margin-top: 1rem;
+      font-weight: 700;
+      font-size: .9rem;
+      display: none;
+    }
+
+    .opt-status-box.success {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .opt-status-box.warn {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .opt-status-box.error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
 
     /* Modal for choosing ingredient */
-    .modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.6); z-index:9999; display:none; align-items:center; justify-content:center; padding:1rem; }
-    .modal-overlay.open { display:flex; animation:fadeIn .25s ease; }
-    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
-    .modal-box { background:#fff; border-radius:20px; max-width:850px; width:100%; max-height:90vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:var(--shadow-lg); }
-    .modal-header { padding:1.2rem 1.8rem; background:var(--gradient-primary); color:#fff; display:flex; justify-content:space-between; align-items:center; }
-    .modal-header h3 { font-size:1.2rem; color:#fff; }
-    .modal-close { background:transparent; border:none; color:#fff; font-size:1.4rem; cursor:pointer; }
-    .modal-body { padding:1.5rem; overflow-y:auto; }
-    .modal-ing-item { display:flex; justify-content:space-between; align-items:center; padding:.9rem 1rem; border-bottom:1px solid #f1f5f9; cursor:pointer; transition:var(--transition); border-radius:10px; }
-    .modal-ing-item:hover { background:#f8fafc; transform:translateX(-4px); }
-    body.ltr .modal-ing-item:hover { transform:translateX(4px); }
-    .modal-ing-specs { font-size:.85rem; color:#64748b; }
-    .modal-btn-select { background:var(--gradient-accent); color:var(--color-ocean-blue); border:none; padding:.4rem .9rem; border-radius:8px; font-weight:700; font-size:.85rem; cursor:pointer; }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, .6);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      animation: fadeIn .25s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .modal-box {
+      background: #fff;
+      border-radius: 20px;
+      max-width: 850px;
+      width: 100%;
+      max-height: 90vh;
+      max-height: 90dvh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-header {
+      padding: 1.2rem 1.8rem;
+      background: var(--gradient-primary);
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.2rem;
+      color: #fff;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    .modal-search-wrap {
+      padding: 1rem 1.5rem;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .modal-actions {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: .8rem;
+    }
+
+    .modal-close {
+      width: 40px;
+      height: 40px;
+      flex: none;
+      line-height: 1;
+    }
+
+    .modal-ing-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .9rem 1rem;
+      border-bottom: 1px solid #f1f5f9;
+      cursor: pointer;
+      transition: var(--transition);
+      border-radius: 10px;
+    }
+
+    .modal-ing-item:hover {
+      background: #f8fafc;
+      transform: translateX(-4px);
+    }
+
+    body.ltr .modal-ing-item:hover {
+      transform: translateX(4px);
+    }
+
+    .modal-ing-specs {
+      font-size: .85rem;
+      color: #64748b;
+    }
+
+    .modal-btn-select {
+      background: var(--gradient-accent);
+      color: var(--color-ocean-blue);
+      border: none;
+      padding: .4rem .9rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+    }
 
     /* Custom ingredient form */
-    .custom-form-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:1rem; margin-top:1rem; }
-    .custom-group label { display:block; font-size:.8rem; font-weight:700; color:var(--color-ocean-blue); margin-bottom:.3rem; }
-    .custom-group input, .custom-group select { width:100%; padding:.5rem .7rem; border-radius:8px; border:1px solid #cbd5e1; font-size:.9rem; }
+    .custom-form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .custom-group label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--color-ocean-blue);
+      margin-bottom: .3rem;
+    }
+
+    .custom-group input,
+    .custom-group select {
+      width: 100%;
+      min-width: 0;
+      padding: .5rem .7rem;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      font-size: .9rem;
+      font-family: inherit;
+    }
+
+    /* ===== RESPONSIVE DESIGN FOR ALL SCREEN SIZES ===== */
+
+    /* Laptops & Desktops (≤1200px) */
+    @media (max-width: 1200px) {
+      .formulation-grid {
+        gap: 1.4rem;
+      }
+
+      .card {
+        padding: 1.6rem;
+        border-radius: 18px;
+      }
+
+      .optimizer-grid {
+        gap: 1.4rem;
+      }
+
+      .sector-selector-bar {
+        padding: .9rem 1.1rem;
+        gap: .8rem;
+      }
+
+      .tabs-wrapper {
+        gap: .5rem;
+      }
+
+      .tab-btn {
+        padding: .7rem 1.2rem;
+        font-size: .9rem;
+      }
+    }
+
+    /* Large Tablets Portrait (≤992px) */
+    @media (max-width: 992px) {
+      .page-hero {
+        padding: 6.5rem 1.5rem 2.5rem;
+      }
+
+      .page-hero h1 {
+        font-size: clamp(1.6rem, 5vw, 2.3rem);
+      }
+
+      .formulation-grid {
+        gap: 1.5rem;
+      }
+
+      .optimizer-grid {
+        gap: 1.5rem;
+      }
+
+      .main-content {
+        padding: 1.5rem 1rem 3.5rem;
+      }
+
+      /* Scrollable tabs bar with touch cues */
+      .tabs-wrapper {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        padding: .4rem .3rem .8rem;
+        gap: .5rem;
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-aqua) rgba(255, 255, 255, .15);
+      }
+
+      .tabs-wrapper::-webkit-scrollbar {
+        height: 5px;
+      }
+
+      .tabs-wrapper::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, .12);
+        border-radius: 6px;
+      }
+
+      .tabs-wrapper::-webkit-scrollbar-thumb {
+        background: var(--color-aqua);
+        border-radius: 6px;
+      }
+
+      .tab-btn {
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+        padding: .65rem 1.1rem;
+        font-size: .88rem;
+        white-space: nowrap;
+      }
+
+      /* Full-width sector selector bar */
+      .sector-selector-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: .8rem;
+        padding: 1rem;
+      }
+
+      .sector-group,
+      .control-item {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        gap: .35rem;
+      }
+
+      .sector-group select,
+      .control-item select,
+      .control-item input {
+        flex: none;
+        width: 100% !important;
+        min-height: 44px;
+        font-size: .95rem;
+      }
+
+      #batchSizeContainer input {
+        width: 100% !important;
+      }
+
+      /* Nutrients grid: 4 columns on tablet when sidebar drops to full width */
+      .nutrients-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: .75rem;
+      }
+
+      /* Database filters */
+      .db-filter-bar {
+        flex-direction: column;
+        gap: .75rem;
+      }
+
+      .db-search,
+      .db-cat-select {
+        width: 100%;
+        min-width: 0;
+        min-height: 44px;
+      }
+    }
+
+    /* Tablet & Mobile Devices (≤768px) */
+    @media (max-width: 768px) {
+
+      /* Navbar */
+      .navbar {
+        padding: .65rem 0;
+      }
+
+      .nav-container {
+        padding: 0 .9rem;
+        gap: .75rem;
+      }
+
+      .logo img {
+        height: 32px;
+      }
+
+      .nav-right {
+        gap: .6rem;
+      }
+
+      .back-btn {
+        font-size: .82rem;
+      }
+
+      #lang-toggle {
+        padding: 5px 14px;
+        font-size: 12px;
+      }
+
+      /* Hero */
+      .page-hero {
+        padding: 5.2rem .85rem 2rem;
+      }
+
+      .hero-badge {
+        font-size: .75rem;
+        padding: .35rem .75rem;
+        max-width: 96%;
+        text-align: center;
+        justify-content: center;
+      }
+
+      .page-hero h1 {
+        font-size: clamp(1.4rem, 6vw, 1.95rem);
+        line-height: 1.32;
+      }
+
+      .page-hero p {
+        font-size: clamp(.84rem, 2.8vw, .95rem);
+        line-height: 1.65;
+        max-width: 96%;
+        margin-bottom: 1.2rem;
+      }
+
+      .sector-icons {
+        gap: .4rem;
+        margin-bottom: 1.2rem;
+      }
+
+      .sector-tag {
+        font-size: .72rem;
+        padding: .3rem .65rem;
+      }
+
+      /* Main content */
+      .main-content {
+        padding: 1rem .75rem 3rem;
+      }
+
+      .card {
+        border-radius: 14px;
+        padding: 1.1rem;
+        margin-bottom: 1.2rem;
+      }
+
+      .card-title-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: .75rem;
+        margin-bottom: 1rem;
+        padding-bottom: .75rem;
+      }
+
+      .card-title-bar h2,
+      .card-title-bar h3 {
+        font-size: 1.05rem;
+        line-height: 1.4;
+        word-break: break-word;
+      }
+
+      .card-title-bar button,
+      .card-title-bar .btn-action {
+        width: 100%;
+        justify-content: center;
+        white-space: normal;
+        text-align: center;
+      }
+
+      /* Preset pills */
+      .preset-pills {
+        gap: .4rem;
+      }
+
+      .preset-pill {
+        padding: .38rem .7rem;
+        font-size: .78rem;
+      }
+
+      /* Table scroll hint & responsive styling */
+      .table-scroll-hint {
+        display: flex;
+      }
+
+      .recipe-table {
+        min-width: 580px;
+      }
+
+      .recipe-table th,
+      .recipe-table td {
+        padding: .55rem .45rem;
+        font-size: .82rem;
+      }
+
+      .recipe-table input[type="number"] {
+        width: 68px;
+        padding: .35rem .3rem;
+        font-size: .83rem;
+        min-height: 34px;
+      }
+
+      .recipe-table input.recipe-price-input {
+        width: 78px;
+        font-size: .83rem;
+        min-height: 34px;
+      }
+
+      .db-table {
+        min-width: 680px;
+      }
+
+      /* Buttons */
+      .btn-add-ing {
+        padding: .8rem 1rem;
+        font-size: clamp(.82rem, 3vw, .92rem);
+        text-align: center;
+        justify-content: center;
+        min-height: 44px;
+      }
+
+      .actions-row {
+        display: flex;
+        flex-direction: column;
+        gap: .6rem;
+        width: 100%;
+      }
+
+      .actions-row>div {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: .45rem !important;
+        width: 100% !important;
+      }
+
+      .btn-action {
+        justify-content: center;
+        padding: .65rem .4rem;
+        font-size: .82rem;
+        min-height: 42px;
+      }
+
+      .btn-primary-action {
+        width: 100%;
+        justify-content: center;
+        padding: .75rem 1rem;
+      }
+
+      /* Sidebar dashboard */
+      .total-badge-bar {
+        font-size: .95rem;
+        padding: .8rem 1rem;
+        gap: .6rem;
+        flex-wrap: wrap;
+      }
+
+      .cost-card {
+        padding: 1rem;
+        flex-wrap: wrap;
+        gap: .8rem;
+      }
+
+      .nutrients-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: .6rem;
+      }
+
+      .metric-card {
+        padding: .75rem .45rem;
+        border-radius: 10px;
+      }
+
+      .metric-val {
+        font-size: clamp(1.15rem, 4.5vw, 1.4rem);
+      }
+
+      .metric-name {
+        font-size: .75rem;
+        min-height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .target-box {
+        padding: .9rem;
+        border-radius: 12px;
+      }
+
+      /* Pearson Square */
+      .pearson-inputs-grid {
+        grid-template-columns: 1fr !important;
+        gap: .8rem !important;
+        margin-bottom: 1rem;
+      }
+
+      .pearson-layout {
+        grid-template-columns: 1fr !important;
+        gap: .75rem;
+        margin: 1.2rem 0;
+      }
+
+      .pearson-center-box {
+        padding: 1.2rem 1rem;
+        order: -1;
+      }
+
+      .pearson-center-box h3,
+      .pearson-result-val {
+        font-size: 1.45rem;
+      }
+
+      .pearson-card>div[style*="grid-template-columns:1fr 1fr"] {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: .8rem !important;
+      }
+
+      /* Optimizer */
+      .opt-preset-row {
+        flex-direction: column;
+        gap: .6rem;
+      }
+
+      #optSpeciesPreset {
+        width: 100%;
+        min-width: 0;
+        min-height: 44px;
+      }
+
+      .opt-preset-row .btn-action {
+        width: 100%;
+        justify-content: center;
+        min-height: 44px;
+      }
+
+      .opt-target-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .6rem;
+      }
+
+      .opt-ing-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: .45rem;
+        padding: .65rem .75rem;
+      }
+
+      .opt-ing-label {
+        width: 100%;
+      }
+
+      .opt-ing-limits {
+        width: 100%;
+        justify-content: flex-end;
+        padding-top: .3rem;
+        border-top: 1px dashed #f1f5f9;
+      }
+
+      .opt-ing-limits input {
+        width: 56px;
+        min-height: 34px;
+      }
+
+      .opt-run-btn {
+        padding: .85rem 1rem;
+        font-size: .98rem;
+        min-height: 48px;
+      }
+
+      /* Modals */
+      .modal-overlay {
+        padding: .5rem;
+      }
+
+      .modal-box {
+        max-height: calc(100dvh - 1rem);
+        border-radius: 14px;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .modal-header {
+        padding: .85rem 1rem;
+      }
+
+      .modal-header h3 {
+        font-size: clamp(.92rem, 3.2vw, 1.05rem);
+      }
+
+      .modal-body {
+        padding: .85rem;
+      }
+
+      .modal-ing-item {
+        padding: .75rem .6rem;
+        gap: .5rem;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .modal-ing-item>div:last-child {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .modal-btn-select {
+        width: 100%;
+        text-align: center;
+        padding: .55rem .8rem;
+      }
+
+      .custom-name-grid {
+        grid-template-columns: 1fr;
+        gap: .75rem;
+      }
+
+      .custom-form-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: .75rem;
+      }
+    }
+
+    /* Small Mobile Phones (≤440px) */
+    @media (max-width: 440px) {
+      .nav-container {
+        padding: 0 .75rem;
+      }
+
+      .back-btn span {
+        display: none;
+      }
+
+      .back-btn {
+        width: 36px;
+        height: 36px;
+        justify-content: center;
+        border: 1px solid #dbe4e8;
+        border-radius: 50%;
+      }
+
+      .page-hero {
+        padding: 4.8rem .65rem 1.6rem;
+      }
+
+      .main-content {
+        padding: .85rem .5rem 2.5rem;
+      }
+
+      .card {
+        padding: .9rem .75rem;
+        border-radius: 12px;
+      }
+
+      .actions-row>div {
+        grid-template-columns: 1fr !important;
+      }
+
+      .cost-card {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        gap: .6rem;
+      }
+
+      .cost-card>div:last-child {
+        text-align: center !important;
+        border-top: 1px solid rgba(255, 255, 255, .15);
+        padding-top: .5rem;
+      }
+
+      .recipe-table {
+        min-width: 500px;
+      }
+
+      .recipe-table th,
+      .recipe-table td {
+        padding: .45rem .35rem;
+        font-size: .78rem;
+      }
+
+      .recipe-table input[type="number"] {
+        width: 60px;
+        font-size: .8rem;
+        padding: .3rem .2rem;
+      }
+
+      .recipe-table input.recipe-price-input {
+        width: 68px;
+        font-size: .8rem;
+        padding: .3rem .2rem;
+      }
+
+      .nutrients-grid {
+        gap: .45rem;
+      }
+
+      .metric-card {
+        padding: .65rem .35rem;
+      }
+
+      .metric-val {
+        font-size: clamp(1.05rem, 4.5vw, 1.25rem);
+      }
+
+      .metric-name {
+        font-size: .72rem;
+      }
+
+      .db-table {
+        min-width: 600px;
+      }
+
+      .opt-target-row {
+        grid-template-columns: 1fr 1fr;
+        gap: .45rem;
+      }
+
+      .custom-form-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: .5rem;
+      }
+    }
+
+    /* Extra Small Mobile Devices (≤360px) */
+    @media (max-width: 360px) {
+      .opt-target-row {
+        grid-template-columns: 1fr;
+      }
+
+      .custom-form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .recipe-table {
+        min-width: 470px;
+      }
+
+      .metric-card {
+        padding: .55rem .25rem;
+      }
+
+      .metric-name {
+        font-size: .68rem;
+      }
+
+      .metric-val {
+        font-size: 1.05rem;
+      }
+
+      .total-badge-bar,
+      .cost-card {
+        padding: .75rem;
+      }
+
+      .tab-btn {
+        padding: .55rem .85rem;
+        font-size: .78rem;
+      }
+    }
+
+    /* Landscape Phone */
+    @media (max-width: 768px) and (orientation: landscape) {
+      .page-hero {
+        padding-top: 4.5rem;
+        padding-bottom: 1.4rem;
+      }
+
+      .sector-icons {
+        display: none;
+      }
+
+      .modal-box {
+        max-height: calc(100dvh - .6rem);
+      }
+    }
 
     /* Print styling */
     @media print {
-      .navbar, .page-hero, .tabs-wrapper, .controls-bar, .preset-section, .btn-add-ing, .actions-row, .modal-overlay { display:none !important; }
-      .main-content { padding:0; }
-      .formulation-grid { display:block; }
-      .card { box-shadow:none; border:1px solid #ccc; page-break-inside:avoid; }
-      .print-header { display:block !important; text-align:center; margin-bottom:2rem; }
+
+      .navbar,
+      .page-hero,
+      .tabs-wrapper,
+      .controls-bar,
+      .preset-section,
+      .btn-add-ing,
+      .actions-row,
+      .modal-overlay {
+        display: none !important;
+      }
+
+      .main-content {
+        padding: 0;
+      }
+
+      .formulation-grid {
+        display: block;
+      }
+
+      .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+      }
+
+      .print-header {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 2rem;
+      }
     }
-    .print-header { display:none; }
+
+    .print-header {
+      display: none;
+    }
 
     /* Footer */
-    .page-footer { background:var(--gradient-primary); color:rgba(255,255,255,.7); text-align:center; padding:1.5rem; font-size:.85rem; }
-    .page-footer a { color:var(--color-aqua); }
+    .page-footer {
+      background: var(--gradient-primary);
+      color: rgba(255, 255, 255, .7);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: .85rem;
+    }
+
+    .page-footer a {
+      color: var(--color-aqua);
+    }
+
+    /* ===== RESPONSIVE ADDITIONS (v2) ===== */
+
+    /* Big screens: use the extra room instead of a narrow strip */
+    @media (min-width: 1800px) {
+      html {
+        font-size: 112.5%;
+      }
+
+      .nav-container,
+      .main-content {
+        max-width: 1560px;
+      }
+    }
+
+    @media (min-width: 2400px) {
+      html {
+        font-size: 131.25%;
+      }
+
+      .nav-container,
+      .main-content {
+        max-width: 1800px;
+      }
+    }
+
+    /* Touch devices: no sticky hover-lift */
+    @media (hover: none) {
+
+      .metric-card:hover,
+      .preset-pill:hover,
+      .btn-add-ing:hover,
+      .btn-primary-action:hover,
+      .opt-run-btn:hover,
+      .modal-ing-item:hover {
+        transform: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* Mini live summary (phones / tablets) */
+    .mini-summary {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 900;
+      background: var(--gradient-primary);
+      color: #fff;
+      padding: .55rem 1rem calc(.55rem + env(safe-area-inset-bottom, 0px));
+      box-shadow: 0 -6px 20px rgba(0, 0, 0, .2);
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      cursor: pointer;
+    }
+
+    .ms-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.25;
+      min-width: 0;
+    }
+
+    .ms-item span {
+      font-size: .68rem;
+      opacity: .8;
+    }
+
+    .ms-item b {
+      font-size: .98rem;
+      color: var(--color-aqua);
+      white-space: nowrap;
+    }
+
+    #msTotal.warning {
+      color: #fbbf24;
+    }
+
+    #msTotal.danger {
+      color: #fca5a5;
+    }
+
+    #msTotal.perfect {
+      color: #6ee7b7;
+    }
+
+    .mini-summary>i {
+      color: var(--color-aqua);
+    }
+
+    @media (max-width: 992px) {
+      body.show-mini:not(.summary-visible) .mini-summary {
+        display: flex;
+      }
+
+      body.show-mini:not(.summary-visible) .page-footer {
+        padding-bottom: 5rem;
+      }
+    }
+
+    @media print {
+
+      .mini-summary,
+      .table-scroll-hint {
+        display: none !important;
+      }
+    }
+
+    /* Phones & small tablets: comfortable controls */
+    @media (max-width: 768px) {
+
+      /* 16px inputs stop iOS Safari from zooming the page on focus */
+      input:not([type="checkbox"]):not([type="radio"]),
+      select,
+      textarea {
+        font-size: 16px !important;
+      }
+
+      .delete-btn {
+        width: 40px;
+        height: 40px;
+      }
+
+      .modal-btn-select {
+        min-height: 40px;
+      }
+
+      .opt-ing-label input[type="checkbox"] {
+        width: 22px;
+        height: 22px;
+      }
+
+      .modal-actions>.btn-action {
+        flex: 1 1 140px;
+        justify-content: center;
+      }
+
+      .opt-preset-select {
+        flex: none;
+        width: 100%;
+      }
+
+      .opt-ing-label {
+        flex: none;
+      }
+
+      .opt-section-header {
+        align-items: flex-start;
+      }
+
+      .opt-btn-group .btn-action {
+        min-height: 40px;
+      }
+
+      .modal-search-wrap {
+        padding: .75rem .85rem;
+      }
+    }
+
+    /* 641-768px: scrollable tables keep a visible hint */
+    @media (max-width: 640px) {
+      .table-scroll-hint {
+        display: none !important;
+      }
+    }
+
+    /* ===== Tables become cards on phones ===== */
+    @media screen and (max-width: 640px) {
+      .tc-stack {
+        overflow: visible;
+        border: 0;
+        background: transparent;
+        border-radius: 0;
+      }
+
+      .recipe-table.stack {
+        display: block;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .recipe-table.stack thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+
+      .recipe-table.stack tbody {
+        display: block;
+      }
+
+      .recipe-table.stack tr {
+        display: block;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: .35rem .8rem;
+        margin-bottom: .7rem;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .recipe-table.stack tr:hover {
+        background: #fff;
+      }
+
+      .recipe-table.stack td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .8rem;
+        padding: .5rem 0;
+        border-bottom: 1px dashed #e8eef3;
+        text-align: end;
+        font-size: .88rem;
+      }
+
+      .recipe-table.stack td:last-child {
+        border-bottom: 0;
+      }
+
+      .recipe-table.stack td::before {
+        content: attr(data-label);
+        flex: 0 0 auto;
+        font-size: .76rem;
+        font-weight: 700;
+        color: #64748b;
+        text-align: start;
+      }
+
+      .recipe-table.stack td:first-child {
+        justify-content: flex-start;
+        text-align: start;
+        font-size: .98rem;
+        font-weight: 800;
+        color: var(--color-ocean-blue);
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .recipe-table.stack td:first-child::before {
+        display: none;
+      }
+
+      /* main recipe rows */
+      .recipe-table.stack-recipe tr {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: .55rem;
+        padding: .8rem;
+      }
+
+      .recipe-table.stack-recipe td {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        gap: .25rem;
+        padding: 0;
+        border: 0;
+        text-align: start;
+      }
+
+      .recipe-table.stack-recipe td::before {
+        font-size: .72rem;
+      }
+
+      .recipe-table.stack-recipe td:nth-child(1) {
+        grid-column: 1 / 4;
+        grid-row: 1;
+      }
+
+      .recipe-table.stack-recipe td:nth-child(8) {
+        grid-column: 4;
+        grid-row: 1;
+        align-items: flex-end;
+      }
+
+      .recipe-table.stack-recipe td:nth-child(8)::before {
+        display: none;
+      }
+
+      .recipe-table.stack-recipe td:nth-child(2) {
+        grid-column: 1 / 3;
+        grid-row: 2;
+      }
+
+      .recipe-table.stack-recipe td:nth-child(7) {
+        grid-column: 3 / 5;
+        grid-row: 2;
+      }
+
+      .recipe-table.stack-recipe td:nth-child(n+3):nth-child(-n+6) {
+        grid-row: 3;
+        align-items: center;
+        text-align: center;
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: .4rem .2rem;
+        font-weight: 700;
+      }
+
+      .recipe-table.stack-recipe td:nth-child(n+3):nth-child(-n+6)::before {
+        content: attr(data-short);
+      }
+
+      .recipe-table.stack-recipe td input,
+      .recipe-table.stack-recipe td input.recipe-price-input {
+        width: 100% !important;
+        min-height: 44px;
+        text-align: center;
+      }
+
+      /* library rows */
+      .recipe-table.stack-db {
+        min-width: 0;
+      }
+
+      .recipe-table.stack-db tr {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: .45rem;
+        padding: .75rem;
+      }
+
+      .recipe-table.stack-db td {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: .15rem;
+        padding: .35rem .2rem;
+        border: 0;
+        border-radius: 10px;
+        background: #f8fafc;
+        text-align: center;
+        font-size: .9rem;
+        font-weight: 700;
+      }
+
+      .recipe-table.stack-db td::before {
+        content: attr(data-short);
+        font-size: .68rem;
+      }
+
+      .recipe-table.stack-db td:nth-child(1) {
+        grid-column: 1 / 4;
+        grid-row: 1;
+        align-items: flex-start;
+        text-align: start;
+        background: none;
+        padding: 0;
+        border: 0;
+        font-size: .98rem;
+      }
+
+      .recipe-table.stack-db td:nth-child(11) .modal-btn-select {
+        min-width: 44px;
+        padding: .4rem .7rem;
+      }
+
+      .recipe-table.stack-db td:nth-child(11) {
+        grid-column: 4;
+        grid-row: 1;
+        align-items: flex-end;
+        background: none;
+        padding: 0;
+      }
+
+      .recipe-table.stack-db td:nth-child(2) {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        align-items: flex-start;
+        background: none;
+        padding: 0;
+      }
+
+      .recipe-table.stack-db td:nth-child(1)::before,
+      .recipe-table.stack-db td:nth-child(2)::before,
+      .recipe-table.stack-db td:nth-child(11)::before {
+        display: none;
+      }
+    }
+
+    /* In stacked (column) layouts a flex-basis would become a height */
+    @media (max-width: 992px) {
+
+      .sector-selector-bar>.control-item,
+      .sector-group {
+        flex: none;
+      }
+
+      .sector-selector-bar>.control-item input,
+      .sector-selector-bar>.control-item select {
+        flex: none;
+        width: 100% !important;
+      }
+    }
+
+    /* "CP%" must not flip to "%CP" inside RTL pages */
+    .recipe-table.stack td::before {
+      unicode-bidi: plaintext;
+    }
+
+    @media screen and (max-width: 640px) {
+
+      .recipe-table.stack-recipe td:nth-child(n+3):nth-child(-n+6)::before,
+      .recipe-table.stack-db td::before {
+        direction: ltr;
+        unicode-bidi: isolate;
+      }
+    }
+
+    /* Tablets: species on its own row, mode + batch side by side */
+    @media (min-width: 641px) and (max-width: 992px) {
+      .sector-selector-bar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-end;
+      }
+
+      .sector-selector-bar>.sector-group {
+        flex: 1 1 100%;
+      }
+
+      .sector-selector-bar>.control-item {
+        flex: 1 1 calc(50% - .5rem);
+      }
+    }
+
+    /* very small phones: shrink the 4-up stat tiles a little */
+    @media screen and (max-width: 360px) {
+
+      .recipe-table.stack-recipe td:nth-child(n+3):nth-child(-n+6),
+      .recipe-table.stack-db td {
+        font-size: .82rem;
+        padding: .3rem .1rem;
+      }
+    }
   </style>
 </head>
-<body>
+
+<body class="show-mini">
 
   <!-- Navbar -->
   <nav class="navbar">
@@ -271,10 +2622,12 @@
 
   <!-- Hero -->
   <section class="page-hero">
-    <div class="hero-badge"><i class="fa-solid fa-calculator"></i> <span data-i18n="hero_badge">أداة احترافية عامة لجميع قطاعات الإنتاج والتغذية</span></div>
+    <div class="hero-badge"><i class="fa-solid fa-calculator"></i> <span data-i18n="hero_badge">أداة احترافية عامة لجميع
+        قطاعات الإنتاج والتغذية</span></div>
     <h1 data-i18n="hero_title">أداة تركيب وموازنة <span>علائق الأعلاف العامة</span></h1>
-    <p data-i18n="hero_desc">النظام الشامل لتركيب وموازنة الأعلاف الحيوانية (عجول وماشية، أغنام، أبقار حلاب، دواجن تسمين وبياض، أرانب، وأسماك) وفق التحليلات المعملية وموسوعات NRC و Feedipedia مع حساب تكلفة الطن.</p>
-    
+    <p data-i18n="hero_desc">النظام الشامل لتركيب وموازنة الأعلاف الحيوانية (عجول وماشية، أغنام، أبقار حلاب، دواجن تسمين
+      وبياض، أرانب، وأسماك) وفق التحليلات المعملية وموسوعات NRC و Feedipedia مع حساب تكلفة الطن.</p>
+
     <div class="sector-icons">
       <span class="sector-tag"><i class="fa-solid fa-cow"></i> الأبقار والعجول</span>
       <span class="sector-tag"><i class="fa-solid fa-sheep"></i> الأغنام والماعز</span>
@@ -284,16 +2637,20 @@
     </div>
 
     <div class="tabs-wrapper">
-      <button class="tab-btn active" onclick="switchTab('formulation')"><i class="fa-solid fa-blender"></i> <span data-i18n="tab_formulation">مصمم الخلطات الذكي</span></button>
-      <button class="tab-btn" onclick="switchTab('optimizer')"><i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="tab_optimizer">المُحسِّن الذكي للعلائق (Least-Cost)</span></button>
-      <button class="tab-btn" onclick="switchTab('pearson')"><i class="fa-solid fa-shapes"></i> <span data-i18n="tab_pearson">مربع بيرسون (الخلط الثنائي السريع)</span></button>
-      <button class="tab-btn" onclick="switchTab('database')"><i class="fa-solid fa-book-bookmark"></i> <span data-i18n="tab_database">مكتبة وتحليل الخامات (70+ مادة)</span></button>
+      <button class="tab-btn active" onclick="switchTab('formulation')"><i class="fa-solid fa-blender"></i> <span
+          data-i18n="tab_formulation">مصمم الخلطات الذكي</span></button>
+      <button class="tab-btn" onclick="switchTab('optimizer')"><i class="fa-solid fa-wand-magic-sparkles"></i> <span
+          data-i18n="tab_optimizer">المُحسِّن الذكي للعلائق (Least-Cost)</span></button>
+      <button class="tab-btn" onclick="switchTab('pearson')"><i class="fa-solid fa-shapes"></i> <span
+          data-i18n="tab_pearson">مربع بيرسون (الخلط الثنائي السريع)</span></button>
+      <button class="tab-btn" onclick="switchTab('database')"><i class="fa-solid fa-book-bookmark"></i> <span
+          data-i18n="tab_database">مكتبة وتحليل الخامات (70+ مادة)</span></button>
     </div>
   </section>
 
   <!-- Main Container -->
   <main class="main-content">
-    
+
     <!-- Printable Header for export -->
     <div class="print-header">
       <h2>AQUASoft &mdash; تقرير تركيبة علف مخصصة</h2>
@@ -303,14 +2660,15 @@
     <!-- TAB 1: FORMULATION BUILDER -->
     <div id="tab-formulation" class="tab-pane active">
       <div class="formulation-grid">
-        
+
         <!-- Left: Ingredients Table & Builder -->
         <div class="formulation-main">
-          
+
           <div class="card">
             <div class="card-title-bar">
-              <h2 data-i18n="builder_title"><i class="fa-solid fa-layer-group"></i> مكونات وتناسب الخلطة العلفية</h2>
-              <button class="btn-action btn-outline-action" onclick="openCustomModal()"><i class="fa-solid fa-plus-circle"></i> <span data-i18n="btn_custom_ing">إضافة خامة مخصصة</span></button>
+              <h2><i class="fa-solid fa-layer-group"></i> <span data-i18n="builder_title">مكونات وتناسب الخلطة العلفية</span></h2>
+              <button class="btn-action btn-outline-action" onclick="openCustomModal()"><i
+                  class="fa-solid fa-plus-circle"></i> <span data-i18n="btn_custom_ing">إضافة خامة مخصصة</span></button>
             </div>
 
             <!-- Animal Sector Selector -->
@@ -357,13 +2715,15 @@
 
               <div class="control-item" id="batchSizeContainer">
                 <label id="lbl_batch_size_text" data-i18n="lbl_batch_size">حجم التشغيلة لحساب التكلفة (كجم):</label>
-                <input type="number" id="batchSize" value="1000" min="1" step="50" oninput="recalculate()" style="width:130px; font-weight:700;">
+                <input type="number" id="batchSize" value="1000" min="1" step="50" oninput="recalculate()"
+                  style="width:130px; font-weight:700;">
               </div>
             </div>
 
             <!-- Preset templates for all sectors -->
             <div class="preset-section">
-              <span class="preset-label"><i class="fa-solid fa-wand-magic-sparkles"></i> خلطات نموذجية جاهزة للتحميل الفوري:</span>
+              <span class="preset-label"><i class="fa-solid fa-wand-magic-sparkles"></i> خلطات نموذجية جاهزة للتحميل
+                الفوري:</span>
               <div class="preset-pills">
                 <button class="preset-pill active" onclick="loadPreset('beef_grower')">🐄 تسمين عجول 14%</button>
                 <button class="preset-pill" onclick="loadPreset('dairy_high')">🥛 أبقار حلاب 16%</button>
@@ -377,8 +2737,11 @@
             </div>
 
             <!-- Table of selected ingredients -->
-            <div class="table-container">
-              <table class="recipe-table">
+            <div class="table-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> <span
+                data-i18n="hint_scroll">اسحب الجدول أفقياً للاطلاع على كامل الأعمدة وتعديل الكميات والأسعار ⟷</span>
+            </div>
+            <div class="table-container tc-stack">
+              <table class="recipe-table stack stack-recipe">
                 <thead>
                   <tr>
                     <th data-i18n="th_ingredient">مادة العلف</th>
@@ -399,17 +2762,22 @@
 
             <!-- Add Row Button -->
             <button class="btn-add-ing" onclick="openIngModal()">
-              <i class="fa-solid fa-plus-circle"></i> <span data-i18n="btn_add_from_db">اختيار خامة من قاعدة البيانات الشاملة (70+ مادة)</span>
+              <i class="fa-solid fa-plus-circle"></i> <span data-i18n="btn_add_from_db">اختيار خامة من قاعدة البيانات
+                الشاملة (70+ مادة)</span>
             </button>
 
             <!-- Bottom Action Row -->
             <div class="actions-row">
               <div style="display:flex; gap:.6rem; flex-wrap:wrap;">
-                <button class="btn-action btn-secondary-action" onclick="saveRecipeLocal()"><i class="fa-solid fa-floppy-disk"></i> <span data-i18n="btn_save">حفظ التركيبة</span></button>
-                <button class="btn-action btn-secondary-action" onclick="loadRecipePrompt()"><i class="fa-solid fa-folder-open"></i> <span data-i18n="btn_load">استرجاع تركيبة</span></button>
-                <button class="btn-action btn-secondary-action" onclick="clearRecipe()"><i class="fa-solid fa-trash"></i> <span data-i18n="btn_clear">تفريغ</span></button>
+                <button class="btn-action btn-secondary-action" onclick="saveRecipeLocal()"><i
+                    class="fa-solid fa-floppy-disk"></i> <span data-i18n="btn_save">حفظ التركيبة</span></button>
+                <button class="btn-action btn-secondary-action" onclick="loadRecipePrompt()"><i
+                    class="fa-solid fa-folder-open"></i> <span data-i18n="btn_load">استرجاع تركيبة</span></button>
+                <button class="btn-action btn-secondary-action" onclick="clearRecipe()"><i
+                    class="fa-solid fa-trash"></i> <span data-i18n="btn_clear">تفريغ</span></button>
               </div>
-              <button class="btn-action btn-primary-action" onclick="window.print()"><i class="fa-solid fa-print"></i> <span data-i18n="btn_print">طباعة التقرير / PDF</span></button>
+              <button class="btn-action btn-primary-action" onclick="window.print()"><i class="fa-solid fa-print"></i>
+                <span data-i18n="btn_print">طباعة التقرير / PDF</span></button>
             </div>
 
           </div>
@@ -418,10 +2786,11 @@
         <!-- Right: Real-time Analysis Dashboard -->
         <div class="formulation-sidebar">
           <div class="summary-sticky">
-            
+
             <div class="card">
               <div class="card-title-bar" style="margin-bottom:1rem; padding-bottom:.6rem;">
-                <h3 data-i18n="summary_title"><i class="fa-solid fa-chart-pie"></i> التحليل الكيماوي والغذائي الشامل</h3>
+                <h3><i class="fa-solid fa-chart-pie"></i> <span data-i18n="summary_title">التحليل الكيماوي والغذائي الشامل</span>
+                </h3>
               </div>
 
               <!-- Total percentage / weight badge -->
@@ -483,7 +2852,8 @@
               </div>
 
               <!-- Ca:P Ratio -->
-              <div style="background:#f1f5f9; padding:.65rem 1rem; border-radius:10px; font-size:.85rem; font-weight:700; display:flex; justify-content:space-between; margin-bottom:1.2rem;">
+              <div
+                style="background:#f1f5f9; padding:.65rem 1rem; border-radius:10px; font-size:.85rem; font-weight:700; display:flex; justify-content:space-between; margin-bottom:1.2rem;">
                 <span data-i18n="lbl_cap_ratio">نسبة الكالسيوم للفوسفور (Ca:P):</span>
                 <span id="resCaPRatio" style="color:var(--color-ocean-blue); font-weight:800;">1 : 1</span>
               </div>
@@ -491,7 +2861,8 @@
               <!-- Target Comparison Progress Bars -->
               <div class="target-box">
                 <div class="target-header">
-                  <h4><i class="fa-solid fa-bullseye"></i> <span data-i18n="lbl_target_match">المقارنة مع الاحتياجات الموصى بها</span></h4>
+                  <h4><i class="fa-solid fa-bullseye"></i> <span data-i18n="lbl_target_match">المقارنة مع الاحتياجات
+                      الموصى بها</span></h4>
                   <span id="targetStatusText" style="font-size:.8rem; font-weight:700; color:#059669;">مطابق</span>
                 </div>
 
@@ -529,10 +2900,12 @@
               <!-- Cost Box -->
               <div class="cost-card">
                 <div>
-                  <span style="font-size:.85rem; opacity:.9; display:block;" data-i18n="lbl_cost_ton">التكلفة التقديرية للطن:</span>
-                  <span class="cost-val" id="resCostTon">0</span> <span style="font-size:.9rem; color:var(--color-aqua);">ج.م</span>
+                  <span style="font-size:.85rem; opacity:.9; display:block;" data-i18n="lbl_cost_ton">التكلفة التقديرية
+                    للطن:</span>
+                  <span class="cost-val" id="resCostTon">0</span> <span
+                    style="font-size:.9rem; color:var(--color-aqua);">ج.م</span>
                 </div>
-                <div style="text-align:left;">
+                <div style="text-align:end;">
                   <span style="font-size:.8rem; opacity:.8; display:block;" data-i18n="lbl_cost_kg">سعر الكيلو:</span>
                   <span style="font-size:1.1rem; font-weight:700; color:#fff;" id="resCostKg">0.00 ج.م</span>
                 </div>
@@ -550,29 +2923,40 @@
     <div id="tab-pearson" class="tab-pane">
       <div class="card pearson-card">
         <div class="card-title-bar">
-          <h2><i class="fa-solid fa-shapes"></i> <span data-i18n="pearson_title">مربع بيرسون لموازنة خامتين علفيتين</span></h2>
+          <h2><i class="fa-solid fa-shapes"></i> <span data-i18n="pearson_title">مربع بيرسون لموازنة خامتين
+              علفيتين</span></h2>
         </div>
         <p style="color:#64748b; font-size:.95rem; margin-bottom:1.5rem;" data-i18n="pearson_desc">
-          طريقة علمية سريعة ومعتمدة لحساب نسبة الخلط الدقيقة بين مادتين (أو خليطين: مصدر طاقة منخفض البروتين كالذرة + مصدر بروتيني عالي كالصويا) للوصول إلى نسبة بروتين مستهدفة لأي حيوان أو قطاع إنتاج.
+          طريقة علمية سريعة ومعتمدة لحساب نسبة الخلط الدقيقة بين مادتين (أو خليطين: مصدر طاقة منخفض البروتين كالذرة +
+          مصدر بروتيني عالي كالصويا) للوصول إلى نسبة بروتين مستهدفة لأي حيوان أو قطاع إنتاج.
         </p>
 
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+        <div class="pearson-inputs-grid">
           <div class="control-item" style="display:block;">
-            <label style="display:block; margin-bottom:.4rem; font-weight:700;" data-i18n="lbl_pearson_batch">حجم الدفعة المطلوبة (كجم):</label>
-            <input type="number" id="pearsonBatch" value="1000" min="10" oninput="calcPearson()" style="width:100%; padding:.65rem 1rem; border-radius:10px; border:1.5px solid #cbd5e1; font-weight:700;">
+            <label style="display:block; margin-bottom:.4rem; font-weight:700;" data-i18n="lbl_pearson_batch">حجم الدفعة
+              المطلوبة (كجم):</label>
+            <input type="number" id="pearsonBatch" value="1000" min="10" oninput="calcPearson()"
+              style="width:100%; padding:.65rem 1rem; border-radius:10px; border:1.5px solid #cbd5e1; font-weight:700;">
           </div>
           <div class="control-item" style="display:block;">
-            <label style="display:block; margin-bottom:.4rem; font-weight:700;" data-i18n="lbl_pearson_target">البروتين المطلوب تحقيقه (%):</label>
-            <input type="number" id="pearsonTarget" value="16" min="1" max="70" step="0.5" oninput="calcPearson()" style="width:100%; padding:.65rem 1rem; border-radius:10px; border:1.5px solid #cbd5e1; font-weight:700; color:var(--color-ocean-blue); font-size:1.1rem;">
+            <label style="display:block; margin-bottom:.4rem; font-weight:700;" data-i18n="lbl_pearson_target">البروتين
+              المطلوب تحقيقه (%):</label>
+            <input type="number" id="pearsonTarget" value="16" min="1" max="70" step="0.5" oninput="calcPearson()"
+              style="width:100%; padding:.65rem 1rem; border-radius:10px; border:1.5px solid #cbd5e1; font-weight:700; color:var(--color-ocean-blue); font-size:1.1rem;">
           </div>
         </div>
 
-        <div class="pearson-layout">
+        <div class="inline-warn" id="pearsonWarn" role="alert"><i class="fa-solid fa-triangle-exclamation"></i> <span id="pearsonWarnText"></span></div>
+
+        <div class="pearson-layout pearson-results" id="pearsonLayout">
           <!-- Feed 1 (High Protein) -->
           <div class="pearson-source-box">
-            <span style="font-size:.8rem; font-weight:700; color:#64748b; display:block; margin-bottom:.4rem;">المصدر البروتيني (العالي)</span>
-            <select id="pearsonIng1" onchange="calcPearson()" style="width:100%; padding:.5rem; border-radius:8px; border:1px solid #cbd5e1; font-weight:700; font-family:inherit; margin-bottom:.6rem;"></select>
-            <div style="font-size:1.2rem; font-weight:800; color:var(--color-ocean-blue);"><span id="pIng1Val">44</span>% بروتين</div>
+            <span style="font-size:.8rem; font-weight:700; color:#64748b; display:block; margin-bottom:.4rem;">المصدر
+              البروتيني (العالي)</span>
+            <select id="pearsonIng1" onchange="calcPearson()"
+              style="width:100%; padding:.5rem; border-radius:8px; border:1px solid #cbd5e1; font-weight:700; font-family:inherit; margin-bottom:.6rem;"></select>
+            <div style="font-size:1.2rem; font-weight:800; color:var(--color-ocean-blue);"><span
+                id="pIng1Val">44</span>% بروتين</div>
           </div>
 
           <!-- Center Target -->
@@ -584,15 +2968,18 @@
 
           <!-- Feed 2 (Low Protein / Energy) -->
           <div class="pearson-source-box">
-            <span style="font-size:.8rem; font-weight:700; color:#64748b; display:block; margin-bottom:.4rem;">مصدر الطاقة (المنخفض)</span>
-            <select id="pearsonIng2" onchange="calcPearson()" style="width:100%; padding:.5rem; border-radius:8px; border:1px solid #cbd5e1; font-weight:700; font-family:inherit; margin-bottom:.6rem;"></select>
-            <div style="font-size:1.2rem; font-weight:800; color:var(--color-ocean-blue);"><span id="pIng2Val">8</span>% بروتين</div>
+            <span style="font-size:.8rem; font-weight:700; color:#64748b; display:block; margin-bottom:.4rem;">مصدر
+              الطاقة (المنخفض)</span>
+            <select id="pearsonIng2" onchange="calcPearson()"
+              style="width:100%; padding:.5rem; border-radius:8px; border:1px solid #cbd5e1; font-weight:700; font-family:inherit; margin-bottom:.6rem;"></select>
+            <div style="font-size:1.2rem; font-weight:800; color:var(--color-ocean-blue);"><span id="pIng2Val">8</span>%
+              بروتين</div>
           </div>
         </div>
 
         <!-- Pearson Results Table -->
-        <div class="table-container">
-          <table class="recipe-table">
+        <div class="table-container tc-stack pearson-results" id="pearsonTableWrap">
+          <table class="recipe-table stack">
             <thead>
               <tr>
                 <th>مادة العلف</th>
@@ -636,19 +3023,24 @@
     <div id="tab-optimizer" class="tab-pane">
       <div class="card" style="margin-bottom:1.5rem;">
         <div class="card-title-bar">
-          <h2><i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="opt_title">المُحسِّن الذكي للعلائق وأقل تكلفة (Least-Cost Feed Solver)</span></h2>
-          <span style="font-size:.85rem; color:#64748b; font-weight:600;"><i class="fa-solid fa-microchip"></i> خوارزمية ذكية لموازنة النسب الغذائية بنسبة 100% وبأقل تكلفة للطن</span>
+          <h2><i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="opt_title">المُحسِّن الذكي للعلائق وأقل
+              تكلفة (Least-Cost Feed Solver)</span></h2>
+          <span style="font-size:.85rem; color:#64748b; font-weight:600;"><i class="fa-solid fa-microchip"></i> خوارزمية
+            ذكية لموازنة النسب الغذائية بنسبة 100% وبأقل تكلفة للطن</span>
         </div>
         <p style="color:#64748b; font-size:.95rem; margin-bottom:1.5rem;" data-i18n="opt_desc">
-          حدد مواصفات ونسب المواد الغذائية المطلوبة بدقة (بروتين، طاقة، ألياف، دهن، معادن)، وحدد الخامات المتوفرة لديك في المستودع بأسعارها، لتقوم الأداة بحساب <strong>أفضل توليفة علفية متوازنة تماماً 100% وبأقل تكلفة مالية ممكنة</strong>.
+          حدد مواصفات ونسب المواد الغذائية المطلوبة بدقة (بروتين، طاقة، ألياف، دهن، معادن)، وحدد الخامات المتوفرة لديك
+          في المستودع بأسعارها، لتقوم الأداة بحساب <strong>أفضل توليفة علفية متوازنة تماماً 100% وبأقل تكلفة مالية
+            ممكنة</strong>.
         </p>
 
         <!-- Quick Load Sector Standard -->
         <div class="sector-selector-bar" style="margin-bottom:1.5rem;">
           <div class="sector-group" style="width:100%;">
             <label><i class="fa-solid fa-bolt"></i> تحميل الاحتياجات القياسية لقطاع محدد تلقائياً:</label>
-            <div style="display:flex; gap:.8rem; flex-wrap:wrap; margin-top:.4rem;">
-              <select id="optSpeciesPreset" style="flex:1; min-width:260px;" onchange="loadOptimizerTargetsFromSpecies()">
+            <div class="opt-preset-row">
+              <select id="optSpeciesPreset" class="opt-preset-select"
+                onchange="loadOptimizerTargetsFromSpecies()">
                 <option value="">-- اختر نوع الحيوان لجلب المعايير الموصى بها --</option>
                 <optgroup label="🐄 تسمين وأبقار حلابة">
                   <option value="beef_grower">عجول تسمين - مرحلة أولى ونمو (14-16% بروتين)</option>
@@ -677,7 +3069,8 @@
                   <option value="shrimp">جمبري فانامي (36% بروتين)</option>
                 </optgroup>
               </select>
-              <button class="btn-action btn-outline-action" onclick="loadOptimizerTargetsFromSpecies()"><i class="fa-solid fa-arrows-rotate"></i> تطبيق الاحتياجات القياسية</button>
+              <button class="btn-action btn-outline-action" onclick="loadOptimizerTargetsFromSpecies()"><i
+                  class="fa-solid fa-arrows-rotate"></i> تطبيق الاحتياجات القياسية</button>
             </div>
           </div>
         </div>
@@ -685,8 +3078,9 @@
         <div class="optimizer-grid">
           <!-- Left: Nutrient Targets & Settings -->
           <div>
-            <h3 style="font-size:1.05rem; color:var(--color-ocean-blue); margin-bottom:.8rem;"><i class="fa-solid fa-bullseye"></i> 1. تحديد نسب المواد الغذائية المستهدفة للخلطة (%):</h3>
-            
+            <h3 style="font-size:1.05rem; color:var(--color-ocean-blue); margin-bottom:.8rem;"><i
+                class="fa-solid fa-bullseye"></i> 1. تحديد نسب المواد الغذائية المستهدفة للخلطة (%):</h3>
+
             <div class="opt-target-row">
               <div class="opt-target-item">
                 <label>البروتين الخام الأدنى (CP%):</label>
@@ -723,11 +3117,14 @@
 
             <!-- Ingredients Selection for Solver -->
             <div style="margin-top:1.5rem;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.6rem;">
-                <h3 style="font-size:1.05rem; color:var(--color-ocean-blue);"><i class="fa-solid fa-boxes-stacked"></i> 2. الخامات المتاحة والحد الأدنى/الأقصى لكل خامة (%):</h3>
-                <div style="display:flex; gap:.4rem;">
-                  <button class="btn-action btn-secondary-action" style="padding:.3rem .7rem; font-size:.78rem;" onclick="selectAllOptIngs(true)">تحديد الكل</button>
-                  <button class="btn-action btn-secondary-action" style="padding:.3rem .7rem; font-size:.78rem;" onclick="selectAllOptIngs(false)">إلغاء الكل</button>
+              <div class="opt-section-header">
+                <h3 style="font-size:1.05rem; color:var(--color-ocean-blue);"><i class="fa-solid fa-boxes-stacked"></i>
+                  2. الخامات المتاحة والحد الأدنى/الأقصى لكل خامة (%):</h3>
+                <div class="opt-btn-group">
+                  <button class="btn-action btn-secondary-action" style="padding:.3rem .7rem; font-size:.78rem;"
+                    onclick="selectAllOptIngs(true)">تحديد الكل</button>
+                  <button class="btn-action btn-secondary-action" style="padding:.3rem .7rem; font-size:.78rem;"
+                    onclick="selectAllOptIngs(false)">إلغاء الكل</button>
                 </div>
               </div>
 
@@ -745,24 +3142,26 @@
 
           <!-- Right: Solver Output and Recommended Formulation -->
           <div>
-            <h3 style="font-size:1.05rem; color:var(--color-ocean-blue); margin-bottom:.8rem;"><i class="fa-solid fa-clipboard-check"></i> 3. نتيجة التركيبة المثلى المُقترحة:</h3>
-            
+            <h3 style="font-size:1.05rem; color:var(--color-ocean-blue); margin-bottom:.8rem;"><i
+                class="fa-solid fa-clipboard-check"></i> 3. نتيجة التركيبة المثلى المُقترحة:</h3>
+
             <div id="optResultsContainer" style="display:none;">
               <!-- Cost and Overview Card -->
               <div class="cost-card" style="margin-bottom:1.2rem;">
                 <div>
                   <span style="font-size:.85rem; opacity:.9; display:block;">التكلفة التقديرية للطن:</span>
-                  <span class="cost-val" id="optResCostTon">0</span> <span style="font-size:.9rem; color:var(--color-aqua);">ج.م</span>
+                  <span class="cost-val" id="optResCostTon">0</span> <span
+                    style="font-size:.9rem; color:var(--color-aqua);">ج.م</span>
                 </div>
-                <div style="text-align:left;">
+                <div style="text-align:end;">
                   <span style="font-size:.8rem; opacity:.8; display:block;">سعر الكيلو:</span>
                   <span style="font-size:1.1rem; font-weight:700; color:#fff;" id="optResCostKg">0.00 ج.م</span>
                 </div>
               </div>
 
               <!-- Nutrients Comparison Table -->
-              <div class="table-container" style="margin-bottom:1rem;">
-                <table class="recipe-table" style="font-size:.85rem;">
+              <div class="table-container tc-stack" style="margin-bottom:1rem;">
+                <table class="recipe-table stack" style="font-size:.85rem;">
                   <thead>
                     <tr>
                       <th>العنصر الغذائي</th>
@@ -778,9 +3177,10 @@
               </div>
 
               <!-- Recommended Ingredients Table -->
-              <h4 style="font-size:.95rem; color:var(--color-ocean-blue); margin-bottom:.5rem;"><i class="fa-solid fa-list-ol"></i> نسب مكونات الخلطة (المجموع 100%):</h4>
-              <div class="table-container" style="margin-bottom:1.2rem;">
-                <table class="recipe-table">
+              <h4 style="font-size:.95rem; color:var(--color-ocean-blue); margin-bottom:.5rem;"><i
+                  class="fa-solid fa-list-ol"></i> نسب مكونات الخلطة (المجموع 100%):</h4>
+              <div class="table-container tc-stack" style="margin-bottom:1.2rem;">
+                <table class="recipe-table stack">
                   <thead>
                     <tr>
                       <th>مادة العلف</th>
@@ -796,18 +3196,22 @@
               </div>
 
               <div style="text-align:center;">
-                <button class="btn-action btn-primary-action" style="width:100%; justify-content:center; padding:.85rem;" onclick="applyOptimizerToFormulation()">
+                <button class="btn-action btn-primary-action"
+                  style="width:100%; justify-content:center; padding:.85rem;" onclick="applyOptimizerToFormulation()">
                   <i class="fa-solid fa-arrow-left"></i> تطبيق هذه التركيبة فوراً في مصمم الخلطات الرئيسي
                 </button>
               </div>
             </div>
 
             <!-- Empty State before running -->
-            <div id="optEmptyState" style="text-align:center; padding:3rem 1.5rem; background:#f8fafc; border-radius:14px; border:1.5px dashed #cbd5e1;">
-              <i class="fa-solid fa-wand-magic-sparkles" style="font-size:3rem; color:var(--color-aqua); margin-bottom:1rem;"></i>
+            <div id="optEmptyState"
+              style="text-align:center; padding:3rem 1.5rem; background:#f8fafc; border-radius:14px; border:1.5px dashed #cbd5e1;">
+              <i class="fa-solid fa-wand-magic-sparkles"
+                style="font-size:3rem; color:var(--color-aqua); margin-bottom:1rem;"></i>
               <h4 style="color:var(--color-ocean-blue); margin-bottom:.5rem;">لم يتم تشغيل المحسن بعد</h4>
               <p style="color:#64748b; font-size:.9rem; max-width:340px; margin:0 auto;">
-                اضبط نسب المواد الغذائية المستهدفة على اليسار، ثم اضغط على زر <strong>"حساب أفضل تركيبة متوازنة بأقل تكلفة"</strong> لعرض النتائج هنا.
+                اضبط نسب المواد الغذائية المستهدفة على اليسار، ثم اضغط على زر <strong>"حساب أفضل تركيبة متوازنة بأقل
+                  تكلفة"</strong> لعرض النتائج هنا.
               </p>
             </div>
           </div>
@@ -820,16 +3224,21 @@
     <div id="tab-database" class="tab-pane">
       <div class="card">
         <div class="card-title-bar">
-          <h2><i class="fa-solid fa-book-bookmark"></i> <span data-i18n="db_title">مكتبة وتحليل الخامات العلفية المعتمدة (70+ خامة)</span></h2>
-          <button class="btn-action btn-outline-action" onclick="openCustomModal()"><i class="fa-solid fa-plus"></i> إضافة خامة خاصة</button>
+          <h2><i class="fa-solid fa-book-bookmark"></i> <span data-i18n="db_title">مكتبة وتحليل الخامات العلفية المعتمدة
+              (70+ خامة)</span></h2>
+          <button class="btn-action btn-outline-action" onclick="openCustomModal()"><i class="fa-solid fa-plus"></i>
+            إضافة خامة خاصة</button>
         </div>
         <p style="color:#64748b; font-size:.95rem; margin-bottom:1.5rem;" data-i18n="db_desc">
-          بيانات تحليل الأعلاف المركزة والمالئة والمخلفات وفق الجداول المعملية المعتمدة وموسوعة الأعلاف العالمية Feedipedia ومقررات NRC لتغذية المجترات والدواجن والأرانب والأسماك:
+          بيانات تحليل الأعلاف المركزة والمالئة والمخلفات وفق الجداول المعملية المعتمدة وموسوعة الأعلاف العالمية
+          Feedipedia ومقررات NRC لتغذية المجترات والدواجن والأرانب والأسماك:
         </p>
 
         <!-- Search & Filter Bar -->
         <div class="db-filter-bar">
-          <input type="text" id="dbSearch" class="db-search" placeholder="ابحث باسم الخامة (مثلاً: ذرة، صويا، جلوتين، سمسم، دريس، ردة، تبن، خميرة، يوريا...)" oninput="filterDatabase()">
+          <input type="text" id="dbSearch" class="db-search"
+            placeholder="ابحث باسم الخامة (مثلاً: ذرة، صويا، جلوتين، سمسم، دريس، ردة، تبن، خميرة، يوريا...)"
+            oninput="filterDatabase()">
           <select id="dbCategory" class="db-cat-select" onchange="filterDatabase()">
             <option value="all">كل التصنيفات</option>
             <option value="energy">حبوب ومصادر طاقة</option>
@@ -842,8 +3251,11 @@
         </div>
 
         <!-- Database Table -->
-        <div class="table-container">
-          <table class="recipe-table db-table">
+        <div class="table-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> <span
+            data-i18n="hint_scroll_db">اسحب الجدول أفقياً للاطلاع على كافة خامات ومواصفات قاعدة البيانات ⟷</span>
+        </div>
+        <div class="table-container tc-stack">
+          <table class="recipe-table db-table stack stack-db">
             <thead>
               <tr>
                 <th>مادة العلف</th>
@@ -873,11 +3285,12 @@
   <div class="modal-overlay" id="ingModal">
     <div class="modal-box">
       <div class="modal-header">
-        <h3 data-i18n="modal_title"><i class="fa-solid fa-layer-group"></i> اختيار خامة لإضافتها للخلطة</h3>
-        <button class="modal-close" onclick="closeIngModal()">&times;</button>
+        <h3><i class="fa-solid fa-layer-group"></i> <span data-i18n="modal_title">اختيار خامة لإضافتها للخلطة</span></h3>
+        <button class="modal-close" onclick="closeIngModal()" aria-label="Close">&times;</button>
       </div>
-      <div style="padding:1rem 1.5rem; background:#f8fafc; border-bottom:1px solid #e2e8f0;">
-        <input type="text" id="modalSearch" class="db-search" placeholder="ابحث في الخامات..." oninput="filterModalList()" style="width:100%;">
+      <div class="modal-search-wrap">
+        <input type="text" id="modalSearch" class="db-search" placeholder="ابحث في الخامات..."
+          oninput="filterModalList()" style="width:100%; min-width:0;">
       </div>
       <div class="modal-body" id="modalIngList">
         <!-- List of items -->
@@ -890,10 +3303,10 @@
     <div class="modal-box" style="max-width:650px;">
       <div class="modal-header">
         <h3><i class="fa-solid fa-plus-circle"></i> إضافة خامة جديدة مخصصة</h3>
-        <button class="modal-close" onclick="closeCustomModal()">&times;</button>
+        <button class="modal-close" onclick="closeCustomModal()" aria-label="Close">&times;</button>
       </div>
       <div class="modal-body">
-        <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:1rem;">
+        <div class="custom-name-grid">
           <div class="custom-group">
             <label>اسم الخامة (عربي):</label>
             <input type="text" id="custNameAr" placeholder="مثال: مسحوق سمك مستورد 65%">
@@ -955,7 +3368,7 @@
           </div>
         </div>
 
-        <div style="margin-top:1.5rem; display:flex; justify-content:flex-end; gap:.8rem;">
+        <div class="modal-actions">
           <button class="btn-action btn-secondary-action" onclick="closeCustomModal()">إلغاء</button>
           <button class="btn-action btn-primary-action" onclick="saveCustomIngredient()">حفظ الخامة في المكتبة</button>
         </div>
@@ -966,6 +3379,15 @@
   <footer class="page-footer">
     <p>&copy; 2024 AQUASoft &mdash; <a href="../index.html">الصفحة الرئيسية</a></p>
   </footer>
+
+  <!-- Live summary bar (phones/tablets, formulation tab only) -->
+  <div class="mini-summary" id="miniSummary" role="button" tabindex="0" onclick="scrollToSummary()"
+    onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();scrollToSummary();}">
+    <div class="ms-item"><span data-i18n="ms_total">الإجمالي</span><b id="msTotal" class="perfect">0%</b></div>
+    <div class="ms-item"><span data-i18n="ms_cp">بروتين CP</span><b id="msCP">0.0%</b></div>
+    <div class="ms-item"><span data-i18n="ms_cost">تكلفة الطن</span><b id="msCost">0</b></div>
+    <i class="fa-solid fa-chevron-up"></i>
+  </div>
 
   <!-- CORE JAVASCRIPT & UNIVERSAL NUTRITIONAL DATABASE -->
   <script>
@@ -1310,21 +3732,81 @@
       renderDatabaseTable();
       loadPreset('beef_grower');
       setupLanguage(currentLang);
+      initSummaryObserver();
+      initModalHelpers();
     });
+
+    // Hide the mini bar while the real summary card is on screen
+    function initSummaryObserver() {
+      const target = document.querySelector('.formulation-sidebar');
+      if (!target || !('IntersectionObserver' in window)) return;
+      new IntersectionObserver(entries => {
+        entries.forEach(e => document.body.classList.toggle('summary-visible', e.isIntersecting));
+      }, { threshold: 0.15 }).observe(target);
+    }
+
+    function scrollToSummary() {
+      const el = document.querySelector('.formulation-sidebar');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Close modals with Esc / backdrop tap, lock page scroll while open
+    function initModalHelpers() {
+      document.querySelectorAll('.modal-overlay').forEach(ov => {
+        ov.addEventListener('click', e => { if (e.target === ov) { ov.classList.remove('open'); syncModalLock(); } });
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.modal-overlay.open').forEach(ov => ov.classList.remove('open'));
+          syncModalLock();
+        }
+      });
+    }
+
+    function syncModalLock() {
+      document.body.classList.toggle('modal-open', !!document.querySelector('.modal-overlay.open'));
+    }
+
+    // Copy header text into data-label / data-short so tables can render as cards on phones
+    function applyTableLabels(root) {
+      (root || document).querySelectorAll('table.stack').forEach(table => {
+        const heads = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+        table.querySelectorAll('tbody tr').forEach(tr => {
+          Array.from(tr.children).forEach((td, i) => {
+            if (!heads[i]) return;
+            td.setAttribute('data-label', heads[i]);
+            td.setAttribute('data-short', heads[i].split(/\s+/).pop());
+          });
+        });
+      });
+    }
 
     function switchTab(tabId) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
 
-      if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
-      } else {
-        const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
-        if (btn) btn.classList.add('active');
+      const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => (b.getAttribute('onclick') || '').includes("'" + tabId + "'"));
+      if (btn) {
+        btn.classList.add('active');
+        // keep the selected tab visible inside the horizontally-scrolling tab bar
+        const bar = btn.parentElement;
+        if (bar && bar.scrollWidth > bar.clientWidth) {
+          const target = btn.offsetLeft - (bar.clientWidth - btn.offsetWidth) / 2;
+          bar.scrollTo({ left: target, behavior: 'smooth' });
+        }
       }
 
       const pane = document.getElementById('tab-' + tabId);
       if (pane) pane.classList.add('active');
+
+      document.body.classList.toggle('show-mini', tabId === 'formulation');
+
+      // tabs live in the hero: if the user is scrolled far down, bring the new panel into view
+      const bar = document.querySelector('.tabs-wrapper');
+      if (bar) {
+        const top = bar.getBoundingClientRect().top + window.scrollY - 80;
+        if (window.scrollY > top + 40) window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      }
     }
 
     function onSectorChanged() {
@@ -1340,11 +3822,10 @@
     // RECIPE BUILDER & CALCULATION LOGIC
     // ==========================================
     function loadPreset(key) {
-      document.querySelectorAll('.preset-pill').forEach(p => p.classList.remove('active'));
-      if (event && event.currentTarget && event.currentTarget.classList) {
-        event.currentTarget.classList.add('active');
-      }
-      
+      document.querySelectorAll('.preset-pill').forEach(p => {
+        p.classList.toggle('active', (p.getAttribute('onclick') || '').includes("'" + key + "'"));
+      });
+
       const preset = PRESETS[key];
       if (!preset) return;
 
@@ -1356,7 +3837,7 @@
       if (mode === 'weight') {
         const batchSize = parseFloat(document.getElementById('batchSize').value) || 1000;
         currentRecipe.forEach(item => {
-          item.amount = parseFloat((( (item.amount || 0) / 100 ) * batchSize).toFixed(1));
+          item.amount = parseFloat((((item.amount || 0) / 100) * batchSize).toFixed(1));
         });
       }
 
@@ -1378,7 +3859,7 @@
         // convert each percentage into actual kilograms based on batchSize
         if (previousCalcMode === 'percent') {
           currentRecipe.forEach(item => {
-            item.amount = parseFloat((( (item.amount || 0) / 100 ) * batchSizeInput).toFixed(1));
+            item.amount = parseFloat((((item.amount || 0) / 100) * batchSizeInput).toFixed(1));
           });
           renderRecipeTable();
         }
@@ -1393,7 +3874,7 @@
           currentRecipe.forEach(item => totalWeight += (item.amount || 0));
           if (totalWeight > 0) {
             currentRecipe.forEach(item => {
-              item.amount = parseFloat((( (item.amount || 0) / totalWeight ) * 100).toFixed(1));
+              item.amount = parseFloat((((item.amount || 0) / totalWeight) * 100).toFixed(1));
             });
             renderRecipeTable();
           }
@@ -1431,11 +3912,11 @@
             <input type="number" min="0" max="100000" step="0.1" value="${item.amount}" oninput="updateItemAmount(${index}, this.value)">
           </td>
           <td style="font-weight:700; color:var(--color-ocean-blue);">${ing.cp}%</td>
-          <td>${ing.tdn || '-'}%</td>
+          <td>${ing.tdn ? ing.tdn + '%' : '-'}</td>
           <td>${ing.ee}%</td>
           <td>${ing.cf}%</td>
           <td>
-            <input type="number" min="0" step="100" value="${item.price || 0}" style="width:95px;" oninput="updateItemPrice(${index}, this.value)">
+            <input type="number" min="0" step="100" value="${item.price || 0}" class="recipe-price-input" oninput="updateItemPrice(${index}, this.value)">
           </td>
           <td style="text-align:center;">
             <button class="delete-btn" onclick="removeIngredient(${index})" title="حذف الخامة"><i class="fa-solid fa-trash-can"></i></button>
@@ -1443,6 +3924,7 @@
         `;
         tbody.appendChild(tr);
       });
+      applyTableLabels(tbody.closest('table').parentElement);
     }
 
     function updateItemAmount(index, val) {
@@ -1484,7 +3966,7 @@
         // In weight mode: item.amount is in kg.
         // Total entered weight is totalInput.
         effectiveBatchWeight = totalInput > 0 ? totalInput : batchSizeInput;
-        
+
         // Update batch size input only if not actively focused so user typing isn't interrupted
         const batchEl = document.getElementById('batchSize');
         if (totalInput > 0 && document.activeElement !== batchEl) {
@@ -1600,6 +4082,15 @@
       document.getElementById('resCostTon').textContent = Math.round(costPerTon).toLocaleString();
       document.getElementById('resCostKg').textContent = costPerKg.toFixed(2) + ' ' + (currentLang === 'ar' ? 'ج.م' : 'EGP');
 
+      // Mini live summary
+      const msTotal = document.getElementById('msTotal');
+      if (msTotal) {
+        msTotal.textContent = totalInput.toFixed(1) + (mode === 'weight' ? (currentLang === 'ar' ? ' كجم' : ' kg') : '%');
+        msTotal.className = mode === 'weight' ? 'perfect' : badge.className.replace('total-badge-bar', '').trim();
+        document.getElementById('msCP').textContent = displayCP.toFixed(1) + '%';
+        document.getElementById('msCost').textContent = Math.round(costPerTon).toLocaleString();
+      }
+
       updateTargetComparison(displayCP, displayTDN, displayCF);
     }
 
@@ -1680,10 +4171,12 @@
       document.getElementById('ingModal').classList.add('open');
       document.getElementById('modalSearch').value = '';
       filterModalList();
+      syncModalLock();
     }
 
     function closeIngModal() {
       document.getElementById('ingModal').classList.remove('open');
+      syncModalLock();
     }
 
     function filterModalList() {
@@ -1704,7 +4197,7 @@
           <div>
             <div style="font-weight:700; color:var(--color-ocean-blue); font-size:1rem;">
               ${currentLang === 'ar' ? ing.name_ar : ing.name_en}
-              ${isAlreadyAdded ? '<span style="font-size:.75rem; color:#059669; margin-right:.4rem;">(مضافة بالفعل)</span>' : ''}
+              ${isAlreadyAdded ? '<span style="font-size:.75rem; color:#059669; margin-inline-start:.4rem;">(مضافة بالفعل)</span>' : ''}
             </div>
             <div class="modal-ing-specs">
               ${getCategoryName(ing.category)} &bull; بروتين: <strong>${ing.cp}%</strong> &bull; TDN: <strong>${ing.tdn}%</strong> &bull; ألياف: ${ing.cf}% &bull; دهن: ${ing.ee}%
@@ -1747,10 +4240,12 @@
     // ==========================================
     function openCustomModal() {
       document.getElementById('customModal').classList.add('open');
+      syncModalLock();
     }
 
     function closeCustomModal() {
       document.getElementById('customModal').classList.remove('open');
+      syncModalLock();
     }
 
     function saveCustomIngredient() {
@@ -1837,10 +4332,16 @@
       const cp1 = ing1.cp;
       const cp2 = ing2.cp;
 
+      const warn = document.getElementById('pearsonWarn');
+      const dimEls = document.querySelectorAll('.pearson-results');
       if ((target > cp1 && target > cp2) || (target < cp1 && target < cp2)) {
-        alert(currentLang === 'ar' ? 'تنبيه: يجب أن تكون نسبة البروتين المستهدفة بين نسبتي الخامتين المختارتين.' : 'Target protein must be between the two selected ingredients.');
+        document.getElementById('pearsonWarnText').textContent = currentLang === 'ar' ? 'تنبيه: يجب أن تكون نسبة البروتين المستهدفة بين نسبتي الخامتين المختارتين.' : 'Target protein must be between the two selected ingredients.';
+        warn.classList.add('show');
+        dimEls.forEach(el => el.classList.add('dim'));
         return;
       }
+      warn.classList.remove('show');
+      dimEls.forEach(el => el.classList.remove('dim'));
 
       const parts1 = Math.abs(target - cp2);
       const parts2 = Math.abs(cp1 - target);
@@ -1867,6 +4368,7 @@
 
       document.getElementById('pResTotalParts').textContent = totalParts.toFixed(1) + ' جزء';
       document.getElementById('pResTotalWeight').textContent = batchWeight + ' كجم';
+      applyTableLabels(document.getElementById('pearsonTableWrap'));
     }
 
     function applyPearsonToFormulation() {
@@ -1922,7 +4424,7 @@
       container.innerHTML = '';
 
       const all = getAllIngredients();
-      
+
       // Default common ingredients selected
       const defaultSelected = [
         'corn_yellow', 'soya_meal_44', 'soya_meal_48', 'wheat_bran_fine', 'wheat_bran_coarse',
@@ -1938,7 +4440,7 @@
             <input type="checkbox" id="opt_check_${ing.id}" ${isChecked ? 'checked' : ''} onchange="updateOptRowState('${ing.id}')">
             <span>
               <strong>${currentLang === 'ar' ? ing.name_ar : ing.name_en}</strong>
-              <span style="font-size:.75rem; color:#64748b; margin-right:.4rem;">(${ing.cp}% بروتين &bull; ${ing.tdn}% TDN &bull; ${(ing.default_price || 0).toLocaleString()} ج.م/طن)</span>
+              <span style="font-size:.75rem; color:#64748b; margin-inline-start:.4rem;">(${ing.cp}% بروتين &bull; ${ing.tdn}% TDN &bull; ${(ing.default_price || 0).toLocaleString()} ج.م/طن)</span>
             </span>
           </label>
           <div class="opt-ing-limits" id="opt_limits_${ing.id}">
@@ -2206,6 +4708,7 @@
 
       emptyState.style.display = 'none';
       resultsContainer.style.display = 'block';
+      applyTableLabels(resultsContainer);
     }
 
     function applyOptimizerToFormulation() {
@@ -2246,7 +4749,7 @@
           <td style="font-weight:700; color:var(--color-ocean-blue);">${currentLang === 'ar' ? ing.name_ar : ing.name_en}</td>
           <td><span class="db-badge ${ing.category}">${getCategoryName(ing.category)}</span></td>
           <td style="font-weight:800; color:var(--color-ocean-blue);">${ing.cp}%</td>
-          <td style="font-weight:700;">${ing.tdn || '-'}%</td>
+          <td style="font-weight:700;">${ing.tdn ? ing.tdn + '%' : '-'}</td>
           <td>${ing.de || '-'}</td>
           <td>${ing.me || '-'}</td>
           <td>${ing.ee}%</td>
@@ -2261,6 +4764,7 @@
         `;
         tbody.appendChild(tr);
       });
+      applyTableLabels(tbody.closest('table').parentElement);
     }
 
     function getCategoryName(cat) {
@@ -2382,7 +4886,12 @@
         lbl_pearson_target: "البروتين المطلوب تحقيقه (%):",
         db_title: "مكتبة وتحليل الخامات العلفية المعتمدة (70+ خامة)",
         db_desc: "بيانات تحليل الأعلاف المركزة والمالئة والمخلفات وفق الجداول المعملية المعتمدة وموسوعة الأعلاف العالمية Feedipedia ومقررات NRC لتغذية المجترات والدواجن والأرانب والأسماك:",
-        modal_title: "اختيار خامة لإضافتها للخلطة"
+        modal_title: "اختيار خامة لإضافتها للخلطة",
+        hint_scroll: "اسحب الجدول أفقياً للاطلاع على كامل الأعمدة وتعديل الكميات والأسعار ⟷",
+        hint_scroll_db: "اسحب الجدول أفقياً للاطلاع على كافة خامات ومواصفات قاعدة البيانات ⟷",
+        ms_total: "الإجمالي",
+        ms_cp: "بروتين CP",
+        ms_cost: "تكلفة الطن"
       },
       en: {
         nav_home: "Home",
@@ -2432,7 +4941,12 @@
         lbl_pearson_target: "Desired Target Protein (%):",
         db_title: "Certified Feed Ingredients Database (70+ items)",
         db_desc: "Comprehensive nutritional values from official laboratory analysis, Feedipedia, and NRC standards for ruminants, poultry, rabbits, and fish:",
-        modal_title: "Select Ingredient to Add"
+        modal_title: "Select Ingredient to Add",
+        hint_scroll: "Swipe table horizontally to view all columns, quantities, and prices ⟷",
+        hint_scroll_db: "Swipe table horizontally to view all ingredient specifications ⟷",
+        ms_total: "Total",
+        ms_cp: "Protein CP",
+        ms_cost: "Cost / ton"
       }
     };
 
@@ -2463,9 +4977,16 @@
         }
       });
 
+      const backIcon = document.getElementById('back-icon');
+      if (backIcon) {
+        backIcon.classList.toggle('fa-arrow-right', lang === 'ar');
+        backIcon.classList.toggle('fa-arrow-left', lang !== 'ar');
+      }
+
       renderRecipeTable();
       renderDatabaseTable();
       recalculate();
+      applyTableLabels();
     }
 
     document.getElementById('lang-toggle').addEventListener('click', () => {
@@ -2474,4 +4995,5 @@
 
   </script>
 </body>
+
 </html>
