@@ -32,6 +32,7 @@
             </a>
             <ul class="nav-links">
                 <li><a href="#home" data-i18n="nav_home">Home</a></li>
+                <li><a href="#weather" data-i18n="nav_weather">Weather</a></li>
                 <li><a href="#about" data-i18n="nav_about">About Us</a></li>
                 <li><a href="#tools" data-i18n="nav_tools">Tools &amp; Services</a></li>
                 <li><a href="#resources" data-i18n="nav_resources">Resources</a></li>
@@ -88,6 +89,76 @@
                 </div>
                 <div class="hero-visual-circle">
                     <i class="fa-solid fa-chart-line placeholder-icon"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Weather Section -->
+    <section id="weather" class="weather-section">
+        <div class="container">
+            <div class="section-header center">
+                <span class="subtitle" data-i18n="weather_subtitle">Farm Intelligence</span>
+                <h2 data-i18n="weather_title">Weekly Weather Forecast</h2>
+                <p data-i18n="weather_desc">Real-time local weather data to help you plan farm operations effectively.</p>
+            </div>
+
+            <!-- Location Bar -->
+            <div class="weather-location-bar">
+                <div id="weather-location-info">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span id="weather-location-text" data-i18n="weather_detecting">Detecting your location...</span>
+                </div>
+                <button id="weather-refresh-btn" class="btn-weather-refresh" title="Refresh">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+
+            <!-- Loading State -->
+            <div id="weather-loading" class="weather-loading">
+                <div class="weather-spinner"></div>
+                <p data-i18n="weather_loading">Loading weather data...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="weather-error" class="weather-error" style="display:none;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <p id="weather-error-msg" data-i18n="weather_error">Could not retrieve weather data. Please allow location access.</p>
+                <button id="weather-retry-btn" class="btn btn-primary" data-i18n="weather_retry">Try Again</button>
+            </div>
+
+            <!-- Weather Cards -->
+            <div id="weather-cards" class="weather-cards-grid" style="display:none;"></div>
+
+            <!-- Weather Summary Bar -->
+            <div id="weather-summary" class="weather-summary-bar" style="display:none;">
+                <div class="summary-item">
+                    <i class="fa-solid fa-temperature-high"></i>
+                    <div>
+                        <span class="summary-label" data-i18n="w_avg_temp">Avg. Temperature</span>
+                        <span id="w-avg-temp" class="summary-value">--</span>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fa-solid fa-cloud-rain"></i>
+                    <div>
+                        <span class="summary-label" data-i18n="w_total_rain">Total Rainfall</span>
+                        <span id="w-total-rain" class="summary-value">--</span>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fa-solid fa-wind"></i>
+                    <div>
+                        <span class="summary-label" data-i18n="w_avg_wind">Avg. Wind Speed</span>
+                        <span id="w-avg-wind" class="summary-value">--</span>
+                    </div>
+                </div>
+                <div class="summary-item">
+                    <i class="fa-solid fa-sun"></i>
+                    <div>
+                        <span class="summary-label" data-i18n="w_uv">Max UV Index</span>
+                        <span id="w-max-uv" class="summary-value">--</span>
+                    </div>
                 </div>
             </div>
         </div>

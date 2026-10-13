@@ -311,19 +311,21 @@
     /* ===== Unit Selector Pills ===== */
     .unit-selector {
       display: flex;
-      gap: 0.6rem;
+      gap: 0.5rem;
       margin-bottom: 1.3rem;
+      flex-wrap: wrap;
     }
 
     .unit-btn {
       flex: 1;
-      padding: 0.65rem 1rem;
+      min-width: 85px;
+      padding: 0.65rem 0.75rem;
       text-align: center;
       background: #f1f5f9;
       border: 1.5px solid #cbd5e1;
       border-radius: 12px;
       cursor: pointer;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 600;
       color: #475569;
       transition: var(--transition);
@@ -339,6 +341,89 @@
     .unit-btn:hover:not(.active) {
       background: #e2e8f0;
       color: var(--color-ocean-blue);
+    }
+
+    /* Category Filter Pills & Search */
+    .category-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 1rem;
+    }
+
+    .cat-pill {
+      padding: 0.4rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #475569;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: inherit;
+    }
+
+    .cat-pill:hover {
+      background: #e2e8f0;
+      color: var(--color-ocean-blue);
+    }
+
+    .cat-pill.active {
+      background: var(--gradient-primary);
+      color: #fff;
+      border-color: var(--color-ocean-blue);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-box-wrap {
+      position: relative;
+      margin-bottom: 0.9rem;
+    }
+
+    .search-box-wrap input {
+      width: 100%;
+      padding: 0.65rem 2.2rem 0.65rem 1rem;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      font-size: 0.88rem;
+      outline: none;
+      transition: var(--transition);
+      background: var(--color-soft-white);
+      font-family: inherit;
+    }
+
+    html[dir="ltr"] .search-box-wrap input {
+      padding: 0.65rem 1rem 0.65rem 2.2rem;
+    }
+
+    .search-box-wrap input:focus {
+      border-color: var(--color-aqua);
+      box-shadow: 0 0 0 3px rgba(104, 207, 235, 0.2);
+      background: #fff;
+    }
+
+    .search-box-wrap i {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 0.85rem;
+      color: #94a3b8;
+    }
+
+    html[dir="ltr"] .search-box-wrap i {
+      right: auto;
+      left: 0.85rem;
+    }
+
+    .card-active-sub {
+      font-size: 0.76rem;
+      color: #0284c7;
+      font-weight: 600;
+      margin-top: 0.2rem;
     }
 
     /* ===== Action Buttons ===== */
@@ -668,37 +753,66 @@
           </div>
 
           <div class="input-group">
-            <label for="volume"><i class="fa-solid fa-ruler-combined"></i><span data-i18n="lbl_volume">حجم الحوض / المحلول</span></label>
-            <input type="number" id="volume" placeholder="100" data-placeholder-ar="100" data-placeholder-en="100" value="100" min="0" step="any">
-            <div class="unit-hint" id="unitHint" data-i18n="hint_m3">المتر المكعب (م³) — 1 م³ = 1000 لتر</div>
+            <label for="volume" id="volumeLabel"><i class="fa-solid fa-ruler-combined"></i><span data-i18n="lbl_volume">حجم الحوض / المساحة</span></label>
+            <input type="number" id="volume" placeholder="1" data-placeholder-ar="1" data-placeholder-en="1" value="1" min="0" step="any">
+            <div class="unit-hint" id="unitHint" data-i18n="hint_feddan">فدان (حوالي 4200 إلى 5000 م³ ماء)</div>
           </div>
 
-          <div class="unit-selector">
-            <div class="unit-btn active" data-unit="m3" id="unitBtnM3" data-i18n="unit_btn_m3">متر مكعب (م³)</div>
-            <div class="unit-btn" data-unit="liter" id="unitBtnL" data-i18n="unit_btn_liter">لتر (L)</div>
+          <div class="unit-selector" id="unitSelector">
+            <!-- Dynamically populated based on substance type -->
+            <button type="button" class="unit-btn active" data-unit="feddan" id="unitBtnFeddan" data-i18n="unit_btn_feddan">فدان (Feddan)</button>
+            <button type="button" class="unit-btn" data-unit="m3" id="unitBtnM3" data-i18n="unit_btn_m3">متر مكعب (م³)</button>
+            <button type="button" class="unit-btn" data-unit="liter" id="unitBtnL" data-i18n="unit_btn_liter">لتر (L)</button>
           </div>
 
           <div class="input-group">
-            <label for="purpose"><i class="fa-solid fa-bullseye"></i><span data-i18n="lbl_purpose">الغرض من التطهير</span></label>
+            <label for="purpose"><i class="fa-solid fa-bullseye"></i><span data-i18n="lbl_purpose">الغرض / نوع المعاملة</span></label>
             <select id="purpose">
-              <option value="preventive" data-i18n="opt_preventive">تطهير وقائي (تعقيم دوري)</option>
-              <option value="treatment" data-i18n="opt_treatment">علاج — إصابة قائمة بالأسماك</option>
-              <option value="empty" data-i18n="opt_empty">تطهير حوض فارغ (قبل التشغيل)</option>
-              <option value="equipment" data-i18n="opt_equipment">تطهير معدات وأدوات وشباك</option>
+              <option value="treatment" data-i18n="opt_treatment">علاج — إصابة قائمة بالأسماك / جرعة علاجية</option>
+              <option value="preventive" data-i18n="opt_preventive">تطهير وقائي — تعقيم دوري / جرعة وقائية</option>
+              <option value="empty" data-i18n="opt_empty">تطهير حوض فارغ — قبل التشغيل والزراعة</option>
+              <option value="equipment" data-i18n="opt_equipment">تطهير معدات وأدوات وشباك وحاضنات</option>
             </select>
           </div>
 
           <div class="input-group">
-            <label for="disinfectantSelect"><i class="fa-solid fa-flask"></i><span data-i18n="lbl_chemical">نوع المادة المطهرة</span></label>
+            <label for="disinfectantSelect"><i class="fa-solid fa-flask"></i><span data-i18n="lbl_chemical">المادة أو المستحضر المطلوب</span></label>
             <select id="disinfectantSelect">
-              <option value="formalin" data-i18n="chem_formalin">فورمالين (Formalin 37%)</option>
-              <option value="potassium" data-i18n="chem_potassium">برمنجنات البوتاسيوم (KMnO₄)</option>
-              <option value="malachite" data-i18n="chem_malachite">مالاكيت جرين (Malachite Green)</option>
-              <option value="copper" data-i18n="chem_copper">سلفات النحاس (Copper Sulfate)</option>
-              <option value="chlorine" data-i18n="chem_chlorine">الكلورين (Chlorine / NaOCl)</option>
-              <option value="iodine" data-i18n="chem_iodine">اليود / بيتادين (Povidone-Iodine)</option>
-              <option value="salt" data-i18n="chem_salt">ملح الطعام (NaCl)</option>
-              <option value="hydrogen" data-i18n="chem_hydrogen">بيروكسيد الهيدروجين (H₂O₂)</option>
+              <optgroup label="🧪 مطهرات ومعقمات مائية | Water Disinfectants">
+                <option value="pure_aquatic" selected>بيور أكواتيك — Pure Aquatic (35% Nano Silver)</option>
+                <option value="virocid">فيروسيد — Virocid (QAC + Glutaraldehyde)</option>
+                <option value="potassium">برمنجنات البوتاسيوم — Potassium Permanganate (KMnO₄)</option>
+                <option value="copper">كبريتات النحاس — Copper Sulphate (CuSO₄)</option>
+                <option value="tannic">حمض التانيك — Tannic Acid</option>
+                <option value="formalin">فورمالين — Formalin 37%</option>
+                <option value="chlorine">الكلورين — Chlorine / NaOCl</option>
+                <option value="iodine">اليود / بيتادين — Povidone-Iodine</option>
+                <option value="salt">ملح الطعام — Salt (NaCl)</option>
+                <option value="malachite">مالاكيت جرين — Malachite Green (زينة فقط)</option>
+              </optgroup>
+              <optgroup label="💧 معالجات المياه والأكسجين | Water Quality & O₂">
+                <option value="oxyguard">أوكسي جارد — Oxyguard (بيركربونات الصوديوم 95%)</option>
+                <option value="yucca">أكوا يوكا — Aqua Yucca (طارد الأمونيا)</option>
+                <option value="prot_w">برو W — Prot W (بروبيوتيك معالجة الأحواض)</option>
+              </optgroup>
+              <optgroup label="🐛 مضادات الطفيليات | Antiparasitics">
+                <option value="butox">بيوتوكس — Butox (دلتامثرين لقمل السمك والإيزوبودا)</option>
+                <option value="aquazin">أكوازين — Aquazin (مضاد طفيلي واسع)</option>
+              </optgroup>
+              <optgroup label="💊 مضادات حيوية بيطرية | Veterinary Antibiotics">
+                <option value="oxytetracycline">أوكسي فيت — Oxyvet (أوكسي تتراسيكلين 50-55 مجم/كجم)</option>
+                <option value="florfenicol">فلورفينيكول — Florfenicol (50 مجم/كجم)</option>
+                <option value="neomycin">نيومايسين سلفات — Neomycin Sulfate (50 مجم/كجم)</option>
+                <option value="erythromycin">إريثرومايسين — Erythromycin (50 مجم/كجم)</option>
+              </optgroup>
+              <optgroup label="🌾 إضافات الأعلاف والبروبيوتيك | Feed Additives & Probiotics">
+                <option value="vitamin_c">فيتامين C — Vitamin C (مضاد الإجهاد الحراري)</option>
+                <option value="prot_f">بروت F — Prot F (بروبيوتيك ومحسن هضم وتحويل)</option>
+                <option value="min_mix">مين مكس — Min Mix (معادن ومضادات أكسدة ومناعة)</option>
+                <option value="grofast">جروفست — Grofast (محفز نمو وبيتاجلوكان)</option>
+                <option value="mold_nil">مولد نيل دراي — Mold Nil Dry (مضاد سموم فطرية)</option>
+                <option value="oxy_nil">أوكسي نيل دراي — Oxy Nil Dry (مضاد أكسدة للعلف)</option>
+              </optgroup>
             </select>
           </div>
 
@@ -721,19 +835,19 @@
 
             <div class="info-grid">
               <div class="info-item">
-                <div class="info-item-label" data-i18n="info_conc">التركيز الموصى به</div>
+                <div class="info-item-label" data-i18n="info_active">المادة الفعالة</div>
+                <div class="info-item-value" id="activeIng">—</div>
+              </div>
+              <div class="info-item">
+                <div class="info-item-label" data-i18n="info_conc">الجرعة المعتمدة</div>
                 <div class="info-item-value" id="concentration">—</div>
               </div>
               <div class="info-item">
-                <div class="info-item-label" data-i18n="info_duration">مدة التعقيم</div>
+                <div class="info-item-label" data-i18n="info_duration">مدة المعاملة وطريقة الإضافة</div>
                 <div class="info-item-value" id="duration">—</div>
               </div>
               <div class="info-item">
-                <div class="info-item-label" data-i18n="info_temp">درجة الحرارة الملائمة</div>
-                <div class="info-item-value" id="tempRange">—</div>
-              </div>
-              <div class="info-item">
-                <div class="info-item-label" data-i18n="info_safety">مستوى الأمان</div>
+                <div class="info-item-label" data-i18n="info_safety">مستوى الأمان وفترة السحب</div>
                 <div class="info-item-value" id="safety">—</div>
               </div>
             </div>
@@ -758,9 +872,25 @@
               <i class="fa-solid fa-vials"></i>
             </div>
             <div>
-              <h3 data-i18n="catalog_title">قائمة المطهرات الشائعة</h3>
-              <p data-i18n="catalog_sub">اضغط على أي مادة لاختيارها وحساب جرعتها فوراً</p>
+              <h3 data-i18n="catalog_title">دليل الأدوية والكيماويات والمطهرات</h3>
+              <p data-i18n="catalog_sub">اضغط على أي مستحضر لاختياره وحساب جرعته فوراً</p>
             </div>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="search-box-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="chemSearch" placeholder="بحث عن مادة، اسم تجاري، أو استخدام..." oninput="onSearchInput()">
+          </div>
+
+          <!-- Category Filter Pills -->
+          <div class="category-pills" id="categoryPills">
+            <button type="button" class="cat-pill active" data-cat="all" onclick="filterCategory('all')"><i class="fa-solid fa-border-all"></i> <span data-i18n="cat_all">الكل</span></button>
+            <button type="button" class="cat-pill" data-cat="disinfectant" onclick="filterCategory('disinfectant')"><i class="fa-solid fa-shield-virus"></i> <span data-i18n="cat_disinfectant">مطهرات ومعقمات</span></button>
+            <button type="button" class="cat-pill" data-cat="water" onclick="filterCategory('water')"><i class="fa-solid fa-droplet"></i> <span data-i18n="cat_water">جودة مياه وأكسجين</span></button>
+            <button type="button" class="cat-pill" data-cat="parasite" onclick="filterCategory('parasite')"><i class="fa-solid fa-bug"></i> <span data-i18n="cat_parasite">مضادات طفيليات</span></button>
+            <button type="button" class="cat-pill" data-cat="antibiotic" onclick="filterCategory('antibiotic')"><i class="fa-solid fa-capsules"></i> <span data-i18n="cat_antibiotic">مضادات حيوية</span></button>
+            <button type="button" class="cat-pill" data-cat="feed" onclick="filterCategory('feed')"><i class="fa-solid fa-wheat-awn"></i> <span data-i18n="cat_feed">إضافات وبروبيوتيك</span></button>
           </div>
 
           <div class="disinfectant-list" id="disinfectantList">
@@ -792,281 +922,949 @@
   </footer>
 
   <script>
+
     // ============================================================
     // TRANSLATIONS DICTIONARY
     // ============================================================
     const t = {
       ar: {
         back: 'الصفحة الرئيسية',
-        hero_badge: 'دليل التعقيم والأمن الحيوي',
-        page_title: 'حاسبة <span>المطهرات والمعقمات</span>',
-        page_subtitle: 'حساب الجرعات الدقيقة للمطهرات الكيميائية المستخدمة في تعقيم الأحواض، علاج الأسماك، وتطهير المعدات.',
+        hero_badge: 'دليل الأدوية والتعقيم والأمن الحيوي',
+        page_title: 'حاسبة <span>المطهرات والأدوية البيطرية</span>',
+        page_subtitle: 'حساب الجرعات الدقيقة للمطهرات والمعالجات المائية، مضادات الطفيليات، المضادات الحيوية، وإضافات الأعلاف.',
         calc_title: 'حساب الجرعة المطلوبة',
-        calc_sub: 'حدد الحجم والغرض ونوع المادة المطهرة',
-        lbl_volume: 'حجم الحوض / المحلول',
+        calc_sub: 'حدد الحجم / الكمية والغرض والمستحضر المطلوب',
+        lbl_volume: 'حجم الحوض / المساحة',
+        lbl_volume_pond: 'حجم الحوض / مساحته',
+        lbl_biomass: 'إجمالي وزن الأسماك المستهدفة (الكتلة الحية)',
+        lbl_feed_batch: 'كمية تشغيلة العلف المراد خلطها',
+        hint_feddan: 'فدان (حوالي 4200 إلى 5000 م³ ماء عند عمق 1م)',
         hint_m3: 'المتر المكعب (م³) — 1 م³ = 1000 لتر',
         hint_liter: 'اللتر (L) — 1000 لتر = 1 متر مكعب',
+        hint_kg_fish: 'إجمالي الوزن الحي للأسماك بالكيلوجرام (كجم)',
+        hint_ton_fish: 'إجمالي وزن الأسماك بالطن (1 طن = 1000 كجم)',
+        hint_kg_feed: 'كمية العلف بالكيلوجرام المراد رش الإضافة عليها',
+        hint_ton_feed: 'كمية العلف بالطن (1 طن علف = 1000 كجم)',
+        unit_btn_feddan: 'فدان (Feddan)',
         unit_btn_m3: 'متر مكعب (م³)',
         unit_btn_liter: 'لتر (L)',
-        lbl_purpose: 'الغرض من التطهير',
-        opt_preventive: 'تطهير وقائي (تعقيم دوري)',
-        opt_treatment: 'علاج — إصابة قائمة بالأسماك',
-        opt_empty: 'تطهير حوض فارغ (قبل التشغيل)',
-        opt_equipment: 'تطهير معدات وأدوات وشباك',
-        lbl_chemical: 'نوع المادة المطهرة',
-        chem_formalin: 'فورمالين (Formalin 37%)',
-        chem_potassium: 'برمنجنات البوتاسيوم (KMnO₄)',
-        chem_malachite: 'مالاكيت جرين (Malachite Green)',
-        chem_copper: 'سلفات النحاس (Copper Sulfate)',
-        chem_chlorine: 'الكلورين (Chlorine / NaOCl)',
-        chem_iodine: 'اليود / بيتادين (Povidone-Iodine)',
-        chem_salt: 'ملح الطعام (NaCl)',
-        chem_hydrogen: 'بيروكسيد الهيدروجين (H₂O₂)',
+        unit_btn_kg: 'كجم (kg)',
+        unit_btn_ton: 'طن (Ton)',
+        lbl_purpose: 'الغرض / نوع المعاملة',
+        opt_treatment: 'علاج — إصابة قائمة بالأسماك / جرعة علاجية',
+        opt_preventive: 'تطهير وقائي — تعقيم دوري / جرعة وقائية',
+        opt_empty: 'تطهير حوض فارغ — قبل التشغيل والزراعة',
+        opt_equipment: 'تطهير معدات وأدوات وشباك وحاضنات',
+        lbl_chemical: 'المادة أو المستحضر المطلوب',
         btn_calc: 'احسب الجرعة الآن',
         btn_reset: 'مسح الحقول',
         res_dose_title: 'الجرعة الكلية المطلوبة لإضافتها:',
-        info_conc: 'التركيز الموصى به',
-        info_duration: 'مدة التعقيم',
-        info_temp: 'درجة الحرارة الملائمة',
-        info_safety: 'مستوى الأمان',
-        warn_title: 'تنبيهات الاستخدام والأمان:',
-        catalog_title: 'قائمة المطهرات الشائعة',
-        catalog_sub: 'اضغط على أي مادة لاختيارها وحساب جرعتها فوراً',
-        bio_header: 'إرشادات السلامة والأمن الحيوي:',
-        bio_tip_1: 'تأكد من تهوية المكان جيداً عند استخدام المطهرات الكيميائية سريعة التطاير.',
-        bio_tip_2: 'ارتدِ القفازات والنظارات الواقية والكمامة عند التعامل مع المركزات.',
-        bio_tip_3: 'يُمنع خلط أنواع مختلفة من المطهرات الكيميائية معاً لتفادي التفاعلات السامة.',
-        bio_tip_4: 'توقف عن إطعام الأسماك قبل العلاج بـ 24 ساعة لتقليل استهلاك الأكسجين.',
+        info_active: 'المادة الفعالة',
+        info_conc: 'الجرعة المعتمدة',
+        info_duration: 'طريقة الإضافة والمدة',
+        info_safety: 'مستوى الأمان وفترة السحب',
+        warn_title: 'تنبيهات الاستخدام والأمان البيطري:',
+        catalog_title: 'دليل الأدوية والكيماويات والمطهرات',
+        catalog_sub: 'اضغط على أي مستحضر لاختياره وحساب جرعته فوراً',
+        bio_header: 'إرشادات السلامة والأمن الحيوي المزرعي:',
+        bio_tip_1: 'تأكد من تشغيل التهوية القصوى عند استخدام المؤكسدات أو المطهرات في وجود الأسماك.',
+        bio_tip_2: 'ارتدِ القفازات والنظارات الواقية والكمامة عند التعامل مع المركزات الكيميائية والأحماض.',
+        bio_tip_3: 'يُمنع خلط أنواع مختلفة من المطهرات الكيميائية معاً لتفادي انبعاث غازات سامة مميتة.',
+        bio_tip_4: 'التزم بفترات السحب البيطرية للمضادات الحيوية قبل حصاد الأسماك للاستهلاك الآدمي.',
         footer_home: 'الصفحة الرئيسية',
-        err_volume: '⚠️ أدخل الحجم أولاً بشكل صحيح',
+        err_volume: '⚠️ أدخل قيمة عددية صحيحة موجبة',
+        cat_all: 'الكل',
+        cat_disinfectant: 'مطهرات ومعقمات',
+        cat_water: 'جودة مياه وأكسجين',
+        cat_parasite: 'مضادات طفيليات',
+        cat_antibiotic: 'مضادات حيوية',
+        cat_feed: 'إضافات وبروبيوتيك',
+        search_placeholder: 'بحث عن مادة، اسم تجاري، أو استخدام...',
         unit_gram: 'جرام (جم)',
         unit_mg: 'ملجم (مجم)',
         unit_kg: 'كجم',
+        unit_ton: 'طن',
         unit_mgl: 'ملغم/لتر',
-        unit_gl: 'جرام/لتر'
+        unit_gl: 'جرام/لتر',
+        unit_liter_abbr: 'لتر',
+        unit_ml: 'مل (سم³)'
       },
       en: {
         back: 'Home',
-        hero_badge: 'Biosecurity & Sterilization Guide',
-        page_title: 'Disinfectant <span>Calculator</span>',
-        page_subtitle: 'Accurate dosing calculations for aquatic disinfectants used in pond sterilization, fish treatments, and equipment biosecurity.',
+        hero_badge: 'Aquatic Pharmacy & Biosecurity Guide',
+        page_title: 'Disinfectant & <span>Medication Calculator</span>',
+        page_subtitle: 'Accurate dosing calculations for water sanitizers, ectoparasiticides, veterinary antibiotics, and feed additives.',
         calc_title: 'Required Dose Calculation',
-        calc_sub: 'Specify volume, purpose, and chemical disinfectant',
-        lbl_volume: 'Pond / Tank / Solution Volume',
-        hint_m3: 'Cubic Meters (m³) — 1 m³ = 1000 Liters',
-        hint_liter: 'Liters (L) — 1000 Liters = 1 Cubic Meter',
+        calc_sub: 'Specify quantity, purpose, and targeted formulation',
+        lbl_volume: 'Pond Volume / Quantity',
+        lbl_volume_pond: 'Pond Volume / Area',
+        lbl_biomass: 'Target Fish Biomass (Total Weight)',
+        lbl_feed_batch: 'Feed Batch Quantity to Treat',
+        hint_feddan: 'Feddan (approx. 4,200 to 5,000 m³ water at 1m depth)',
+        hint_m3: 'Cubic Meters (m³) — 1 m³ = 1,000 Liters',
+        hint_liter: 'Liters (L) — 1,000 Liters = 1 Cubic Meter',
+        hint_kg_fish: 'Total live fish biomass in kilograms (kg)',
+        hint_ton_fish: 'Total live fish biomass in tons (1 ton = 1,000 kg)',
+        hint_kg_feed: 'Feed batch size in kilograms (kg)',
+        hint_ton_feed: 'Feed batch size in metric tons (1 ton = 1,000 kg)',
+        unit_btn_feddan: 'Feddan (فدان)',
         unit_btn_m3: 'Cubic Meters (m³)',
         unit_btn_liter: 'Liters (L)',
-        lbl_purpose: 'Disinfection Purpose',
-        opt_preventive: 'Preventive Routine Disinfection',
-        opt_treatment: 'Active Treatment / Disease Outbreak',
+        unit_btn_kg: 'Kilograms (kg)',
+        unit_btn_ton: 'Metric Tons (Ton)',
+        lbl_purpose: 'Treatment Purpose / Mode',
+        opt_treatment: 'Active Treatment — Disease Outbreak / Therapeutic Dose',
+        opt_preventive: 'Preventive Disinfection — Routine Sanitization',
         opt_empty: 'Empty Pond / Tank Pre-stocking Sanitization',
-        opt_equipment: 'Equipment, Nets & Tool Disinfection',
-        lbl_chemical: 'Disinfectant Chemical Type',
-        chem_formalin: 'Formalin (Formalin 37%)',
-        chem_potassium: 'Potassium Permanganate (KMnO₄)',
-        chem_malachite: 'Malachite Green',
-        chem_copper: 'Copper Sulfate (CuSO₄)',
-        chem_chlorine: 'Chlorine (NaOCl)',
-        chem_iodine: 'Iodine / Povidone-Iodine',
-        chem_salt: 'Common Salt (NaCl)',
-        chem_hydrogen: 'Hydrogen Peroxide (H₂O₂)',
+        opt_equipment: 'Equipment, Nets & Hatchery Tool Sanitization',
+        lbl_chemical: 'Product / Chemical Formulation',
         btn_calc: 'Calculate Dose Now',
         btn_reset: 'Reset Fields',
         res_dose_title: 'Total Dosage Required to Add:',
-        info_conc: 'Recommended Concentration',
-        info_duration: 'Exposure Duration',
-        info_temp: 'Suitable Temperature',
-        info_safety: 'Safety Level',
-        warn_title: 'Usage Warnings & Precautions:',
-        catalog_title: 'Common Disinfectants Catalog',
-        catalog_sub: 'Click any chemical to select it and compute dosage immediately',
-        bio_header: 'Safety & Biosecurity Guidelines:',
-        bio_tip_1: 'Ensure excellent aeration and ventilation when utilizing volatile disinfectants.',
-        bio_tip_2: 'Always wear protective gloves, splash goggles, and respirators when handling concentrates.',
+        info_active: 'Active Ingredient',
+        info_conc: 'Standard Approved Dose',
+        info_duration: 'Application Mode & Duration',
+        info_safety: 'Safety & Withdrawal Period',
+        warn_title: 'Usage Warnings & Veterinary Precautions:',
+        catalog_title: 'Aquaculture Medication & Disinfectant Directory',
+        catalog_sub: 'Click any product to select it and compute dosage instantly',
+        bio_header: 'Farm Safety & Biosecurity Guidelines:',
+        bio_tip_1: 'Operate maximum aeration when administering oxidizers or sanitizers with live fish.',
+        bio_tip_2: 'Always wear protective gloves, splash goggles, and masks when handling concentrates.',
         bio_tip_3: 'Never mix different disinfectant chemicals together to avoid lethal toxic gases.',
-        bio_tip_4: 'Cease feeding fish 24 hours prior to therapeutic baths to reduce metabolic oxygen demand.',
+        bio_tip_4: 'Strictly observe withdrawal periods for antibiotics before harvesting fish for consumption.',
         footer_home: 'Home',
-        err_volume: '⚠️ Please enter a valid positive volume',
+        err_volume: '⚠️ Please enter a valid positive value',
+        cat_all: 'All',
+        cat_disinfectant: 'Disinfectants',
+        cat_water: 'Water & O₂',
+        cat_parasite: 'Antiparasitics',
+        cat_antibiotic: 'Antibiotics',
+        cat_feed: 'Feed & Probiotics',
+        search_placeholder: 'Search product, active ingredient, or indication...',
         unit_gram: 'grams (g)',
         unit_mg: 'mg',
         unit_kg: 'kg',
+        unit_ton: 'tons',
         unit_mgl: 'mg/L',
-        unit_gl: 'g/L'
+        unit_gl: 'g/L',
+        unit_liter_abbr: 'Liters',
+        unit_ml: 'mL'
       }
     };
 
     // ============================================================
-    // DISINFECTANT DATABASE
+    // DIRECTORY DATABASE (25 PRODUCTS)
     // ============================================================
     const disinfectants = {
-      formalin: {
-        nameAr: "فورمالين (Formalin 37%)",
-        nameEn: "Formalin 37%",
-        icon: "fa-solid fa-vial-circle-check",
-        concentrations: {
-          preventive: { value: 15, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "15-25 ملغم/لتر لمدة 30-60 دقيقة", descEn: "15-25 mg/L for 30-60 minutes" },
-          treatment: { value: 25, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "25-50 ملغم/لتر لمدة 30-60 دقيقة", descEn: "25-50 mg/L for 30-60 minutes" },
-          empty: { value: 200, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "200-250 ملغم/لتر لمدة 24 ساعة", descEn: "200-250 mg/L for 24 hours" },
-          equipment: { value: 500, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "500 ملغم/لتر لمدة 1-2 ساعة", descEn: "500 mg/L for 1-2 hours" }
-        },
-        durationAr: "30-60 دقيقة (حمام قصير) | 24 ساعة (حوض فارغ)",
-        durationEn: "30-60 min (short bath) | 24 hrs (empty pond)",
-        tempRangeAr: "18 - 28 °C",
-        tempRangeEn: "18 - 28 °C",
-        safetyAr: "⚠️ شديد السمية — يخفض الأكسجين بشدة",
-        safetyEn: "⚠️ Highly toxic — severely depletes dissolved oxygen",
-        warningAr: "• يُمنع استخدامه في أحواض الزريعة الصغيرة جداً.\n• يستهلك الأكسجين المذاب (1 ملغم/لتر أكسجين لكل 5 ملغم/لتر فورمالين)، لذا يجب تشغيل أقصى تهوية.\n• يفضل إجراء تغيير جزئي للمياه بعد انتهاء فترة الحمام العلاجي.",
-        warningEn: "• Prohibited for very small fry and larvae.\n• Consumes dissolved oxygen (1 mg/L DO per 5 mg/L formalin) — run maximum aeration.\n• Perform partial water exchange after treatment duration."
+      // --- 1. DISINFECTANTS & WATER SANITIZERS ---
+      pure_aquatic: {
+        category: 'disinfectant',
+        nameAr: 'بيور أكواتيك (Pure Aquatic)',
+        nameEn: 'Pure Aquatic (35% Nano Silver)',
+        activeAr: 'بيروكسيد الهيدروجين مع نانو الفضة 35%',
+        activeEn: 'Hydrogen peroxide with nano silver 35%',
+        icon: 'fa-solid fa-biohazard',
+        calcType: 'pond',
+        doseStandardAr: '1 - 5 لتر / فدان',
+        doseStandardEn: '1 - 5 L / feddan',
+        treatmentDosePerFeddan: 3.0,
+        preventiveDosePerFeddan: 1.5,
+        durationAr: 'يُرش في الصباح الباكر مع تشغيل التهوية القصوى',
+        durationEn: 'Broadcast early morning with continuous strong aeration',
+        safetyAr: '✅ آمن وصديق للبيئة — يتحلل دون متبقيات كيميائية ضارة',
+        safetyEn: '✅ Eco-friendly — degrades without toxic chemical residue',
+        warningAr: '• مطهر ومؤكسد فعال للتخلص من البكتيريا والطفيليات والفيروسات.\n• يفضل تخفيفه بماء الحوض ورشه بالتساوي على كامل السطح.\n• تجنب ملامسة المركز للجلد أو العينين، وارتدِ معدات الوقاية.',
+        warningEn: '• Highly effective sanitizer eradicating pathogenic bacteria, protozoa, and viruses.\n• Dilute in pond water before uniform surface broadcast.\n• Avoid contact of concentrate with skin or eyes; wear PPE.'
+      },
+      virocid: {
+        category: 'disinfectant',
+        nameAr: 'فيروسيد (Virocid)',
+        nameEn: 'Virocid (QAC + Glutaraldehyde)',
+        activeAr: 'مركبات الأمونيوم الرباعية + جلوترالدهيد',
+        activeEn: 'Quaternary ammonium compounds + Glutaraldehyde',
+        icon: 'fa-solid fa-shield-virus',
+        calcType: 'dilution',
+        doseStandardAr: '1:200 للفيروسات (5 مل/لتر) | 1:400 للبكتيريا والفطريات (2.5 مل/لتر)',
+        doseStandardEn: '1:200 for viruses (5 mL/L) | 1:400 for bacteria/fungi (2.5 mL/L)',
+        virusDoseMlPerL: 5.0,
+        bacteriaDoseMlPerL: 2.5,
+        durationAr: '15 - 30 دقيقة للشباك والمعدات والأحواض الفارغة',
+        durationEn: '15 - 30 minutes immersion for nets, gear, and empty tanks',
+        safetyAr: '⚠️ مطهر أمن حيوي خارجي — لا يُخلط مع العلف',
+        safetyEn: '⚠️ External biosecurity sanitizer — not for feed addition',
+        warningAr: '• مطهر فعال واسع المجال مثبت الكفاءة ضد الفيروسات، البكتيريا، الفطريات، والخمائر.\n• مثالي لتعقيم مغاطس الأقدام، الشباك، المفرخات، والمعدات والأحواض الفارغة.\n• تشطف المعدات بالماء النظيف بعد انتهاء فترة التطهير.',
+        warningEn: '• Broad-spectrum certified veterinary sanitizer active against aquatic viruses, bacteria, fungi, and yeasts.\n• Ideal for footbaths, harvest nets, hatcheries, empty ponds, and vehicle disinfection.\n• Rinse equipment with fresh water after sanitation.'
       },
       potassium: {
-        nameAr: "برمنجنات البوتاسيوم (KMnO₄)",
-        nameEn: "Potassium Permanganate (KMnO₄)",
-        icon: "fa-solid fa-cube",
-        concentrations: {
-          preventive: { value: 2, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "2-4 ملغم/لتر لمدة 4-6 ساعات", descEn: "2-4 mg/L for 4-6 hours" },
-          treatment: { value: 4, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "4-6 ملغم/لتر لمدة 4-6 ساعات", descEn: "4-6 mg/L for 4-6 hours" },
-          empty: { value: 10, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "10-20 ملغم/لتر لمدة 24 ساعة", descEn: "10-20 mg/L for 24 hours" },
-          equipment: { value: 50, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "50-100 ملغم/لتر لمدة 2-4 ساعات", descEn: "50-100 mg/L for 2-4 hours" }
-        },
-        durationAr: "4-6 ساعات (حتى يتحول اللون للبني)",
-        durationEn: "4-6 hours (until color turns light brown)",
-        tempRangeAr: "20 - 28 °C",
-        tempRangeEn: "20 - 28 °C",
-        safetyAr: "⚠️ مؤكسد قوي — يصبغ الأسطح",
-        safetyEn: "⚠️ Strong oxidizer — stains surfaces",
-        warningAr: "• يتحول لون الماء للوردي/البنفسجي ثم البني مع التفاعل.\n• عند تحول اللون للبني الداكن، يمكن إضافة ثيوسلفات الصوديوم لإنهاء التفاعل فوراً.\n• لا يُستخدم مع الأسماك المجهدة أو التي تعاني من فقر الدم الشديد.",
-        warningEn: "• Water turns purple/pink then brown as organic load is oxidized.\n• Sodium thiosulfate can be added to neutralize residual permanganate immediately.\n• Do not apply to heavily stressed or anemic fish."
-      },
-      malachite: {
-        nameAr: "مالاكيت جرين (Malachite Green)",
-        nameEn: "Malachite Green",
-        icon: "fa-solid fa-leaf",
-        concentrations: {
-          preventive: { value: 0.1, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "0.1-0.2 ملغم/لتر لمدة 60 دقيقة", descEn: "0.1-0.2 mg/L for 60 min" },
-          treatment: { value: 0.2, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "0.2-0.5 ملغم/لتر لمدة 30-60 دقيقة", descEn: "0.2-0.5 mg/L for 30-60 min" },
-          empty: { value: 2, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "2-5 ملغم/لتر لمدة 24 ساعة", descEn: "2-5 mg/L for 24 hrs" },
-          equipment: { value: 10, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "10-20 ملغم/لتر لمدة 1-2 ساعة", descEn: "10-20 mg/L for 1-2 hrs" }
-        },
-        durationAr: "30-60 دقيقة (علاج) | 24 ساعة (حوض فارغ)",
-        durationEn: "30-60 min (treatment) | 24 hrs (empty)",
-        tempRangeAr: "18 - 26 °C",
-        tempRangeEn: "18 - 26 °C",
-        safetyAr: "🔴 مادة محظورة في أسماك المائدة التجارية",
-        safetyEn: "🔴 Prohibited in commercial food fish",
-        warningAr: "• يُمنع استخدامه لأسماك الاستهلاك الآدمي الموجهة للبيع.\n• يقتصر استخدامه فقط على أحواض الزينة أو أمهات التفريخ غير المخصصة للأكل.\n• يصبغ الأقمشة والأسطح البلاستيكية.",
-        warningEn: "• Banned for commercial food fish production.\n• Restricted exclusively to ornamental fish and breeding broodstock not destined for slaughter.\n• Strongly stains equipment and textiles."
+        category: 'disinfectant',
+        nameAr: 'برمنجنات البوتاسيوم (Potassium Permanganate)',
+        nameEn: 'Potassium Permanganate (KMnO₄)',
+        activeAr: 'KMNO₄ (99%)',
+        activeEn: 'Potassium Permanganate (KMnO₄)',
+        icon: 'fa-solid fa-cube',
+        calcType: 'pond',
+        doseStandardAr: '0.5 - 1 كجم / فدان',
+        doseStandardEn: '0.5 - 1 kg / feddan',
+        treatmentDosePerFeddan: 1.0,
+        preventiveDosePerFeddan: 0.5,
+        durationAr: '4 - 6 ساعات حتى يتحول اللون للبني الخفيف',
+        durationEn: '4 - 6 hours until purple color turns wine/brown',
+        safetyAr: '⚠️ مؤكسد قوي — يتطلب مراقبة مستمرة للون والأكسجين',
+        safetyEn: '⚠️ Strong oxidizer — requires continuous DO and color monitoring',
+        warningAr: '• تحسين جودة المياه وأكسدة المواد العضوية والقضاء على الطفيليات الخارجية (تريكودينا، كوستيا، الفطريات).\n• يُذاب تماماً ويوزع مع تشغيل البدالات في الصباح الباكر.\n• يمكن تحييد أي متبقي سريعاً باستخدام ثيوسلفات الصوديوم إذا لوحظ إجهاد على الأسماك.',
+        warningEn: '• Improves water quality, oxidizes organic load, and eradicates external parasites (Trichodina, Costia, gill fungi).\n• Fully dissolve and broadcast early morning with strong paddlewheel aeration.\n• Neutralize promptly with sodium thiosulfate if fish exhibit piping or stress.'
       },
       copper: {
-        nameAr: "سلفات النحاس (CuSO₄)",
-        nameEn: "Copper Sulfate (CuSO₄)",
-        icon: "fa-solid fa-circle-dot",
-        concentrations: {
-          preventive: { value: 0.5, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "0.5-1 ملغم/لتر لمكافحة الطحالب", descEn: "0.5-1 mg/L for algal control" },
-          treatment: { value: 1, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "1-1.5 ملغم/لتر لمدة 24 ساعة", descEn: "1-1.5 mg/L for 24 hours" },
-          empty: { value: 5, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "5-10 ملغم/لتر لمدة 48 ساعة", descEn: "5-10 mg/L for 48 hours" },
-          equipment: { value: 20, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "20-50 ملغم/لتر لمدة 4-6 ساعات", descEn: "20-50 mg/L for 4-6 hours" }
-        },
-        durationAr: "24-48 ساعة حسب الغرض",
-        durationEn: "24-48 hours depending on target",
-        tempRangeAr: "22 - 30 °C",
-        tempRangeEn: "22 - 30 °C",
-        safetyAr: "⚠️ سام جداً للقشريات والمياه منخفضة القلوية",
-        safetyEn: "⚠️ Lethal to crustaceans and in low-alkalinity waters",
-        warningAr: "• يُمنع استخدامه قطعياً في أحواض الجمبري والقشريات.\n• تزداد سميته بشدة عندما تكون قلوية الماء الكلية أقل من 50 ملغم/لتر.\n• احسب الجرعة الدقيقة بناءً على قلوية الماء الكلية (Total Alkalinity).",
-        warningEn: "• Strictly prohibited in shrimp and crustacean culture.\n• Toxicity increases drastically in soft water where total alkalinity < 50 mg/L CaCO3.\n• Calibrate dose based on total water alkalinity."
+        category: 'disinfectant',
+        nameAr: 'كبريتات النحاس (Copper Sulphate)',
+        nameEn: 'Copper Sulphate (CuSO₄)',
+        activeAr: 'COPPER SULPHATE (CuSO₄ · 5H₂O)',
+        activeEn: 'Copper Sulphate (CuSO₄ · 5H₂O)',
+        icon: 'fa-solid fa-circle-dot',
+        calcType: 'pond',
+        doseStandardAr: '1 - 4 كجم / فدان',
+        doseStandardEn: '1 - 4 kg / feddan',
+        treatmentDosePerFeddan: 2.0,
+        preventiveDosePerFeddan: 1.0,
+        durationAr: '24 - 48 ساعة حسب قلوية الماء الكلية',
+        durationEn: '24 - 48 hours depending on total alkalinity',
+        safetyAr: '🚨 ممنوع نهائياً في أحواض الجمبري والقشريات والماء عذب القلوية',
+        safetyEn: '🚨 Strictly lethal to all shrimp, crustaceans, and in soft water (<50 ppm CaCO3)',
+        warningAr: '• يستخدم للتعقيم والقضاء على الطفيليات الخارجية والتحكم في ازدهار الطحالب الخضراء المزرقة الضارة.\n• تزداد سميته بشدة عندما تقل قلوية الماء الكلية عن 50 ملغم/لتر.\n• احرص على تشغيل التهوية القصوى لأن تحلل الطحالب يستهلك الأكسجين الذائب.',
+        warningEn: '• Disinfects water, eradicates protozoan parasites, and controls cyanobacteria algal blooms.\n• Toxicity increases drastically in soft water where total alkalinity < 50 mg/L CaCO3.\n• Run maximum aeration as decaying algal blooms rapidly consume dissolved oxygen.'
+      },
+      tannic: {
+        category: 'disinfectant',
+        nameAr: 'حمض التانيك (Tannic Acid)',
+        nameEn: 'Tannic Acid',
+        activeAr: 'Tannic acid',
+        activeEn: 'Tannic acid',
+        icon: 'fa-solid fa-vial',
+        calcType: 'water_ppm',
+        doseStandardAr: '0.05 - 0.25 جم / م³',
+        doseStandardEn: '0.05 - 0.25 g / m³',
+        treatmentPpm: 0.25,
+        preventivePpm: 0.05,
+        durationAr: 'معاملة مائية قصيرة أو غمر بيض تفريخ (3-5 دقائق)',
+        durationEn: 'Short water bath or 3-5 min egg desticking rinse',
+        safetyAr: '✅ آمن في التركيزات المعتمدة',
+        safetyEn: '✅ Safe at recommended concentrations',
+        warningAr: '• يعمل على تطهير المياه والتخلص من الندبات والمواد العضوية العالقة.\n• يُستخدم بكفاءة في المفرخات لإزالة التصاق بيض الأسماك لتفادي اختناقه وتسهيل تحضينه.\n• اضبط الجرعة بدقة لتفادي خفض درجة حموضة الماء (pH).',
+        warningEn: '• Disinfects water, binds suspended organic matter, and clears turbidity.\n• Applied in fish hatcheries as an egg de-sticking agent to prevent clump suffocation.\n• Measure accurately to avoid sudden drop in water pH.'
+      },
+      formalin: {
+        category: 'disinfectant',
+        nameAr: 'فورمالين (Formalin 37%)',
+        nameEn: 'Formalin 37%',
+        activeAr: 'فورمالدهيد 37% (Formaldehyde)',
+        activeEn: 'Formaldehyde 37%',
+        icon: 'fa-solid fa-vial-circle-check',
+        calcType: 'water_ppm',
+        doseStandardAr: '15 - 25 ملغم/لتر (علاج) | 200 ملغم/لتر (حوض فارغ)',
+        doseStandardEn: '15 - 25 mg/L (treatment) | 200 mg/L (empty pond)',
+        treatmentPpm: 25.0,
+        preventivePpm: 15.0,
+        durationAr: '30 - 60 دقيقة في وجود الأسماك | 24 ساعة للحوض الفارغ',
+        durationEn: '30 - 60 min with fish | 24 hrs for empty pond',
+        safetyAr: '⚠️ شديد السمية — يستهلك الأكسجين بشدة',
+        safetyEn: '⚠️ Highly toxic — severely depletes dissolved oxygen',
+        warningAr: '• فعال ضد طفيليات الخياشيم والجلد (Costia, Trichodina, Flukes).\n• يستهلك الأكسجين المذاب بمعدل 1 ملغم/لتر لكل 5 ملغم/لتر فورمالين، لذا يلزم أقصى تهوية.\n• لا تستخدم العبوات التي بها رواسب بيضاء (البارافورمالدهيد السام).',
+        warningEn: '• Highly effective against external gill/skin flukes, Costia, and Trichodina.\n• Consumes dissolved oxygen (1 mg/L DO per 5 mg/L formalin) — run maximum aeration.\n• Never use bottles with white paraformaldehyde precipitate.'
       },
       chlorine: {
-        nameAr: "الكلورين (Chlorine / NaOCl)",
-        nameEn: "Chlorine (NaOCl)",
-        icon: "fa-solid fa-droplet",
-        concentrations: {
-          preventive: { value: 0.5, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "⚠️ لا يُستخدم بوجود الأسماك", descEn: "⚠️ Never use with live fish" },
-          treatment: { value: 0, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "❌ سام وقاتل للأسماك الحية", descEn: "❌ Lethal to live fish" },
-          empty: { value: 50, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "50-100 ملغم/لتر لمدة 6-12 ساعة", descEn: "50-100 mg/L for 6-12 hours" },
-          equipment: { value: 200, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "200-500 ملغم/لتر لمدة 1-2 ساعة", descEn: "200-500 mg/L for 1-2 hours" }
-        },
-        durationAr: "6-12 ساعة ثم المعادلة التامة",
-        durationEn: "6-12 hours followed by dechlorination",
-        tempRangeAr: "جميع الدرجات",
-        tempRangeEn: "All temperatures",
-        safetyAr: "🚨 قاتل للأسماك — يتطلب إزالة ومعادلة كاملة",
-        safetyEn: "🚨 Lethal to fish — complete dechlorination mandatory",
-        warningAr: "• يُستخدم فقط للأحواض الفارغة والمعدات والشباك والأرضيات.\n• يجب معادلة الكلور المتبقي بالكامل باستخدام ثيوسلفات الصوديوم وفحص بقايا الكلور بصفر قبل إنزال الأسماك.\n• لا تخلط الكلور مع الأحماض لتجنب انبعاث غاز الكلور الخانق.",
-        warningEn: "• Use only for sanitizing empty tanks, nets, and tools.\n• Neutralize residual chlorine completely with sodium thiosulfate and verify zero residual before stocking.\n• Never mix chlorine with acids to prevent toxic chlorine gas emission."
+        category: 'disinfectant',
+        nameAr: 'الكلورين (Chlorine / NaOCl)',
+        nameEn: 'Chlorine (Sodium Hypochlorite)',
+        activeAr: 'هيبوكلوريت الصوديوم / كلور حر نشط',
+        activeEn: 'Sodium Hypochlorite / Free Available Chlorine',
+        icon: 'fa-solid fa-droplet',
+        calcType: 'water_ppm',
+        doseStandardAr: '50 - 100 ملغم/لتر (حوض فارغ ومعدات)',
+        doseStandardEn: '50 - 100 mg/L (empty pond & gear)',
+        treatmentPpm: 50.0,
+        preventivePpm: 20.0,
+        durationAr: '12 - 24 ساعة ثم المعادلة التامة بثيوسلفات الصوديوم',
+        durationEn: '12 - 24 hrs followed by complete dechlorination',
+        safetyAr: '🚨 قاتل وفتاك بالأسماك الحية — للأحواض الفارغة والمعدات فقط',
+        safetyEn: '🚨 Lethal to live fish — sanitize empty systems and gear only',
+        warningAr: '• يُمنع استخدامه بوجود الأسماك مطلقاً.\n• يجب معادلة بقايا الكلور تماماً وفحص صفر كلور قبل إنزال أي زريعة أو أسماك.\n• يُمنع خلطه مع الأحماض لتفادي انبعاث غاز الكلور السام الخانق.',
+        warningEn: '• Never apply in tanks containing live fish or larvae.\n• Neutralize completely with sodium thiosulfate and verify zero residual before stocking.\n• Never mix with acids to prevent toxic chlorine gas emissions.'
       },
       iodine: {
-        nameAr: "اليود / بيتادين (Povidone-Iodine)",
-        nameEn: "Povidone-Iodine",
-        icon: "fa-solid fa-briefcase-medical",
-        concentrations: {
-          preventive: { value: 25, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "25-50 ملغم/لتر لمدة 15-30 دقيقة", descEn: "25-50 mg/L for 15-30 min" },
-          treatment: { value: 10, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "10-25 ملغم/لتر أو دهان موضعي للجروح", descEn: "10-25 mg/L or topical wound swab" },
-          empty: { value: 50, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "50-100 ملغم/لتر لمدة 1-2 ساعة", descEn: "50-100 mg/L for 1-2 hours" },
-          equipment: { value: 100, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "100-200 ملغم/لتر لتعقيم الشباك والمعدات", descEn: "100-200 mg/L for tools and nets" }
-        },
-        durationAr: "15-30 دقيقة للحمامات وبيض الأسماك",
-        durationEn: "15-30 min for baths and egg disinfection",
-        tempRangeAr: "20 - 28 °C",
-        tempRangeEn: "20 - 28 °C",
-        safetyAr: "✅ آمن وممتاز لتعقيم بيض الأسماك والجروح",
-        safetyEn: "✅ Safe and ideal for egg disinfection and wounds",
-        warningAr: "• ممتاز لتعقيم البيض في المفرخات قبل الفقس (100 ملغم/لتر لمدة 10 دقائق عند pH 7).\n• فعال جداً كمس موضعي للجروح السطحية والتقرحات البكتيرية.\n• يزول لونه وتأثيره سريعاً في وجود المواد العضوية.",
-        warningEn: "• Excellent for fish egg disinfection in hatcheries (100 mg/L for 10 min at pH 7).\n• Ideal as a topical antiseptic on ulcers and skin lesions.\n• Activity diminishes rapidly in presence of heavy organic matter."
+        category: 'disinfectant',
+        nameAr: 'اليود / بيتادين (Povidone-Iodine)',
+        nameEn: 'Povidone-Iodine',
+        activeAr: 'بوفيدون يودين نشط 10%',
+        activeEn: 'Povidone-Iodine (Active Iodine 10%)',
+        icon: 'fa-solid fa-briefcase-medical',
+        calcType: 'water_ppm',
+        doseStandardAr: '10 - 25 ملغم/لتر (حمامات وجروح) | 50-100 ملغم/لتر (بيض ومعدات)',
+        doseStandardEn: '10 - 25 mg/L (wounds & baths) | 50-100 mg/L (eggs & gear)',
+        treatmentPpm: 25.0,
+        preventivePpm: 10.0,
+        durationAr: '10 - 15 دقيقة لبيض الأسماك ومس موضعي للجروح',
+        durationEn: '10 - 15 min for fish eggs or topical lesion swab',
+        safetyAr: '✅ آمن وممتاز لتعقيم بيض الأسماك في المفرخات',
+        safetyEn: '✅ Safe and ideal for egg disinfection and wound antisepsis',
+        warningAr: '• المعيار البيطري لتعقيم بيض الأسماك وتطهير الجروح والتقرحات البكتيرية السطحية.\n• يقل مفعوله في المياه ذات الحمل العضوي المرتفع.\n• اضبط درجة حموضة ماء التعقيم قريباً من pH 7.0.',
+        warningEn: '• Gold standard for fish egg disinfection in hatcheries and superficial ulcer swabbing.\n• Activity diminishes in water with heavy organic debris.\n• Maintain pH near 7.0 during egg sanitation.'
       },
       salt: {
-        nameAr: "ملح الطعام (NaCl)",
-        nameEn: "Sodium Chloride (NaCl)",
-        icon: "fa-solid fa-cubes-stacked",
-        concentrations: {
-          preventive: { value: 1, unitAr: "جرام/لتر", unitEn: "g/L", unitType: "g_per_liter", descAr: "1-3 جرام/لتر (حمام دائم ومستمر)", descEn: "1-3 g/L (continuous bath)" },
-          treatment: { value: 10, unitAr: "جرام/لتر", unitEn: "g/L", unitType: "g_per_liter", descAr: "10-25 جرام/لتر لمدة 5-15 دقيقة", descEn: "10-25 g/L for 5-15 minutes" },
-          empty: { value: 20, unitAr: "جرام/لتر", unitEn: "g/L", unitType: "g_per_liter", descAr: "20-40 جرام/لتر لمدة 24 ساعة", descEn: "20-40 g/L for 24 hours" },
-          equipment: { value: 50, unitAr: "جرام/لتر", unitEn: "g/L", unitType: "g_per_liter", descAr: "50-100 جرام/لتر لتعقيم الأدوات", descEn: "50-100 g/L for tool disinfection" }
-        },
-        durationAr: "حمام مستمر أو قصير (5-15 دقيقة)",
-        durationEn: "Continuous bath or short dip (5-15 min)",
-        tempRangeAr: "جميع درجات الحرارة",
-        tempRangeEn: "All temperatures",
-        safetyAr: "✅ آمن جداً — علاج أساسي للتنظيم الأسموزي",
-        safetyEn: "✅ Very safe — osmotic stabilizer and anti-parasitic",
-        warningAr: "• يخفف الإجهاد الأسموزي ويقلل سمية النتريت (NO2).\n• غير مناسب مع الأسماك النهرية شديدة الحساسية للملوحة في التركيزات العالية.\n• احرص على إذابة الملح الصخري الخالي من اليود والمواد المانعة للتكتل.",
-        warningEn: "• Relieves osmotic stress and blocks nitrite (NO2) branchial uptake.\n• Exercise caution with strict freshwater species at high dip concentrations.\n• Use pure non-iodized salt free from anti-caking additives."
+        category: 'disinfectant',
+        nameAr: 'ملح الطعام (Sodium Chloride - NaCl)',
+        nameEn: 'Sodium Chloride (Common Salt)',
+        activeAr: 'كلوريد الصوديوم النقي (NaCl)',
+        activeEn: 'Sodium Chloride (NaCl)',
+        icon: 'fa-solid fa-cubes-stacked',
+        calcType: 'water_ppm',
+        doseStandardAr: '1 - 3 كجم/م³ (حمام دائم) | 10 - 25 كجم/م³ (غمر 5-15 دقيقة)',
+        doseStandardEn: '1 - 3 g/L (continuous) | 10 - 25 g/L (5-15 min dip)',
+        treatmentPpm: 15000.0, // 15 g/L
+        preventivePpm: 2000.0,  // 2 g/L
+        durationAr: 'حمام دائم (1-3 جم/لتر) أو غمر قصير (5-15 دقيقة)',
+        durationEn: 'Continuous bath (1-3 g/L) or short immersion (5-15 min)',
+        safetyAr: '✅ آمن جداً — دعم أسموزي وعلاج طفيليات',
+        safetyEn: '✅ Very safe — osmotic stabilizer and anti-parasitic',
+        warningAr: '• يخفف الإجهاد الأسموزي ويمنع دخول النتريت السام إلى دم الأسماك عبر الخياشيم.\n• فعال ضد الفطريات والطفيليات وحيدات الخلية (Ich, Chilodonella, Costia).\n• استخدم ملحاً صخرياً أو بحرياً خالياً من اليود ومضادات التكتل الكيميائية.',
+        warningEn: '• Alleviates osmotic stress and blocks branchial nitrite (NO2) uptake.\n• Effective against Ich, Chilodonella, and protozoan ectoparasites.\n• Use pure non-iodized salt free from synthetic anti-caking additives.'
       },
-      hydrogen: {
-        nameAr: "بيروكسيد الهيدروجين (H₂O₂)",
-        nameEn: "Hydrogen Peroxide (H₂O₂)",
-        icon: "fa-solid fa-biohazard",
-        concentrations: {
-          preventive: { value: 50, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "50-100 ملغم/لتر لمدة 30-60 دقيقة", descEn: "50-100 mg/L for 30-60 min" },
-          treatment: { value: 75, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "75-150 ملغم/لتر لعلاج الفطريات والطفيليات", descEn: "75-150 mg/L for fungal/protozoan control" },
-          empty: { value: 200, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "200-500 ملغم/لتر لمدة 2-4 ساعات", descEn: "200-500 mg/L for 2-4 hours" },
-          equipment: { value: 500, unitAr: "ملغم/لتر", unitEn: "mg/L", unitType: "mg_per_liter", descAr: "500-1000 ملغم/لتر لتعقيم المعدات", descEn: "500-1000 mg/L for equipment" }
-        },
-        durationAr: "30-60 دقيقة (يتحلل سريعاً إلى ماء وأكسجين)",
-        durationEn: "30-60 min (degrades rapidly into H2O + O2)",
-        tempRangeAr: "18 - 28 °C",
-        tempRangeEn: "18 - 28 °C",
-        safetyAr: "⚠️ مهيج قوي في التركيزات العالية",
-        safetyEn: "⚠️ Highly irritating at high concentrations",
-        warningAr: "• يتحلل تلقائياً إلى ماء وأكسجين نقي ولا يترك أي رواسب كيميائية ضارة.\n• ترتفع سميته مع ارتفاع درجات الحرارة فوق 28°C.\n• ممتاز لعلاج الفطريات الخارجية (Saprolegnia) وطفيل خياشيم الأسماك.",
-        warningEn: "• Naturally breaks down into water and pure oxygen with zero chemical residues.\n• Toxicity increases at water temperatures exceeding 28°C.\n• Highly effective against Saprolegnia fungal infections and ectoparasites."
+      malachite: {
+        category: 'disinfectant',
+        nameAr: 'مالاكيت جرين (Malachite Green)',
+        nameEn: 'Malachite Green',
+        activeAr: 'Malachite Green oxalate',
+        activeEn: 'Malachite Green oxalate',
+        icon: 'fa-solid fa-leaf',
+        calcType: 'water_ppm',
+        doseStandardAr: '0.1 - 0.2 ملغم/لتر (أحواض زينة وتفريخ فقط)',
+        doseStandardEn: '0.1 - 0.2 mg/L (ornamentals & broodstock only)',
+        treatmentPpm: 0.2,
+        preventivePpm: 0.1,
+        durationAr: '30 - 60 دقيقة في أحواض الزينة المغلقة',
+        durationEn: '30 - 60 min bath in closed ornamental systems',
+        safetyAr: '🔴 محظور تماماً لأسماك المائدة والاستهلاك الآدمي',
+        safetyEn: '🔴 Strictly prohibited in commercial food fish',
+        warningAr: '• مادة محظورة دولياً في استزراع أسماك الاستهلاك الآدمي بسبب بقائها بالأنسجة.\n• يقتصر الاستخدام فقط على أسماك الزينة أو أمهات التفريخ غير المخصصة للأكل.\n• يصبغ الأسطح والمعدات باللون الأخضر.',
+        warningEn: '• Internationally banned in food fish aquaculture due to tissue residue persistence.\n• Restricted exclusively to ornamental aquariums and non-food broodstock.\n• Strongly dyes equipment and plastic containers.'
+      },
+
+      // --- 2. WATER CONDITIONERS & OXYGEN ---
+      oxyguard: {
+        category: 'water',
+        nameAr: 'أوكسي جارد (Oxyguard)',
+        nameEn: 'Oxyguard (Sodium Percarbonate 95%)',
+        activeAr: 'Sodium percarbonate 95% (بيركربونات الصوديوم)',
+        activeEn: 'Sodium percarbonate 95%',
+        icon: 'fa-solid fa-wind',
+        calcType: 'pond',
+        doseStandardAr: '2 كجم (أو لتر) / فدان',
+        doseStandardEn: '2 kg (or L) / feddan',
+        treatmentDosePerFeddan: 2.0,
+        preventiveDosePerFeddan: 1.0,
+        durationAr: 'إضافة فورية عند هبوط الأكسجين الذائب عن 3 ملغم/لتر',
+        durationEn: 'Immediate emergency broadcast when DO < 3 mg/L',
+        safetyAr: '✅ آمن وسريع المفعول لإنقاذ الأسماك من الاختناق',
+        safetyEn: '✅ Safe rapid oxygen release preventing fish suffocation',
+        warningAr: '• تعويض الأكسجين السريع بالحوض خاصة عند انخفاض الأكسجين الذائب في الماء عن 3 مجم/لتر.\n• يساهم في أكسدة وتطهير رواسب قاع الحوض وتثبيط البكتيريا اللاهوائية الضارة.\n• يُوزع بانتظام على مساحة الحوض مع التركيز على أماكن تجمع الأسماك.',
+        warningEn: '• Emergency DO generator releasing pure oxygen on contact when levels drop below 3 mg/L.\n• Oxidizes benthic sediment sludge and suppresses anaerobic pathogens.\n• Broadcast evenly with focus around aerators and fish clusters.'
+      },
+      yucca: {
+        category: 'water',
+        nameAr: 'أكوا يوكا (Aqua Yucca)',
+        nameEn: 'Aqua Yucca (Ammonia Binder)',
+        activeAr: 'Yucca schidigera extract (مستخلص نبات اليوكا سكيجديرا)',
+        activeEn: 'Yucca schidigera extract',
+        icon: 'fa-solid fa-seedling',
+        calcType: 'pond',
+        doseStandardAr: '250 مل / فدان',
+        doseStandardEn: '250 ml / feddan',
+        treatmentDosePerFeddan: 0.25,
+        preventiveDosePerFeddan: 0.15,
+        durationAr: 'يُخفف بماء الحوض ويُرش بالتساوي في فترات نشاط الغازات',
+        durationEn: 'Dilute in pond water and broadcast across surface',
+        safetyAr: '✅ مستخلص طبيعي 100% — آمن تماماً للأسماك والجمبري',
+        safetyEn: '✅ 100% Natural — completely safe for fish and shrimp',
+        warningAr: '• التخلص الفوري من الأمونيا الحرة السامة وتحسين جودة مياه الحوض بيولوجياً.\n• يقلل تركيز غاز كبريتيد الهيدروجين الخانق ويحسن تنفس وشهية الأسماك.\n• يُكرر استخدامه عند ارتفاع قراءات الأمونيا الكلية في الماء.',
+        warningEn: '• Rapid binder of unionized toxic ammonia (NH3) and hydrogen sulfide gases.\n• Enhances overall water quality and aquatic animal welfare.\n• Repeat application as necessary based on water ammonia testing.'
+      },
+      prot_w: {
+        category: 'water',
+        nameAr: 'برو W (Prot W - بروبيوتيك الأحواض)',
+        nameEn: 'Prot W (Pond Water Probiotic)',
+        activeAr: 'Bacillus subtilis + Bacillus licheniformis',
+        activeEn: 'Bacillus subtilis + Bacillus licheniformis',
+        icon: 'fa-solid fa-bacteria',
+        calcType: 'pond',
+        doseStandardAr: '150 جم تخميرة قبل الزراعة بيومين + 50 جم كل 15 أو 30 يوم / فدان',
+        doseStandardEn: '150 g pre-stocking fermentation + 50 g every 15-30 days / feddan',
+        treatmentDosePerFeddan: 0.15,
+        preventiveDosePerFeddan: 0.05,
+        durationAr: 'تخمير 12-24 ساعة مع العسل والتهوية ثم إضافته صباحاً',
+        durationEn: 'Aerate 12-24 hrs with molasses then apply in morning sun',
+        safetyAr: '✅ بكتيريا نافعة حيوية — تحافظ على التوازن الميكروبي الطبيعي',
+        safetyEn: '✅ Beneficial live probiotic bacteria — restores balance',
+        warningAr: '• يحفز نمو الطحالب المفيدة ويمنع نمو الضارة في الحوض ويحد من استخدام المضادات والكيماويات.\n• يحمي الأسماك من الأمراض البيئية مثل زيادة الأمونيا والبيولوجية مثل STREPT, VIBRIO, AEROMONAS.\n• يُفضل توزيعه مع تشغيل البدالات لضمان انتشار البكتيريا في كامل عمود الماء.',
+        warningEn: '• Stimulates beneficial algae while suppressing harmful blooms, minimizing chemical/antibiotic use.\n• Protects from environmental ammonia spikes and bacterial pathogens (Streptococcus, Vibrio, Aeromonas).\n• Broadcast with paddlewheels on to disperse spore-formers through water column.'
+      },
+
+      // --- 3. ANTIPARASITICS ---
+      butox: {
+        category: 'parasite',
+        nameAr: 'بيوتوكس (Butox - دلتامثرين)',
+        nameEn: 'Butox (Deltamethrin 25)',
+        activeAr: 'Deltamethrin 25 (دلتامثرين 2.5%)',
+        activeEn: 'Deltamethrin 25 (2.5%)',
+        icon: 'fa-solid fa-bug',
+        calcType: 'pond',
+        doseStandardAr: '250 مل / 7.5 فدان (~ 33.3 مل / فدان)',
+        doseStandardEn: '250 ml / 7.5 feddan (~ 33.3 ml / feddan)',
+        treatmentDosePerFeddan: 0.03333,
+        preventiveDosePerFeddan: 0.02,
+        durationAr: 'معاملة مائية مسائية أو صباحية مع تشغيل التهوية',
+        durationEn: 'Broadcast treatment with vigorous aeration operating',
+        safetyAr: '⚠️ مبيد طفيليات متخصص — يُحظر مطلقاً استخدامه لأحواض الجمبري والقشريات',
+        safetyEn: '⚠️ Potent ectoparasiticide — highly lethal to all shrimp and crustaceans',
+        warningAr: '• علاج فعال وحاسم للطفيليات والقشريات الخارجية مثل قمل السمك (Lice / Argulus) والإيزوبودا (Isopoda).\n• ممنوع نهائياً ومطلقاً في أحواض الجمبري وسرطان البحر.\n• يُخفف في برميل ماء حوض ويوزع بانتظام على السطح مع التهوية.',
+        warningEn: '• Decisive treatment against fish lice (Argulus), Lernaea, and parasitic Isopods.\n• Absolutely lethal to shrimp and crabs — never apply to crustacean ponds.\n• Dilute in a barrel of pond water and distribute evenly with aerators running.'
+      },
+      aquazin: {
+        category: 'parasite',
+        nameAr: 'أكوازين (Aquazin)',
+        nameEn: 'Aquazin (Antiparasitic)',
+        activeAr: 'Nidroxyzone semicarbazone derivative',
+        activeEn: 'Nidroxyzone semicarbazone derivative',
+        icon: 'fa-solid fa-shield-halved',
+        calcType: 'biomass',
+        doseStandardAr: '30 مجم / كجم وزن حي للأسماك',
+        doseStandardEn: '30 mg / kg fish body weight',
+        treatmentMgPerKg: 30.0,
+        preventiveMgPerKg: 15.0,
+        durationAr: 'يُخلط مع العلف اليومي لمدة 5 - 7 أيام متتالية',
+        durationEn: 'Mix with daily feed for 5 - 7 consecutive days',
+        safetyAr: '⚠️ علاج تخصصي مضاد للطفيليات — فترة سحب 14 يوماً',
+        safetyEn: '⚠️ Specialized antiparasitic — 14-day withdrawal period',
+        warningAr: '• مضاد طفيلي واسع المدى للسيطرة على الطفيليات المعوية والبروتوزوا الممرضة في الأسماك.\n• يُخلط بالعلف مع مادة لاصقة (زيت سمك) ويُجفف في الظل قبل التغذية.\n• لا تزيد عن الجرعة المقررة لحماية الكبد والجهاز الهضمي.',
+        warningEn: '• Specialized antiparasitic chemotherapeutic targeting protozoan infections and systemic parasites.\n• Coat feed with fish oil or starch binder and dry in shade before feeding.\n• Do not exceed recommended dosage to protect fish liver function.'
+      },
+
+      // --- 4. VETERINARY ANTIBIOTICS ---
+      oxytetracycline: {
+        category: 'antibiotic',
+        nameAr: 'أوكسي فيت (Oxyvet - Oxytetracycline)',
+        nameEn: 'Oxyvet (Oxytetracycline)',
+        activeAr: 'Oxytetracycline (أوكسي تتراسيكلين)',
+        activeEn: 'Oxytetracycline',
+        icon: 'fa-solid fa-capsules',
+        calcType: 'biomass',
+        doseStandardAr: '50 - 55 مجم / كجم وزن حي للأسماك لمدة 10 أيام',
+        doseStandardEn: '50 - 55 mg / kg fish body weight for 10 days',
+        treatmentMgPerKg: 55.0,
+        preventiveMgPerKg: 30.0,
+        durationAr: 'يومياً مع العلف لمدة 10 أيام متتالية دون انقطاع',
+        durationEn: 'Daily with feed for 10 consecutive days without interruption',
+        safetyAr: '⚠️ مضاد حيوي علاجي — فترة سحب إلزامية 21 يوماً قبل الحصاد',
+        safetyEn: '⚠️ Prescription antibiotic — mandatory 21-day withdrawal period',
+        warningAr: '• مضاد حيوي واسع المجال لعلاج التسمم الدموي البكتيري، تعفن الزعانف، ومرض الكولومنارس.\n• يجب استكمال كورس العلاج كاملاً (10 أيام) لمنع تكوّن سلالات بكتيرية مقاومة.\n• يُخلط بزيت السمك كمادة لاصقة على كمية علف تعادل 1-1.5% من وزن الأسماك لضمان استهلاك الجرعة بالكامل.',
+        warningEn: '• Broad-spectrum antibiotic treating bacterial septicemia, fin rot, and Columnaris.\n• Complete the entire 10-day course to prevent bacterial resistance development.\n• Top-dress using fish oil onto 1-1.5% body weight feed ration to ensure full consumption.'
+      },
+      florfenicol: {
+        category: 'antibiotic',
+        nameAr: 'فلورفينيكول (Florfenicol)',
+        nameEn: 'Florfenicol',
+        activeAr: 'Florfenicol (فلورفينيكول بيطري)',
+        activeEn: 'Florfenicol',
+        icon: 'fa-solid fa-pills',
+        calcType: 'biomass',
+        doseStandardAr: '50 مجم / كجم وزن حي للأسماك لمدة 10 أيام',
+        doseStandardEn: '50 mg / kg fish body weight for 10 days',
+        treatmentMgPerKg: 50.0,
+        preventiveMgPerKg: 25.0,
+        durationAr: 'يومياً لمدة 10 أيام متتالية مع العلف',
+        durationEn: 'Daily for 10 consecutive days top-dressed on feed',
+        safetyAr: '⚠️ مضاد حيوي بيطري قوي — فترة سحب 15 - 21 يوماً',
+        safetyEn: '⚠️ Powerful veterinary antibiotic — 15 to 21-day withdrawal',
+        warningAr: '• مضاد حيوي واسع المجال فعال وفائق الكفاءة ضد التسمم الدموي، إيروموناس، فيبريو، وإدواردسيلا.\n• يتميز بامتصاص معوي سريع ومستوى تركيز نسيجي عالٍ داخل الأسماك.\n• يُمنع استخدامه لأسماك التفريخ الحاملة للبيض.',
+        warningEn: '• Broad-spectrum antibiotic active against Aeromoniasis, Vibriosis, and Edwardsiella tarda.\n• Exhibits rapid intestinal absorption and high tissue bioavailability.\n• Avoid administering to gravid spawning broodstock.'
+      },
+      neomycin: {
+        category: 'antibiotic',
+        nameAr: 'نيومايسين سلفات (Neomycin Sulfate 20%)',
+        nameEn: 'Neomycin Sulfate 20%',
+        activeAr: 'Neomycin (نيومايسين سلفات)',
+        activeEn: 'Neomycin',
+        icon: 'fa-solid fa-tablets',
+        calcType: 'biomass',
+        doseStandardAr: '50 مجم / كجم وزن حي للأسماك',
+        doseStandardEn: '50 mg / kg fish body weight',
+        treatmentMgPerKg: 50.0,
+        preventiveMgPerKg: 25.0,
+        durationAr: 'يومياً مع العلف لمدة 5 - 7 أيام متتالية',
+        durationEn: 'Daily with feed for 5 - 7 consecutive days',
+        safetyAr: '⚠️ فترة سحب 20 يوماً قبل الحصاد والتسويق',
+        safetyEn: '⚠️ Observe 20-day withdrawal period prior to harvest',
+        warningAr: '• مضاد حيوي واسع المجال لعلاج العدوى الداخلية والالتهابات المعوية في الجهاز الهضمي.\n• ضعيف الامتصاص الجهازي مما يجعله عالي التركيز والفعالية داخل تجويف الأمعاء.\n• يُقدم مع الوجبة الصباحية الأولى للأسماك.',
+        warningEn: '• Broad-spectrum antibiotic for controlling internal systemic and intestinal bacterial enteritis.\n• Minimal systemic absorption ensures maximum therapeutic concentration in gut lumen.\n• Administer with the first morning feeding.'
+      },
+      erythromycin: {
+        category: 'antibiotic',
+        nameAr: 'إريثرومايسين (Erythromycin Thiocyanate)',
+        nameEn: 'Erythromycin Thiocyanate',
+        activeAr: 'Erythromycin (إريثرومايسين ثيوسيانات)',
+        activeEn: 'Erythromycin',
+        icon: 'fa-solid fa-prescription-bottle-medical',
+        calcType: 'biomass',
+        doseStandardAr: '50 مجم / كجم وزن حي للأسماك',
+        doseStandardEn: '50 mg / kg fish body weight',
+        treatmentMgPerKg: 50.0,
+        preventiveMgPerKg: 25.0,
+        durationAr: 'يومياً مع العلف لمدة 7 - 10 أيام متتالية',
+        durationEn: 'Daily with feed for 7 - 10 consecutive days',
+        safetyAr: '⚠️ فترة سحب 14 - 21 يوماً قبل الاستهلاك الآدمي',
+        safetyEn: '⚠️ 14 to 21-day withdrawal period prior to food consumption',
+        warningAr: '• مضاد حيوي واسع المجال متخصص ضد البكتيريا موجبة الجرام (Streptococcus, Renibacterium BKD).\n• خيار مثالي لعلاج أمراض الكلى البكتيرية والتهاب العيون والتسمم السبحاني في البلطي والأسماك البحرية.\n• اخلطه بمادة لاصقة على العلف الطازج.',
+        warningEn: '• Broad-spectrum antibiotic active against Gram-positive Streptococcus and Bacterial Kidney Disease.\n• Highly effective for Streptococcosis eye cloudiness and exophthalmia in tilapia and marine fish.\n• Coat uniformly onto feed using oil binder.'
+      },
+
+      // --- 5. FEED ADDITIVES & PROBIOTICS ---
+      vitamin_c: {
+        category: 'feed',
+        nameAr: 'فيتامين C (Vitamin C)',
+        nameEn: 'Vitamin C (Ascorbic Acid)',
+        activeAr: 'Vitamin C (Ascorbic acid 99% مغلف)',
+        activeEn: 'Vitamin C',
+        icon: 'fa-solid fa-lemon',
+        calcType: 'feed',
+        doseStandardAr: '1 جم / كجم علف (1 كجم / طن)',
+        doseStandardEn: '1 g / kg feed (1 kg / ton)',
+        treatmentGPerKg: 2.0,
+        preventiveGPerKg: 1.0,
+        durationAr: 'يومياً طوال فترات الصيف وارتفاع درجات الحرارة والإجهاد',
+        durationEn: 'Daily throughout hot summer months and handling stress',
+        safetyAr: '✅ آمن 100% — بدون أي فترة سحب',
+        safetyEn: '✅ 100% Safe — zero withdrawal period',
+        warningAr: '• يستخدم في الإجهاد الحراري حيث يحفز مركز تنظيم الحرارة ورافع مناعة ويزيد من مقاومة الأسماك للأمراض ويقلل من معدل الوفيات.\n• يقلل من آثار السموم البيئية ويساعد في التئام الجروح وتجديد الأنسجة الخيشومية.\n• يُفضل استخدام النوع المغلف المقاوم للرطوبة ودرجات حرارة تصنيع العلف.',
+        warningEn: '• Anti-thermal stress agent stimulating thermoregulation center and phagocytic activity.\n• Increases resistance to pathogens and significantly reduces summer mortality.\n• Prefer coated/protected ascorbic acid to preserve stability against heat and moisture.'
+      },
+      prot_f: {
+        category: 'feed',
+        nameAr: 'بروت F (Prot F - بروبيوتيك علفي)',
+        nameEn: 'Prot F (Feed Probiotic)',
+        activeAr: 'Bacillus subtilis - pumilis - licheniformis',
+        activeEn: 'Bacillus subtilis - pumilis - licheniformis',
+        icon: 'fa-solid fa-bowl-rice',
+        calcType: 'feed',
+        doseStandardAr: '200 - 500 جم / طن علف',
+        doseStandardEn: '200 - 500 g / ton feed',
+        treatmentGPerKg: 0.5, // 500 g/ton
+        preventiveGPerKg: 0.25, // 250 g/ton
+        durationAr: 'يُخلط مع العلف اليومي بصفة مستمرة أو دورية',
+        durationEn: 'Mix with daily feed continuously or in 2-week pulses',
+        safetyAr: '✅ بروبيوتيك حيوي بيولوجي — آمن وطبيعي تماماً',
+        safetyEn: '✅ Natural biogenic probiotic — completely safe',
+        warningAr: '• زيادة معدل الهضم والامتصاص وتقوية الجهاز المناعي في أمعاء الأسماك.\n• ينتج عدداً من المركبات القاتلة للميكروبات الضارة وأحماض دهنية و Vit B complex لتحسين معدل التحويل الغذائي (FCR).\n• يُخلط بالتساوي مع العلف باستخدام مادة لاصقة مائية أو زيت سمك.',
+        warningEn: '• Enhances digestion and absorption, strengthening mucosal intestinal immunity.\n• Produces antimicrobial metabolites, beneficial fatty acids, and Vit B complex to optimize FCR.\n• Top-dress uniformly using fish oil or water binder.'
+      },
+      min_mix: {
+        category: 'feed',
+        nameAr: 'مين مكس (Min Mix)',
+        nameEn: 'Min Mix (Minerals & BHT)',
+        activeAr: 'Zinc-selenium-manganese-copper-iron-BHT',
+        activeEn: 'Zinc-selenium-manganese-copper-iron-BHT',
+        icon: 'fa-solid fa-gem',
+        calcType: 'feed',
+        doseStandardAr: '1 - 2 جم / كجم علف (1 - 2 كجم / طن)',
+        doseStandardEn: '1 - 2 g / kg feed (1 - 2 kg / ton)',
+        treatmentGPerKg: 2.0,
+        preventiveGPerKg: 1.0,
+        durationAr: 'مع العلف اليومي أثناء مواسم النمو السريع وتغير الفصول',
+        durationEn: 'Daily on feed during high growth phases and seasonal shifts',
+        safetyAr: '✅ معادن نادرة ومضادات أكسدة آمنة ومغذية',
+        safetyEn: '✅ Safe nutritional micro-minerals and antioxidants',
+        warningAr: '• رافع مناعة ويقلل معدل الوفيات ويزيد معدل التحويل ومحفز نمو ويقلل الإجهاد.\n• يسرع التئام الجروح وتكوين القشور ويقلل تشوهات العمود الفقري في الأسماك.\n• يدعم كفاءة التحويل الغذائي ويحسن جودة لحم الأسماك والجمبري.',
+        warningEn: '• Immune booster reducing mortality, improving FCR, promoting growth, and alleviating stress.\n• Essential trace mineral premix preventing skeletal deformities and promoting skin/scale healing.\n• Upgrades metabolic feed conversion and muscle quality.'
+      },
+      grofast: {
+        category: 'feed',
+        nameAr: 'جروفست (Grofast)',
+        nameEn: 'Grofast (Growth & Immunity)',
+        activeAr: 'Nucleic acids-frictional peptides-B glucan-mannan-organic acids',
+        activeEn: 'Nucleic acids-frictional peptides-B glucan-mannan-organic acids',
+        icon: 'fa-solid fa-arrow-up-right-dots',
+        calcType: 'feed',
+        doseStandardAr: '0.5 - 1 كجم / طن علف',
+        doseStandardEn: '0.5 - 1 kg / ton feed',
+        treatmentGPerKg: 1.0, // 1 kg/ton
+        preventiveGPerKg: 0.5, // 0.5 kg/ton
+        durationAr: 'يُضاف مع العلف لمدة 10 - 15 يوماً شهرياً',
+        durationEn: 'Top-dressed on feed for 10 - 15 days monthly',
+        safetyAr: '✅ محفز بيولوجي مناعي فائق الأمان',
+        safetyEn: '✅ Natural immuno-stimulant — highly safe',
+        warningAr: '• محفز نمو ورافع مناعة ومحفز للهضم والامتصاص.\n• ينشط كرات الدم البيضاء ويكافح العدوى الانتهازية بفضل البيتاجلوكان والمانان.\n• غني بالأحماض النووية والببتيدات التي تسرع تجديد خلايا الأمعاء والزعانف.',
+        warningEn: '• Growth promoter, immune booster, and stimulant for digestion and absorption.\n• Activates cellular immunity and suppresses gut pathogens via Beta-glucans and MOS.\n• Rich in nucleotides and functional peptides accelerating tissue and mucosal renewal.'
+      },
+      mold_nil: {
+        category: 'feed',
+        nameAr: 'مولد نيل دراي (Mold Nil Dry)',
+        nameEn: 'Mold Nil Dry (Toxin Binder)',
+        activeAr: 'Citric acid-sorbic acid-ca propionate-ca sulphate',
+        activeEn: 'Citric acid-sorbic acid-ca propionate-ca sulphate',
+        icon: 'fa-solid fa-shield',
+        calcType: 'feed',
+        doseStandardAr: '0.5 - 1 كجم / طن علف',
+        doseStandardEn: '0.5 - 1 kg / ton feed',
+        treatmentGPerKg: 1.0,
+        preventiveGPerKg: 0.5,
+        durationAr: 'يُخلط مع العلف أثناء التصنيع أو يُرش على العلف المخزن',
+        durationEn: 'Mix during feed manufacturing or top-dress on stored feed',
+        safetyAr: '✅ أحماض عضوية آمنة ومطهرة للجهاز الهضمي',
+        safetyEn: '✅ Safe food-grade organic acids & mycotoxin binder',
+        warningAr: '• مضاد سموم وأكسدة للعلف يمنع نمو وتكاثر الأعفان والفطريات في العلف المخزن.\n• يحمي كبد وخياشيم الأسماك من أضرار سموم الأفلاتوكسين الناتجة عن رطوبة التخزين.\n• يحسن صحة القناة الهضمية ويخفض درجة حموضة الأمعاء لطرد البكتيريا الضارة.',
+        warningEn: '• Toxin binder and feed antioxidant preventing mold proliferation in stored feeds.\n• Protects fish hepatopancreas and gills from aflatoxicosis in humid storage conditions.\n• Promotes gut health by optimizing intestinal pH to suppress pathogenic flora.'
+      },
+      oxy_nil: {
+        category: 'feed',
+        nameAr: 'اوكسي نيل دراي (Oxy Nil Dry)',
+        nameEn: 'Oxy Nil Dry (Feed Antioxidant)',
+        activeAr: 'Ethoxyquin-BHA-citric acid-orthophosphoric-lecithin-ca carbonate-sepiolite-SiO2',
+        activeEn: 'Ethoxyquin-BHA-citric acid-orthophosphoric-lecithin-ca carbonate-sepiolite-SiO2',
+        icon: 'fa-solid fa-snowflake',
+        calcType: 'feed',
+        doseStandardAr: '200 - 500 جم / طن علف',
+        doseStandardEn: '200 - 500 g / ton feed',
+        treatmentGPerKg: 0.5, // 500 g/ton
+        preventiveGPerKg: 0.25, // 250 g/ton
+        durationAr: 'يُخلط مع خلطات العلف لحماية الدهون والزيوت من التزنخ',
+        durationEn: 'Blend with feed batches to protect lipids from rancidity',
+        safetyAr: '✅ مضاد أكسدة علفي صناعي قياسي ومعتمد',
+        safetyEn: '✅ Certified standard feed antioxidant complex',
+        warningAr: '• إضافات أعلاف ومضاد أكسدة ويزيد من معدل الامتصاص والهضم.\n• يحمي زيوت الأسماك الغنية بأوميجا-3 من التزنخ وفقدان القيمة الغذائية.\n• يحتوي على الليسيثين لتحسين استحلاب وامتصاص الدهون والفيتامينات الذائبة في الدهن.',
+        warningEn: '• Feed additives and antioxidant; enhances nutrient absorption and digestion.\n• Preserves marine lipids from oxidative rancidity, maintaining Omega-3 fatty acid value.\n• Contains lecithin to enhance lipid emulsification and bio-absorption.'
       }
     };
 
-    const disinfectantOrder = ['formalin', 'potassium', 'malachite', 'copper', 'chlorine', 'iodine', 'salt', 'hydrogen'];
+    const disinfectantOrder = [
+      'pure_aquatic', 'virocid', 'potassium', 'copper', 'tannic', 'formalin', 'chlorine', 'iodine', 'salt', 'malachite',
+      'oxyguard', 'yucca', 'prot_w',
+      'butox', 'aquazin',
+      'oxytetracycline', 'florfenicol', 'neomycin', 'erythromycin',
+      'vitamin_c', 'prot_f', 'min_mix', 'grofast', 'mold_nil', 'oxy_nil'
+    ];
 
     // ============================================================
     // STATE & LOGIC
     // ============================================================
     let currentLang = localStorage.getItem('aqasoft_lang') || 'ar';
-    let currentUnit = 'm3';
+    let currentCategory = 'all';
+    let searchQuery = '';
+    let currentUnit = 'feddan';
 
+    function getSelectedChemical() {
+      const select = document.getElementById('disinfectantSelect');
+      return select ? select.value : 'pure_aquatic';
+    }
+
+    // Adapt unit selector based on chemical calculation type
+    function updateUnitSelectorUI(chemKey) {
+      const chem = disinfectants[chemKey] || disinfectants.pure_aquatic;
+      const type = chem.calcType;
+      const selector = document.getElementById('unitSelector');
+      const volumeLabel = document.getElementById('volumeLabel');
+      const isAr = currentLang === 'ar';
+
+      let buttonsHtml = '';
+      if (type === 'biomass') {
+        volumeLabel.innerHTML = `<i class="fa-solid fa-fish"></i> <span>${t[currentLang].lbl_biomass}</span>`;
+        if (currentUnit !== 'kg' && currentUnit !== 'ton') currentUnit = 'kg';
+        buttonsHtml = `
+          <button type="button" class="unit-btn ${currentUnit === 'kg' ? 'active' : ''}" data-unit="kg">${t[currentLang].unit_btn_kg}</button>
+          <button type="button" class="unit-btn ${currentUnit === 'ton' ? 'active' : ''}" data-unit="ton">${t[currentLang].unit_btn_ton}</button>
+        `;
+      } else if (type === 'feed') {
+        volumeLabel.innerHTML = `<i class="fa-solid fa-wheat-awn"></i> <span>${t[currentLang].lbl_feed_batch}</span>`;
+        if (currentUnit !== 'kg' && currentUnit !== 'ton') currentUnit = 'ton';
+        buttonsHtml = `
+          <button type="button" class="unit-btn ${currentUnit === 'ton' ? 'active' : ''}" data-unit="ton">${t[currentLang].unit_btn_ton}</button>
+          <button type="button" class="unit-btn ${currentUnit === 'kg' ? 'active' : ''}" data-unit="kg">${t[currentLang].unit_btn_kg}</button>
+        `;
+      } else {
+        volumeLabel.innerHTML = `<i class="fa-solid fa-ruler-combined"></i> <span>${t[currentLang].lbl_volume_pond}</span>`;
+        if (currentUnit !== 'feddan' && currentUnit !== 'm3' && currentUnit !== 'liter') {
+          currentUnit = (type === 'pond') ? 'feddan' : 'm3';
+        }
+        buttonsHtml = `
+          <button type="button" class="unit-btn ${currentUnit === 'feddan' ? 'active' : ''}" data-unit="feddan">${t[currentLang].unit_btn_feddan}</button>
+          <button type="button" class="unit-btn ${currentUnit === 'm3' ? 'active' : ''}" data-unit="m3">${t[currentLang].unit_btn_m3}</button>
+          <button type="button" class="unit-btn ${currentUnit === 'liter' ? 'active' : ''}" data-unit="liter">${t[currentLang].unit_btn_liter}</button>
+        `;
+      }
+
+      selector.innerHTML = buttonsHtml;
+      selector.querySelectorAll('.unit-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchUnit(btn.getAttribute('data-unit')));
+      });
+
+      updateHintText();
+    }
+
+    function updateHintText() {
+      const hint = document.getElementById('unitHint');
+      const chem = disinfectants[getSelectedChemical()] || disinfectants.pure_aquatic;
+      const type = chem.calcType;
+      const lang = currentLang;
+
+      if (type === 'biomass') {
+        hint.textContent = currentUnit === 'ton' ? t[lang].hint_ton_fish : t[lang].hint_kg_fish;
+      } else if (type === 'feed') {
+        hint.textContent = currentUnit === 'ton' ? t[lang].hint_ton_feed : t[lang].hint_kg_feed;
+      } else {
+        if (currentUnit === 'feddan') hint.textContent = t[lang].hint_feddan;
+        else if (currentUnit === 'm3') hint.textContent = t[lang].hint_m3;
+        else hint.textContent = t[lang].hint_liter;
+      }
+    }
+
+    function switchUnit(unit) {
+      if (currentUnit === unit) return;
+      const volumeInput = document.getElementById('volume');
+      const val = parseFloat(volumeInput.value);
+
+      if (!isNaN(val) && val > 0) {
+        if (currentUnit === 'feddan' && unit === 'm3') volumeInput.value = (val * 4200).toFixed(0);
+        else if (currentUnit === 'm3' && unit === 'feddan') volumeInput.value = (val / 4200).toFixed(2);
+        else if (currentUnit === 'm3' && unit === 'liter') volumeInput.value = (val * 1000).toFixed(0);
+        else if (currentUnit === 'liter' && unit === 'm3') volumeInput.value = (val / 1000).toFixed(2);
+        else if (currentUnit === 'ton' && unit === 'kg') volumeInput.value = (val * 1000).toFixed(0);
+        else if (currentUnit === 'kg' && unit === 'ton') volumeInput.value = (val / 1000).toFixed(3);
+      }
+
+      currentUnit = unit;
+      document.querySelectorAll('#unitSelector .unit-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-unit') === unit);
+      });
+      updateHintText();
+      calculateDose();
+    }
+
+    // Category Filter Function
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-pill').forEach(pill => {
+        pill.classList.toggle('active', pill.getAttribute('data-cat') === cat);
+      });
+      loadDisinfectantList();
+    }
+
+    // Search Input Function
+    function onSearchInput() {
+      searchQuery = document.getElementById('chemSearch').value.trim().toLowerCase();
+      loadDisinfectantList();
+    }
+
+    // Catalog Builder
+    function loadDisinfectantList() {
+      const listContainer = document.getElementById('disinfectantList');
+      listContainer.innerHTML = '';
+      const isAr = currentLang === 'ar';
+      const selectedKey = getSelectedChemical();
+
+      let visibleCount = 0;
+      disinfectantOrder.forEach(key => {
+        const d = disinfectants[key];
+        if (!d) return;
+
+        // Category filter
+        if (currentCategory !== 'all' && d.category !== currentCategory) return;
+
+        // Search query filter
+        if (searchQuery) {
+          const matchAr = d.nameAr.toLowerCase().includes(searchQuery) || d.activeAr.toLowerCase().includes(searchQuery) || d.warningAr.toLowerCase().includes(searchQuery);
+          const matchEn = d.nameEn.toLowerCase().includes(searchQuery) || d.activeEn.toLowerCase().includes(searchQuery) || d.warningEn.toLowerCase().includes(searchQuery);
+          if (!matchAr && !matchEn) return;
+        }
+
+        visibleCount++;
+        const card = document.createElement('div');
+        card.className = `disinfectant-card ${key === selectedKey ? 'selected' : ''}`;
+        card.setAttribute('data-key', key);
+
+        const name = isAr ? d.nameAr : d.nameEn;
+        const active = isAr ? d.activeAr : d.activeEn;
+        const dose = isAr ? d.doseStandardAr : d.doseStandardEn;
+
+        card.innerHTML = `
+          <div class="disinfectant-name-row">
+            <span><i class="${d.icon}" style="color: var(--color-aqua); margin-${isAr ? 'left' : 'right'}: 8px;"></i> ${name}</span>
+            <i class="fa-solid fa-chevron-${isAr ? 'left' : 'right'}" style="font-size: 12px; color: #94a3b8;"></i>
+          </div>
+          <div class="card-active-sub">🔬 ${active}</div>
+          <div class="disinfectant-details-row">
+            <span class="badge-pill">${dose}</span>
+          </div>
+        `;
+
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.disinfectant-card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          const sel = document.getElementById('disinfectantSelect');
+          if (sel) {
+            sel.value = key;
+            updateUnitSelectorUI(key);
+            calculateDose();
+          }
+        });
+
+        listContainer.appendChild(card);
+      });
+
+      if (visibleCount === 0) {
+        listContainer.innerHTML = `<div style="text-align:center; padding: 2rem; color:#94a3b8; font-size:0.9rem;">${isAr ? 'لا توجد نتائج مطابقة للبحث' : 'No matching formulations found'}</div>`;
+      }
+    }
+
+    // ============================================================
+    // CALCULATION ENGINE
+    // ============================================================
+    function calculateDose() {
+      const volumeInput = document.getElementById('volume');
+      let val = parseFloat(volumeInput.value);
+      const purpose = document.getElementById('purpose').value;
+      const key = getSelectedChemical();
+      const chem = disinfectants[key];
+      const isAr = currentLang === 'ar';
+      const lang = currentLang;
+
+      if (!chem) return;
+
+      if (isNaN(val) || val <= 0) {
+        document.getElementById('doseAmount').innerHTML = t[lang].err_volume;
+        document.getElementById('doseUnit').innerHTML = '';
+        return;
+      }
+
+      let doseStr = '';
+      const type = chem.calcType;
+
+      // 1. POND FEDDAN BASED CALCULATION
+      if (type === 'pond') {
+        const ratePerFeddan = (purpose === 'treatment') ? chem.treatmentDosePerFeddan : chem.preventiveDosePerFeddan;
+        let feddans = val;
+        if (currentUnit === 'm3') feddans = val / 4200;
+        else if (currentUnit === 'liter') feddans = val / 4200000;
+
+        const totalQty = feddans * ratePerFeddan;
+
+        // Determine if it's liquid or powder
+        const isLiquid = (key === 'pure_aquatic' || key === 'yucca' || key === 'butox');
+
+        if (isLiquid) {
+          if (totalQty >= 1.0) {
+            doseStr = `${totalQty.toFixed(2)} ${t[lang].unit_liter_abbr}`;
+          } else {
+            const ml = totalQty * 1000;
+            doseStr = `${ml >= 10 ? ml.toFixed(1) : ml.toFixed(2)} ${t[lang].unit_ml}`;
+          }
+        } else {
+          if (totalQty >= 1.0) {
+            doseStr = `${totalQty.toFixed(2)} ${t[lang].unit_kg}`;
+          } else {
+            const grams = totalQty * 1000;
+            doseStr = `${grams.toFixed(1)} ${t[lang].unit_gram}`;
+          }
+        }
+      }
+
+      // 2. DILUTION BASED CALCULATION (e.g. Virocid)
+      else if (type === 'dilution') {
+        let liters = val;
+        if (currentUnit === 'm3') liters = val * 1000;
+        else if (currentUnit === 'feddan') liters = val * 4200 * 1000;
+
+        const mlPerLiter = (purpose === 'treatment') ? chem.virusDoseMlPerL : chem.bacteriaDoseMlPerL;
+        const totalMl = liters * mlPerLiter;
+
+        if (totalMl >= 1000) {
+          doseStr = `${(totalMl / 1000).toFixed(2)} ${t[lang].unit_liter_abbr}`;
+        } else {
+          doseStr = `${totalMl.toFixed(1)} ${t[lang].unit_ml}`;
+        }
+      }
+
+      // 3. WATER PPM / MG/L BASED CALCULATION
+      else if (type === 'water_ppm') {
+        let liters = val;
+        if (currentUnit === 'feddan') liters = val * 4200 * 1000;
+        else if (currentUnit === 'm3') liters = val * 1000;
+
+        const ppm = (purpose === 'treatment') ? chem.treatmentPpm : chem.preventivePpm;
+        const totalMg = liters * ppm;
+
+        if (totalMg >= 1000000) {
+          doseStr = `${(totalMg / 1000000).toFixed(2)} ${t[lang].unit_kg}`;
+        } else if (totalMg >= 1000) {
+          doseStr = `${(totalMg / 1000).toFixed(2)} ${t[lang].unit_gram}`;
+        } else {
+          doseStr = `${totalMg.toFixed(1)} ${t[lang].unit_mg}`;
+        }
+      }
+
+      // 4. BIOMASS MG/KG BASED CALCULATION (Antibiotics & Aquazin)
+      else if (type === 'biomass') {
+        let kgFish = val;
+        if (currentUnit === 'ton') kgFish = val * 1000;
+
+        const mgPerKg = (purpose === 'treatment') ? chem.treatmentMgPerKg : chem.preventiveMgPerKg;
+        const totalMg = kgFish * mgPerKg;
+
+        if (totalMg >= 1000000) {
+          doseStr = `${(totalMg / 1000000).toFixed(2)} ${t[lang].unit_kg}`;
+        } else if (totalMg >= 1000) {
+          doseStr = `${(totalMg / 1000).toFixed(1)} ${t[lang].unit_gram}`;
+        } else {
+          doseStr = `${totalMg.toFixed(0)} ${t[lang].unit_mg}`;
+        }
+      }
+
+      // 5. FEED ADDITIVE G/KG OR G/TON CALCULATION
+      else if (type === 'feed') {
+        let kgFeed = val;
+        if (currentUnit === 'ton') kgFeed = val * 1000;
+
+        const gPerKg = (purpose === 'treatment') ? chem.treatmentGPerKg : chem.preventiveGPerKg;
+        const totalGrams = kgFeed * gPerKg;
+
+        if (totalGrams >= 1000) {
+          doseStr = `${(totalGrams / 1000).toFixed(2)} ${t[lang].unit_kg}`;
+        } else if (totalGrams >= 1.0) {
+          doseStr = `${totalGrams.toFixed(1)} ${t[lang].unit_gram}`;
+        } else {
+          doseStr = `${(totalGrams * 1000).toFixed(0)} ${t[lang].unit_mg}`;
+        }
+      }
+
+      // Output Results to Card
+      document.getElementById('doseAmount').textContent = doseStr;
+      document.getElementById('doseUnit').textContent = isAr ? chem.doseStandardAr : chem.doseStandardEn;
+      document.getElementById('activeIng').textContent = isAr ? chem.activeAr : chem.activeEn;
+      document.getElementById('concentration').textContent = isAr ? chem.doseStandardAr : chem.doseStandardEn;
+      document.getElementById('duration').textContent = isAr ? chem.durationAr : chem.durationEn;
+      document.getElementById('safety').textContent = isAr ? chem.safetyAr : chem.safetyEn;
+      document.getElementById('warningText').innerHTML = (isAr ? chem.warningAr : chem.warningEn).replace(/\n/g, '<br>');
+
+      // Highlight active card in catalog list
+      document.querySelectorAll('.disinfectant-card').forEach(c => {
+        c.classList.toggle('selected', c.getAttribute('data-key') === key);
+      });
+    }
+
+    // ============================================================
+    // LANGUAGE SYSTEM
+    // ============================================================
     function applyLang(lang) {
       currentLang = lang;
       localStorage.setItem('aqasoft_lang', lang);
-
       const isAr = lang === 'ar';
+
       document.documentElement.lang = lang;
       document.documentElement.dir = isAr ? 'rtl' : 'ltr';
       document.body.classList.toggle('ltr', !isAr);
@@ -1086,31 +1884,13 @@
         }
       });
 
-      // Translate placeholders
-      document.querySelectorAll('[data-placeholder-' + lang + ']').forEach(el => {
-        el.placeholder = el.getAttribute('data-placeholder-' + lang);
-      });
-
-      // Update unit hint text
-      document.getElementById('unitHint').textContent = currentUnit === 'm3' ? t[lang].hint_m3 : t[lang].hint_liter;
-
-      // Retranslate select options
-      const purposeSelect = document.getElementById('purpose');
-      if (purposeSelect) {
-        Array.from(purposeSelect.options).forEach(opt => {
-          const key = opt.getAttribute('data-i18n');
-          if (key && t[lang][key]) opt.textContent = t[lang][key];
-        });
+      // Translate search placeholder
+      const searchInput = document.getElementById('chemSearch');
+      if (searchInput) {
+        searchInput.placeholder = t[lang].search_placeholder;
       }
 
-      const chemSelect = document.getElementById('disinfectantSelect');
-      if (chemSelect) {
-        Array.from(chemSelect.options).forEach(opt => {
-          const key = opt.getAttribute('data-i18n');
-          if (key && t[lang][key]) opt.textContent = t[lang][key];
-        });
-      }
-
+      updateUnitSelectorUI(getSelectedChemical());
       loadDisinfectantList();
       calculateDose();
     }
@@ -1119,151 +1899,20 @@
       applyLang(currentLang === 'ar' ? 'en' : 'ar');
     });
 
-    // ============================================================
-    // CATALOG BUILDER
-    // ============================================================
-    function loadDisinfectantList() {
-      const listContainer = document.getElementById('disinfectantList');
-      listContainer.innerHTML = '';
-      const lang = currentLang;
-      const isAr = lang === 'ar';
-      const selectedKey = document.getElementById('disinfectantSelect').value;
-
-      disinfectantOrder.forEach(key => {
-        const d = disinfectants[key];
-        const card = document.createElement('div');
-        card.className = `disinfectant-card ${key === selectedKey ? 'selected' : ''}`;
-        card.setAttribute('data-key', key);
-
-        const name = isAr ? d.nameAr : d.nameEn;
-        const subName = isAr ? d.nameEn : d.nameAr;
-        const prevUnit = isAr ? d.concentrations.preventive.unitAr : d.concentrations.preventive.unitEn;
-
-        card.innerHTML = `
-          <div class="disinfectant-name-row">
-            <span><i class="${d.icon}" style="color: var(--color-aqua); margin-${isAr ? 'left' : 'right'}: 8px;"></i> ${name}</span>
-            <i class="fa-solid fa-chevron-${isAr ? 'left' : 'right'}" style="font-size: 12px; color: #94a3b8;"></i>
-          </div>
-          <div class="disinfectant-details-row">
-            <span>${subName}</span>
-            <span class="badge-pill">${d.concentrations.preventive.value} ${prevUnit}</span>
-          </div>
-        `;
-
-        card.addEventListener('click', () => {
-          document.querySelectorAll('.disinfectant-card').forEach(c => c.classList.remove('selected'));
-          card.classList.add('selected');
-          document.getElementById('disinfectantSelect').value = key;
-          calculateDose();
-        });
-
-        listContainer.appendChild(card);
-      });
-    }
-
-    // ============================================================
-    // CALCULATION LOGIC
-    // ============================================================
-    function calculateDose() {
-      let volume = parseFloat(document.getElementById('volume').value);
-      const purpose = document.getElementById('purpose').value;
-      const disinfectantKey = document.getElementById('disinfectantSelect').value;
-      const lang = currentLang;
-      const isAr = lang === 'ar';
-
-      if (isNaN(volume) || volume <= 0) {
-        document.getElementById('doseAmount').innerHTML = t[lang].err_volume;
-        document.getElementById('doseUnit').innerHTML = '';
-        return;
-      }
-
-      let volumeInLiters = volume;
-      if (currentUnit === 'm3') {
-        volumeInLiters = volume * 1000;
-      }
-
-      const disinfectant = disinfectants[disinfectantKey];
-      const concentration = disinfectant.concentrations[purpose];
-
-      let dose, doseUnit, displayValue;
-      const concentrationValue = concentration.value;
-      const unitType = concentration.unitType;
-
-      if (unitType === 'mg_per_liter') {
-        const doseMg = concentrationValue * volumeInLiters;
-
-        if (doseMg >= 1000000) {
-          displayValue = (doseMg / 1000000).toFixed(2);
-          doseUnit = t[lang].unit_kg;
-        } else if (doseMg >= 1000) {
-          displayValue = (doseMg / 1000).toFixed(2);
-          doseUnit = t[lang].unit_gram;
-        } else {
-          displayValue = doseMg.toFixed(1);
-          doseUnit = t[lang].unit_mg;
-        }
-        dose = `${displayValue} ${doseUnit}`;
-      } else if (unitType === 'g_per_liter') {
-        const doseG = concentrationValue * volumeInLiters;
-
-        if (doseG >= 1000) {
-          displayValue = (doseG / 1000).toFixed(2);
-          doseUnit = t[lang].unit_kg;
-        } else {
-          displayValue = doseG.toFixed(1);
-          doseUnit = t[lang].unit_gram;
-        }
-        dose = `${displayValue} ${doseUnit}`;
-      }
-
-      document.getElementById('doseAmount').textContent = dose;
-      document.getElementById('doseUnit').textContent = isAr ? concentration.descAr : concentration.descEn;
-      document.getElementById('concentration').textContent = `${concentrationValue} ${isAr ? concentration.unitAr : concentration.unitEn}`;
-      document.getElementById('duration').textContent = isAr ? disinfectant.durationAr : disinfectant.durationEn;
-      document.getElementById('tempRange').textContent = isAr ? disinfectant.tempRangeAr : disinfectant.tempRangeEn;
-      document.getElementById('safety').textContent = isAr ? disinfectant.safetyAr : disinfectant.safetyEn;
-      document.getElementById('warningText').innerHTML = (isAr ? disinfectant.warningAr : disinfectant.warningEn).replace(/\n/g, '<br>');
-
-      // Update active selection on cards
-      document.querySelectorAll('.disinfectant-card').forEach(card => {
-        if (card.getAttribute('data-key') === disinfectantKey) {
-          card.classList.add('selected');
-        } else {
-          card.classList.remove('selected');
-        }
-      });
-    }
-
-    function switchUnit(unit) {
-      if (currentUnit === unit) return;
-      const volumeInput = document.getElementById('volume');
-      const currentValue = parseFloat(volumeInput.value);
-
-      if (!isNaN(currentValue) && currentValue > 0) {
-        if (unit === 'm3' && currentUnit === 'liter') {
-          volumeInput.value = (currentValue / 1000).toFixed(2);
-        } else if (unit === 'liter' && currentUnit === 'm3') {
-          volumeInput.value = (currentValue * 1000).toFixed(0);
-        }
-      }
-
-      currentUnit = unit;
-      document.getElementById('unitBtnM3').classList.toggle('active', unit === 'm3');
-      document.getElementById('unitBtnL').classList.toggle('active', unit === 'liter');
-      document.getElementById('unitHint').textContent = unit === 'm3' ? t[currentLang].hint_m3 : t[currentLang].hint_liter;
-
-      calculateDose();
-    }
-
     function resetForm() {
-      document.getElementById('volume').value = '100';
-      document.getElementById('purpose').value = 'preventive';
-      document.getElementById('disinfectantSelect').value = 'formalin';
-      if (currentUnit === 'liter') {
-        switchUnit('m3');
-      } else {
-        calculateDose();
-      }
+      const chemKey = 'pure_aquatic';
+      document.getElementById('disinfectantSelect').value = chemKey;
+      document.getElementById('purpose').value = 'treatment';
+      currentUnit = 'feddan';
+      document.getElementById('volume').value = '1';
+      document.getElementById('chemSearch').value = '';
+      searchQuery = '';
+      currentCategory = 'all';
+      document.querySelectorAll('.cat-pill').forEach(p => p.classList.toggle('active', p.getAttribute('data-cat') === 'all'));
+
+      updateUnitSelectorUI(chemKey);
+      loadDisinfectantList();
+      calculateDose();
     }
 
     // Event listeners
@@ -1271,20 +1920,22 @@
     document.getElementById('resetBtn').addEventListener('click', resetForm);
     document.getElementById('volume').addEventListener('input', calculateDose);
     document.getElementById('purpose').addEventListener('change', calculateDose);
-    document.getElementById('disinfectantSelect').addEventListener('change', calculateDose);
-
-    document.querySelectorAll('.unit-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        switchUnit(btn.getAttribute('data-unit'));
-      });
+    document.getElementById('disinfectantSelect').addEventListener('change', (e) => {
+      updateUnitSelectorUI(e.target.value);
+      calculateDose();
+      // Scroll card into view in catalog
+      const card = document.querySelector(`.disinfectant-card[data-key="${e.target.value}"]`);
+      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
 
     window.addEventListener('scroll', () => {
       document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
     });
 
-    // Init
+    // Initialize
+    updateUnitSelectorUI('pure_aquatic');
     applyLang(currentLang);
+
   </script>
 </body>
 </html>
